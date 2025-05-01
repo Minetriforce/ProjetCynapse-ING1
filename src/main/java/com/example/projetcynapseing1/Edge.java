@@ -1,6 +1,6 @@
 /**
  * <p>
- * Edge is an entity we use to link multiple Vertices together, with a weight
+ * Edge is an entity we use to link multiple vertices together, with a weight
  * for specifics cases.
  * For vertex class, please refer to
  * {@link com.example.projetcynapseing1.Vertex}
@@ -9,13 +9,13 @@
  * <p>
  * Exemple usage:
  * <pre>
- * Vertex A = new Vertex(0,0,0);
- * Vertex B = new Vertex(1,0,1);
+ * Vertex a = new Vertex(0,0,0);
+ * Vertex b = new Vertex(1,0,1);
  * 
- * Edge AB = new Edge(A, B);
+ * Edge ab = new Edge(a, b);
  * 
  * //To add weight to the edge
- * AB.setWeight(1);
+ * ab.setWeight(1);
  * </pre>
  * </p>
  * @author Bari-joris
@@ -32,30 +32,33 @@ public class Edge implements Comparable<Edge> {
     /**
      * Vertices linked by the Edge
      */
-    private Vertex VertexA;
-    private Vertex VertexB;
+    private Vertex vertexA;
+    private Vertex vertexB;
 
-    public Edge(Vertex VertexA, Vertex VertexB) {
+    public Edge(Vertex vA, Vertex vB) {
         // set Values
-        this.VertexA = VertexA;
-        this.VertexB = VertexB;
+        this.vertexA = vA;
+        this.vertexB = vB;
 
         // cross add of Vertices in their neighbors list
         // It can result as an error if user add multiple edges to the same two Vertices
-        if (!VertexA.addNeighbor(VertexB) || !VertexB.addNeighbor(VertexA)) {
+        if (!vA.addNeighbor(vB) || !vB.addNeighbor(vA)) {
             System.out.println("--Edge Class--");
-            System.out.println("can't add neigbors, maybe it's because VertexID:" + VertexA.getID() + " and VertexID:"
-                    + VertexB.getID() + " are already linked by an edge");
+            System.out.println("can't add neigbors, maybe it's because VertexID:" + vA.getId() + " and VertexID:"
+                    + vB.getId() + " are already linked by an edge");
         }
     }
 
-    // getters
+    /**
+     * getters
+     * @return vertexA
+     */
     public Vertex getVertexA() {
-        return this.VertexA;
+        return this.vertexA;
     }
 
     public Vertex getVertexB() {
-        return this.VertexB;
+        return this.vertexB;
     }
 
     public Integer getWeight() {
@@ -88,13 +91,13 @@ public class Edge implements Comparable<Edge> {
     @Override
     public String toString() {
         if (weight != 0) {
-            return (this.VertexA.getID() + "-" + this.weight + "w-" + this.VertexB.getID());
+            return (this.vertexA.getId() + "-" + this.weight + "w-" + this.vertexB.getId());
         }
-        return (this.VertexA.getID() + "-" + this.VertexB.getID());
+        return (this.vertexA.getId() + "-" + this.vertexB.getId());
     }
 
     @Override
-    public int compareTo(Edge E) {
-        return Integer.compare(this.weight, E.getWeight());
+    public int compareTo(Edge e) {
+        return Integer.compare(this.weight, e.getWeight());
     }
 }

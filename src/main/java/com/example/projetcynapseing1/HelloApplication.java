@@ -20,6 +20,8 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) {
         /* Test */
+        Graph g = new Graph();
+
 
         /* JAVAFX Start application */
         launch();
@@ -33,7 +35,7 @@ public class HelloApplication extends Application {
             // --- Afficher les ID + les arêtes horizontales
             for (int m = 0; m < cols; m++) {
                 Vertex current = vertices.get(n * cols + m);
-                System.out.printf("%2d", current.getID());
+                System.out.printf("%2d", current.getId());
 
                 // S'il y a un voisin à droite, on affiche une arête
                 if (m < cols - 1) {

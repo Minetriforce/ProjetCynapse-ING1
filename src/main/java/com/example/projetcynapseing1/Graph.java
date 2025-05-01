@@ -31,48 +31,48 @@ import java.util.ArrayList;
 
 public class Graph {
     /**
-     * List of unique Vertices in graph
+     * List of unique vertices in graph
      */
-    private ArrayList<Vertex> Vertices;
+    private ArrayList<Vertex> vertices;
     /**
-     * List of unique Edges in graph
+     * List of unique edges in graph
      */
-    private ArrayList<Edge> Edges;
+    private ArrayList<Edge> edges;
 
     public Graph() {
-        this.Vertices = new ArrayList<Vertex>();
-        this.Edges = new ArrayList<Edge>();
+        this.vertices = new ArrayList<Vertex>();
+        this.edges = new ArrayList<Edge>();
     }
 
     // Getters
     public ArrayList<Vertex> getVertices() {
-        return this.Vertices;
+        return this.vertices;
     }
 
     public ArrayList<Edge> getEdges() {
-        return this.Edges;
+        return this.edges;
     }
 
     /**
      * add a new Vertex to graph
      * 
-     * @param V is a valid and unique Vertex
+     * @param v is a valid and unique Vertex
      * @return boolean
      */
-    public boolean addVertex(Vertex V) {
-        return this.Vertices.add(V);
+    public boolean addVertex(Vertex v) {
+        return this.vertices.add(v);
     }
 
     /**
      * add a new Edge to graph
      * 
-     * @param E is a valid and unique Edge
+     * @param e is a valid and unique Edge
      * @return
      */
-    public boolean addEdge(Edge E) {
-        E.getVertexA().getNeighbors().add(E.getVertexB());
-        E.getVertexB().getNeighbors().add(E.getVertexA());
-        return this.Edges.add(E);
+    public boolean addEdge(Edge e) {
+        e.getVertexA().getNeighbors().add(e.getVertexB());
+        e.getVertexB().getNeighbors().add(e.getVertexA());
+        return this.edges.add(e);
     }
 
 }
