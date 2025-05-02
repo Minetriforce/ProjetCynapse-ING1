@@ -61,6 +61,9 @@ public class Solver {
         timeStep = t >= 0 ? t : 0f;
     }
 
+    /**
+     * @return method and time step in a String format
+     */
     @Override
     public String toString(){
         return "Solver: " + method.toString() + "\ntime step: " + timeStep.toString() + "s";

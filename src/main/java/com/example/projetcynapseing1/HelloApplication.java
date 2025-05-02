@@ -36,7 +36,7 @@ public class HelloApplication extends Application {
             // --- Afficher les ID + les arêtes horizontales
             for (int m = 0; m < cols; m++) {
                 Vertex current = vertices.get(n * cols + m);
-                System.out.printf("%2d", current.getId());
+                System.out.printf("%2d");
 
                 // S'il y a un voisin à droite, on affiche une arête
                 if (m < cols - 1) {

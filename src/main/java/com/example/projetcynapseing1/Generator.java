@@ -83,7 +83,7 @@ public class Generator {
         for (int n = 0; n < this.rows; n++) {
             for (int m = 0; m < this.columns; m++) {
                 try {
-                    Vertex V = new Vertex(n, m, i);
+                    Vertex V = new Vertex(n, m);
                     i = i + 1;
                     G.addVertex(V);
                 } catch (Exception e) {

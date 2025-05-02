@@ -44,8 +44,6 @@ public class Edge implements Comparable<Edge> {
         // It can result as an error if user add multiple edges to the same two Vertices
         if (!vA.addNeighbor(vB) || !vB.addNeighbor(vA)) {
             System.out.println("--Edge Class--");
-            System.out.println("can't add neigbors, maybe it's because VertexID:" + vA.getId() + " and VertexID:"
-                    + vB.getId() + " are already linked by an edge");
         }
     }
 
@@ -91,9 +89,9 @@ public class Edge implements Comparable<Edge> {
     @Override
     public String toString() {
         if (weight != 0) {
-            return (this.vertexA.getId() + "-" + this.weight + "w-" + this.vertexB.getId());
+            return ("(" + vertexA.getX() + ", " + vertexA.getY() + ") - " + weight + "w - (" + vertexA.getX() + ", " + vertexA.getY() + ")");
         }
-        return (this.vertexA.getId() + "-" + this.vertexB.getId());
+        return ("(" + vertexA.getX() + ", " + vertexA.getY() + ") - (" + vertexA.getX() + ", " + vertexA.getY() + ")");
     }
 
     @Override

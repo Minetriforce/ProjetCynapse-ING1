@@ -29,10 +29,6 @@ public class Vertex {
     private Integer y;
 
     /**
-     * id of the Vertex is used to select a specific vertex.
-     */
-    private Integer id;
-    /**
      * Neigbors contain all neighbors of vertex (other vertex linked to it).
      * It has size of min = 0, max = 4
      */
@@ -45,20 +41,15 @@ public class Vertex {
      * 
      * @param x
      * @param y
-     * @param id
      * @throws Exception it can be because the position is negative or because id is
      *                   negative.
      */
-    public Vertex(Integer x, Integer y, Integer id) throws Exception {
+    public Vertex(Integer x, Integer y) throws Exception {
         if (x < 0 || y < 0) {
             throw new Exception("Invalid Position");
         }
-        if (id < 0) {
-            throw new Exception("Invalid id");
-        }
         this.x = x;
         this.y = y;
-        this.id = id;
         this.neighbors = new ArrayList<Vertex>();
     }
 
@@ -69,10 +60,6 @@ public class Vertex {
 
     public Integer getY() {
         return this.y;
-    }
-
-    public Integer getId() {
-        return this.id;
     }
 
     public ArrayList<Vertex> getNeighbors() {
@@ -140,6 +127,6 @@ public class Vertex {
      */
     @Override
     public String toString() {
-        return ("Vertexid:" + this.id + ";x:" + this.x + ";y:" + this.y);
+        return ("Vertexid:" + ";x:" + this.x + ";y:" + this.y);
     }
 }
