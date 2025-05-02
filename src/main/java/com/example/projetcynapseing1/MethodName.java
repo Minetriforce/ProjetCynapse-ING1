@@ -56,7 +56,7 @@ public class MethodName {
 
     // enumerated type of solving methods
     public enum SolveMethodName {
-        ASTAR("Astar"), RIGHTHAND("Right hand"), TREMAUX("Tremaux");
+        ASTAR("A*"), RIGHTHAND("Right hand"), TREMAUX("Tremaux");
 
         // name of the method
         private final String name;
