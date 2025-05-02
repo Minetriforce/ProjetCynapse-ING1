@@ -15,15 +15,120 @@
 package com.example.projetcynapseing1;
 
 public class MethodName {
+    // enumerated type of generation methods
     public enum GenMethodName {
-        KRUSKAL, PRIMS, DFS
+        KRUSKAL("Kruskal"), PRIMS("Prims"), DFS("DFS");
+
+        // name of the method
+        private final String name;
+
+        /**
+         * constructor
+         * @param n: name
+         */
+        private GenMethodName(String n) {
+            name = n;
+        }
+
+        /**
+         * getter of name
+         * @return name
+         */
+        public String getName(){
+            return name;
+        }
+
+        /**
+         * return the method name corresponding to the name given
+         * default: PRIMS
+         * @param n: name of the method
+         * @return method name
+         */
+        public GenMethodName fromName(String n){
+            for (GenMethodName m: values()){
+                if (m.getName().equals(n)){
+                    return m;
+                }
+            }
+            return PRIMS;
+        }
     }
 
+    // enumerated type of solving methods
     public enum SolveMethodName {
-        ASTAR, RIGHTHAND, TREMAUX
+        ASTAR("Astar"), RIGHTHAND("Right hand"), TREMAUX("Tremaux");
+
+        // name of the method
+        private final String name;
+
+        /**
+         * constructor
+         * @param n: name
+         */
+        private SolveMethodName(String n) {
+            name = n;
+        }
+
+        /**
+         * getter of name
+         * @return name
+         */
+        public String getName(){
+            return name;
+        }
+
+        /**
+         * return the method name corresponding to the name given
+         * default: ASTAR
+         * @param n: name of the method
+         * @return method name
+         */
+        public SolveMethodName fromName(String n){
+            for (SolveMethodName m: values()){
+                if (m.getName().equals(n)){
+                    return m;
+                }
+            }
+            return ASTAR;
+        }
     }
 
+    // enumerated type of printing
     public enum Type {
-        STEPPER, COMPLETE
+        STEPPER("stepper"), COMPLETE("complete");
+
+        // name of the method
+        private final String name;
+
+        /**
+         * constructor
+         * @param n: name
+         */
+        private Type(String n) {
+            name = n;
+        }
+
+        /**
+         * getter of name
+         * @return name
+         */
+        public String getName(){
+            return name;
+        }
+
+        /**
+         * return the method name corresponding to the name given
+         * default: COMPLETE
+         * @param n: name of the method
+         * @return method name
+         */
+        public Type fromName(String n){
+            for (Type m: values()){
+                if (m.getName().equals(n)){
+                    return m;
+                }
+            }
+            return COMPLETE;
+        }
     }
 }

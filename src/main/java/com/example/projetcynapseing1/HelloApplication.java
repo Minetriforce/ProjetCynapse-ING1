@@ -22,6 +22,7 @@ public class HelloApplication extends Application {
         /* Test */
         Graph g = new Graph();
 
+        
 
         /* JAVAFX Start application */
         launch();
