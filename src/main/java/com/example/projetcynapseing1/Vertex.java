@@ -1,24 +1,21 @@
-/**
- * <p>
- * Class Vertex is used in a Graph Object.
- * For a maze, it represents a case if a grid (intersection).
- * </p>
- * 
- * <p>
- * Exemple usage : 
- * <pre>
- * Vertex a = new Vertex(0,0,0);
- * Vertex b = new Vertex(1,1,0);
- * </pre>
- * </p>
- * @author Bari-joris
- * @version 1.0
- */
-
 package com.example.projetcynapseing1;
 
 import java.util.ArrayList;
 
+/**
+ * Class Vertex is used in a Graph Object.
+ * For a maze, it represents a case if a grid (intersection).
+ * 
+ * Exemple usage :
+ * 
+ * <pre>
+ * Vertex a = new Vertex(0, 0, 0);
+ * Vertex b = new Vertex(1, 1, 0);
+ * </pre>
+ * 
+ * @author Bari-joris
+ * @version 1.0
+ */
 public class Vertex {
 
     /**
@@ -34,36 +31,63 @@ public class Vertex {
      */
     private ArrayList<Vertex> neighbors;
 
+    private Integer ID;
+
     /**
-     * <p>
-     * Constructor of Vertex Objet
-     * </p>
+     * Constructor of Vertex Object
      * 
-     * @param x
-     * @param y
+     * @param x  horizontal coordinate
+     * @param y  vertical coordinate
+     * @param ID unique ID of vertex
      * @throws Exception it can be because the position is negative or because id is
      *                   negative.
      */
-    public Vertex(Integer x, Integer y) throws Exception {
+    public Vertex(Integer x, Integer y, Integer ID) throws Exception {
         if (x < 0 || y < 0) {
             throw new Exception("Invalid Position");
         }
         this.x = x;
         this.y = y;
+        this.ID = ID;
         this.neighbors = new ArrayList<Vertex>();
     }
 
     // Getters
+
+    /**
+     * Get Y coordinate of Vertex in Graph
+     * 
+     * @return integer between 0 and columns
+     */
     public Integer getX() {
         return this.x;
     }
 
+    /**
+     * Get X coordinate of Vertex in graph
+     * 
+     * @return integer between 0 and rows
+     */
     public Integer getY() {
         return this.y;
     }
 
+    /**
+     * Return the list of neighbors of this Vertex
+     * 
+     * @return Vertex List
+     */
     public ArrayList<Vertex> getNeighbors() {
         return this.neighbors;
+    }
+
+    /**
+     * return the unique ID of the vertex
+     * 
+     * @return Integer between 0 and0 (rows+columns)-1
+     */
+    public Integer getID() {
+        return this.ID;
     }
 
     /**
@@ -127,6 +151,6 @@ public class Vertex {
      */
     @Override
     public String toString() {
-        return ("Vertexid:" + ";x:" + this.x + ";y:" + this.y);
+        return ("Vertexid:" + this.ID + ";x:" + this.x + ";y:" + this.y);
     }
 }

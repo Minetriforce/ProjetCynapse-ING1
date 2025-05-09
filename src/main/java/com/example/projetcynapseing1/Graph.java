@@ -1,16 +1,23 @@
+package com.example.projetcynapseing1;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * The Graph class represents a graph data structure consisting of vertices and edges.
- * It provides methods to manage and manipulate the graph, including adding vertices
+ * The Graph class represents a graph data structure consisting of vertices and
+ * edges.
+ * It provides methods to manage and manipulate the graph, including adding
+ * vertices
  * and edges, and retrieving the list of vertices and edges.
  * 
- * <p>
- * The graph is implemented using an adjacency list representation, where each vertex
+ * The graph is implemented using an adjacency list representation, where each
+ * vertex
  * maintains a list of its neighboring vertices.
- * </p>
  * 
  * 
- * <p>
  * Example usage:
+ * 
  * <pre>
  * Graph graph = new Graph();
  * Vertex v1 = new Vertex("A");
@@ -20,15 +27,10 @@
  * Edge edge = new Edge(v1, v2);
  * graph.addEdge(edge);
  * </pre>
- * </p>
  * 
  * @author Bari-joris
  * @version 1.0
  */
-package com.example.projetcynapseing1;
-
-import java.util.ArrayList;
-
 public class Graph {
     /**
      * List of unique vertices in graph
@@ -39,18 +41,61 @@ public class Graph {
      */
     private ArrayList<Edge> edges;
 
+    /**
+     * Constructor of object Graph.
+     * Initialize Arrays of vertices and edges
+     */
     public Graph() {
         this.vertices = new ArrayList<Vertex>();
         this.edges = new ArrayList<Edge>();
     }
 
     // Getters
+    /**
+     * Return all the vertices in the current Graph
+     * 
+     * @return this.vertices : list of all vertices in this graph
+     * @see Vertex
+     */
     public ArrayList<Vertex> getVertices() {
         return this.vertices;
     }
 
+    /**
+     * Return all the Edges from the Graph
+     * 
+     * @return this.edges : current list of edges in this graph
+     * @see Edge
+     */
     public ArrayList<Edge> getEdges() {
         return this.edges;
+    }
+
+    /**
+     * Return a Vertex Object according to it's ID
+     * 
+     * @param ID integer between 0 and n to identify vertex in graph
+     * @return Vertex
+     */
+    public Vertex getVertexByIDVertex(Integer ID) {
+        return vertices.get(ID);
+    }
+
+    /**
+     * Return a list of edges connected to vertex v
+     * 
+     * @param v Vertex to get Edges from
+     * @return edges : list of edges
+     */
+    public Set<Edge> getEdgesByVertex(Vertex v) {
+        Set<Edge> edges = new HashSet<>();
+
+        for (Edge e : this.edges) {
+            if (e.getVertexA().equals(v) || e.getVertexB().equals(v)) {
+                edges.add(e);
+            }
+        }
+        return edges;
     }
 
     /**
@@ -67,12 +112,39 @@ public class Graph {
      * add a new Edge to graph
      * 
      * @param e is a valid and unique Edge
-     * @return
+     * @return Boolean : if the edge was added
      */
     public boolean addEdge(Edge e) {
-        e.getVertexA().getNeighbors().add(e.getVertexB());
-        e.getVertexB().getNeighbors().add(e.getVertexA());
         return this.edges.add(e);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Graph:\n");
+        sb.append("Vertices:\n");
+        for (Vertex v : vertices) {
+            sb.append("ID: ").append(v.getID())
+                    .append(" (").append(v.getX()).append(", ").append(v.getY()).append(")")
+                    .append(" -> Neighbors: ");
+
+            ArrayList<Vertex> neighbors = v.getNeighbors();
+            for (Vertex neighbor : neighbors) {
+                sb.append(neighbor.getID()).append(" ");
+            }
+            sb.append("\n");
+        }
+
+        sb.append("\nEdges:\n");
+        for (Edge e : edges) {
+            sb.append("Edge from ")
+                    .append(e.getVertexA().getID())
+                    .append(" to ")
+                    .append(e.getVertexB().getID())
+                    .append("\n");
+        }
+        return sb.toString();
     }
 
 }
