@@ -8,6 +8,7 @@ import java.io.IOException;
 
 /**
  * Main Class of the application
+ * TODO : rename this class
  */
 public class HelloApplication extends Application {
 
@@ -20,28 +21,32 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+
+        HelloController control = new HelloController();
+        fxmlLoader.setController(control);
+
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+
+        try {
+            Generator Gen = new Generator(3, 3, MethodName.GenMethodName.KRUSKAL, 10, control);
+            control.setGenerator(Gen);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     /**
      * Entry point of application
      * 
-     * @param args
+     * @param args arguments when lauching java application
      */
     public static void main(String[] args) {
         /* Test */
-        try {
-            Generator Gen = new Generator(3, 3, MethodName.GenMethodName.PRIM, 10);
-            Graph maze = Gen.makeMaze(MethodName.Type.COMPLETE);
-            System.out.println(maze);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
         /* JAVAFX Start application */
-        // launch();
+        launch();
     }
 }

@@ -2,7 +2,13 @@ package com.example.projetcynapseing1;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.Stack;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 /**
  * Generator class is used to generate a maze according to differents
@@ -14,6 +20,7 @@ import java.util.Random;
  * @version 1.0
  */
 public class Generator {
+    private HelloController FxController;
     /**
      * Number of rows in the maze, strictly positive
      */
@@ -53,7 +60,8 @@ public class Generator {
      * @throws Exception used to ensure Generator stays in a logical state
      * @since 1.0
      */
-    public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed) throws Exception {
+    public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed,
+            HelloController fxController) throws Exception {
         if (rows < 0 || colums < 0) {
             throw new IllegalArgumentException("rows or column can't be negative");
         } else if (timeStep < 0.0) {
@@ -65,7 +73,10 @@ public class Generator {
         this.columns = colums;
         this.genMethod = genMethod;
         this.seed = seed;
+        this.FxController = fxController;
     }
+
+    // TODO : Create an Exception Handler function
 
     /**
      * <p>
@@ -175,13 +186,47 @@ public class Generator {
      */
     private void Kruskal(Graph baseGraph, Graph maze) {
         Collections.sort(baseGraph.getEdges());
-        for (Edge edge : baseGraph.getEdges()) {
-            if (DFScheck(maze, maze.getVertexByIDVertex(edge.getVertexA().getID()),
-                    maze.getVertexByIDVertex(edge.getVertexB().getID())) == false) {
-                maze.addEdge(new Edge(maze.getVertexByIDVertex(edge.getVertexA().getID()),
-                        maze.getVertexByIDVertex(edge.getVertexB().getID())));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+            Integer i = 0;
+            for (Edge edge : baseGraph.getEdges()) {
+                if (DFScheck(maze, maze.getVertexByIDVertex(edge.getVertexA().getID()),
+                        maze.getVertexByIDVertex(edge.getVertexB().getID())) == false) {
+                    maze.addEdge(new Edge(maze.getVertexByIDVertex(edge.getVertexA().getID()),
+                            maze.getVertexByIDVertex(edge.getVertexB().getID())));
+                }
+                this.FxController.afficherEtape(i);
+                i = i + 1;
             }
-        }
+        }));
+        timeline.play();
+    }
+
+    private void KruskalAnimated(Graph baseGraph, Graph maze) {
+        Collections.sort(baseGraph.getEdges());
+
+        List<Edge> edges = baseGraph.getEdges();
+        final int[] i = { 0 };
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
+            if (i[0] < edges.size()) {
+                Edge edge = edges.get(i[0]);
+
+                if (!DFScheck(maze,
+                        maze.getVertexByIDVertex(edge.getVertexA().getID()),
+                        maze.getVertexByIDVertex(edge.getVertexB().getID()))) {
+                    maze.addEdge(new Edge(
+                            maze.getVertexByIDVertex(edge.getVertexA().getID()),
+                            maze.getVertexByIDVertex(edge.getVertexB().getID())));
+                }
+
+                // Affichage de l'étape
+                this.FxController.afficherEtape(i[0]);
+                i[0]++;
+            }
+        }));
+
+        timeline.setCycleCount(edges.size()); // Autant de ticks que d'arêtes
+        timeline.play();
     }
 
     /**
@@ -240,6 +285,44 @@ public class Generator {
     }
 
     /**
+     * Use the randomized DFS method to create a graph, it's a recursive function
+     * 
+     * @param baseGraph     grid graph explored
+     * @param maze          maze result
+     * @param visitedStack  stack of vertex already visited, in case the algorithm
+     *                      have to go back
+     * @param currentVertex vertex used in this iteration
+     * @param mark          mark list of all vertices in maze
+     * @param randomGen     random number generator, it ensures us to keep the same
+     *                      maze if we send the same seed
+     */
+    private void RandomDFS(Graph baseGraph, Graph maze, Stack<Vertex> visitedStack, Vertex currentVertex,
+            ArrayList<Boolean> mark, Random randomGen) {
+        mark.set(currentVertex.getID(), true);
+        ArrayList<Vertex> availableNeighbors = new ArrayList<Vertex>();
+
+        for (Vertex v : currentVertex.getNeighbors()) {
+            if (mark.get(v.getID()) == false) {
+                availableNeighbors.add(v);
+            }
+        }
+
+        if ((maze.getEdges().size() == (maze.getVertices().size() - 1))
+                || (availableNeighbors.size() == 0 && visitedStack.size() == 0)) {
+            System.out.println("End of RandomDFS generation");
+        } else if (availableNeighbors.size() == 0) {
+            Vertex previousVertex = visitedStack.pop();
+            RandomDFS(baseGraph, maze, visitedStack, previousVertex, mark, randomGen);
+        } else {
+            Vertex nextVertex = availableNeighbors.get(randomGen.nextInt(availableNeighbors.size()));
+            visitedStack.push(currentVertex);
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(currentVertex.getID()),
+                    maze.getVertexByIDVertex(nextVertex.getID())));
+            RandomDFS(baseGraph, maze, visitedStack, nextVertex, mark, randomGen);
+        }
+    }
+
+    /**
      * Create a maze according to a specific method.
      * 
      * @param type : step-by-step or complete
@@ -248,22 +331,39 @@ public class Generator {
      * @see MethodName.Type
      */
     public Graph makeMaze(MethodName.Type type) {
+
+        long time = System.currentTimeMillis();
+
         // Create a basic grid graph and a second graph (maze is the result)
         Graph base = this.makeGridGraph();
         Graph maze = new Graph();
 
         // add all vertices created in base to maze (reduce work)
         for (Vertex V : base.getVertices()) {
-            V.getNeighbors().clear();
-            maze.addVertex(V);
+            try {
+                Vertex newV = new Vertex(V.getX(), V.getY(), V.getID());
+                maze.addVertex(newV);
+            } catch (Exception e) {
+                System.err.println("--MAZE GENERATOR ERROR--");
+                System.err.println("Error while creating new Vertex for maze");
+            }
         }
 
         switch (this.genMethod) {
             case KRUSKAL:
                 this.addRandomWeight(base);
-                Kruskal(base, maze);
+
+                switch (type) {
+                    case STEPPER:
+                        KruskalAnimated(base, maze);
+                        break;
+                    case COMPLETE:
+                        Kruskal(base, maze);
+                }
                 base = null;
                 System.gc();
+                time = System.currentTimeMillis() - time;
+                System.out.println("End of Kruskal Generation");
                 break;
 
             case PRIM:
@@ -271,11 +371,27 @@ public class Generator {
                 Prim(base, maze, base.getVertices().getFirst());
                 base = null;
                 System.gc();
+                System.out.println("End of PRIM generation");
+                break;
+
+            case DFS:
+                Random rng = new Random(this.seed);
+                ArrayList<Boolean> mark = new ArrayList<Boolean>();
+                for (int i = 0; i < maze.getVertices().size(); i++) {
+                    mark.add(false);
+                }
+
+                if (base.getVertices().getFirst().getNeighbors().size() == 0) {
+                    System.err.println("Error in DFS : " + base.getVertices().getFirst() + " has no neighbors");
+                } else {
+                    RandomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
+                }
                 break;
 
             default:
                 break;
         }
+        System.out.println("Timestamp : " + time + "ms");
         return maze;
     }
 }

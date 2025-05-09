@@ -48,6 +48,8 @@ public class Edge implements Comparable<Edge> {
         // It can result as an error if user add multiple edges to the same two Vertices
         if (!vA.addNeighbor(vB) || !vB.addNeighbor(vA)) {
             System.out.println("--Edge Class--");
+            System.out.println("Error while adding neigbors to Vertices");
+            System.out.println("Vertex A :" + vA + ", Vertex B :" + vB);
         }
     }
 
