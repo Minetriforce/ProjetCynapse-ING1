@@ -1,5 +1,6 @@
 package com.example.projetcynapseing1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  * @author Bari-joris
  * @version 1.0
  */
-public class Vertex {
+public class Vertex implements Serializable {
 
     /**
      * The position of the vertex on the graph, starting from (0,0) to (n,m).

@@ -1,5 +1,7 @@
 package com.example.projetcynapseing1;
 
+import java.io.Serializable;
+
 /**
  * <p>
  * Edge is an entity we use to link multiple vertices together, with a weight
@@ -22,7 +24,7 @@ package com.example.projetcynapseing1;
  * @author Bari-joris
  * @version 1.0
  */
-public class Edge implements Comparable<Edge> {
+public class Edge implements Comparable<Edge>, Serializable {
     /**
      * weight is used in generation methods. Keeps value 0 while not beeing used.
      */

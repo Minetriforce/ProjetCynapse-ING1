@@ -1,5 +1,6 @@
 package com.example.projetcynapseing1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +32,7 @@ import java.util.Set;
  * @author Bari-joris
  * @version 1.0
  */
-public class Graph {
+public class Graph implements Serializable {
     /**
      * List of unique vertices in graph
      */

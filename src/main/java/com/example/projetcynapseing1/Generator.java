@@ -20,7 +20,7 @@ import javafx.util.Duration;
  * @version 1.0
  */
 public class Generator {
-    private HelloController FxController;
+    private FXController FxController;
     /**
      * Number of rows in the maze, strictly positive
      */
@@ -41,6 +41,7 @@ public class Generator {
      * It is only used when type of generation is "Step-by-Step"
      */
     private double timeStep = 0.0;
+    private MethodName.Type type;
     /**
      * Ech generation method use a random number generator (RNG);
      * The user can change the seed of this RNG.
@@ -51,6 +52,7 @@ public class Generator {
      * Constructor of class generator.
      * Rows and columns are used to set the size of a rectangle maze
      * 
+     * @param type      Step by step or Complete generation
      * @param rows      follows y axis from bottom to top
      * @param colums    follows x axis from elft to right
      * @param genMethod generation method used for the maze
@@ -58,10 +60,9 @@ public class Generator {
      *                  generator depends on method generation). The same seed
      *                  returns the same maze
      * @throws Exception used to ensure Generator stays in a logical state
-     * @since 1.0
      */
     public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed,
-            HelloController fxController) throws Exception {
+            FXController fxController, MethodName.Type type) throws Exception {
         if (rows < 0 || colums < 0) {
             throw new IllegalArgumentException("rows or column can't be negative");
         } else if (timeStep < 0.0) {
@@ -74,6 +75,7 @@ public class Generator {
         this.genMethod = genMethod;
         this.seed = seed;
         this.FxController = fxController;
+        this.type = type;
     }
 
     // TODO : Create an Exception Handler function
@@ -186,19 +188,13 @@ public class Generator {
      */
     private void Kruskal(Graph baseGraph, Graph maze) {
         Collections.sort(baseGraph.getEdges());
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
-            Integer i = 0;
-            for (Edge edge : baseGraph.getEdges()) {
-                if (DFScheck(maze, maze.getVertexByIDVertex(edge.getVertexA().getID()),
-                        maze.getVertexByIDVertex(edge.getVertexB().getID())) == false) {
-                    maze.addEdge(new Edge(maze.getVertexByIDVertex(edge.getVertexA().getID()),
-                            maze.getVertexByIDVertex(edge.getVertexB().getID())));
-                }
-                this.FxController.afficherEtape(i);
-                i = i + 1;
+        for (Edge edge : baseGraph.getEdges()) {
+            if (DFScheck(maze, maze.getVertexByIDVertex(edge.getVertexA().getID()),
+                    maze.getVertexByIDVertex(edge.getVertexB().getID())) == false) {
+                maze.addEdge(new Edge(maze.getVertexByIDVertex(edge.getVertexA().getID()),
+                        maze.getVertexByIDVertex(edge.getVertexB().getID())));
             }
-        }));
-        timeline.play();
+        }
     }
 
     private void KruskalAnimated(Graph baseGraph, Graph maze) {
@@ -220,7 +216,7 @@ public class Generator {
                 }
 
                 // Affichage de l'étape
-                this.FxController.afficherEtape(i[0]);
+                // this.FxController.afficherEtape(i[0]);
                 i[0]++;
             }
         }));
@@ -325,12 +321,10 @@ public class Generator {
     /**
      * Create a maze according to a specific method.
      * 
-     * @param type : step-by-step or complete
      * @return maze : Graph
      * @see Graph
-     * @see MethodName.Type
      */
-    public Graph makeMaze(MethodName.Type type) {
+    public Graph makeMaze() {
 
         long time = System.currentTimeMillis();
 
@@ -353,7 +347,7 @@ public class Generator {
             case KRUSKAL:
                 this.addRandomWeight(base);
 
-                switch (type) {
+                switch (this.type) {
                     case STEPPER:
                         KruskalAnimated(base, maze);
                         break;
@@ -393,5 +387,11 @@ public class Generator {
         }
         System.out.println("Timestamp : " + time + "ms");
         return maze;
+    }
+
+    @Override
+    public String toString() {
+        return ("--Graph Generator--" + "\nGeneration Method: " + this.genMethod + "\nType: " + this.type + "\nSize: "
+                + this.columns + "x" + this.rows + "\nseed: " + this.seed);
     }
 }
