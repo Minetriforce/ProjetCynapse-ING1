@@ -31,7 +31,7 @@ public class Solver {
     /**
      * constructor of Solver object
      * 
-     * @param m Solving method name
+     * @param m: Solving method name
      */
     public Solver(MethodName.SolveMethodName m) {
         this(m, 0f);
@@ -130,8 +130,8 @@ public class Solver {
      * 
      * Distance
      * 
-     * @param a First vertex
-     * @param b Second vertex
+     * @param a: First vertex
+     * @param b: Second vertex
      * @return Manhattan distance between 2 vertices
      */
     public static int distance(Vertex a, Vertex b) {
