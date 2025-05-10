@@ -126,6 +126,23 @@ public class Solver {
         return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
     }
 
+    public static int[] path_index(Maze m, Vertex end, int[] parents) {
+        ArrayList<Vertex> vertices = m.getVertices();
+        int n = m.getVertices().size();
+        int[] solution = new int[n];
+        for (int i = 0; i < n; i++) {
+            solution[i] = i;
+        }
+
+        int i = vertices.indexOf(end);
+        while (parents[i] != i) {
+            solution[i] = parents[i];
+            i = parents[i];
+        }
+
+        return solution;
+    }
+
     /**
      * get the path from start to end
      * @param m: maze graph
