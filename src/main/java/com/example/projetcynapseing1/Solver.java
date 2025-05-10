@@ -5,10 +5,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
- * <p>
  * Class Solver is used to solve mazes with a specific method and a timestep.
- * </p>
- * 
  * @author Junjie
  */
 public class Solver {
@@ -19,18 +16,16 @@ public class Solver {
 
     /**
      * constructor of Solver object
-     * 
      * @param m: method's name
      * @param t: time step
      */
     public Solver(MethodName.SolveMethodName m, float t) {
         method = m;
-        timeStep = t >= 0 ? t : 0f;
+        timeStep = (t >= 0) ? t : 0f;
     }
 
     /**
      * constructor of Solver object
-     * 
      * @param m: Solving method name
      */
     public Solver(MethodName.SolveMethodName m) {
@@ -39,7 +34,6 @@ public class Solver {
 
     /**
      * getter of method
-     * 
      * @return method
      */
     public MethodName.SolveMethodName getMethod() {
@@ -48,7 +42,6 @@ public class Solver {
 
     /**
      * getter of timeStep
-     * 
      * @return timeStep
      */
     public float getTimeStep() {
@@ -57,7 +50,6 @@ public class Solver {
 
     /**
      * setter of method
-     * 
      * @param m: new method
      */
     public void setMethod(MethodName.SolveMethodName m) {
@@ -66,25 +58,23 @@ public class Solver {
 
     /**
      * setter of timeStep
-     * 
      * @param t: new timeStep
      */
     public void setTimeStep(float t) {
-        timeStep = t >= 0 ? t : 0f;
+        timeStep = (t >= 0) ? t : 0f;
     }
 
     /**
      * solve the maze with the A* algorithm
-     * 
-     * @param g:     maze graph
+     * @param m: maze graph
      * @param start: starting vertex
-     * @param end:   ending vertex
-     * @param t:     type of printing
+     * @param end: ending vertex
+     * @param t: type of printing
      * @return parents: array of parents of each vertex in the path
      */
-    public int[] solveAstar(Graph g, Vertex start, Vertex end, MethodName.Type t) {
-        ArrayList<Vertex> vertices = g.getVertices();
-        int n = g.getVertices().size();
+    public int[] solveAstar(Maze m, Vertex start, Vertex end, MethodName.Type t) {
+        ArrayList<Vertex> vertices = m.getVertices();
+        int n = m.getVertices().size();
         int si = vertices.indexOf(start);
         int ei = vertices.indexOf(end);
 
@@ -127,15 +117,73 @@ public class Solver {
     }
 
     /**
-     * 
-     * Distance
-     * 
+     * distance
      * @param a: First vertex
      * @param b: Second vertex
      * @return Manhattan distance between 2 vertices
      */
     public static int distance(Vertex a, Vertex b) {
         return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
+    }
+
+    /**
+     * get the path from start to end
+     * @param m: maze graph
+     * @param end: ending vertex
+     * @param parents: array of parents of each vertex in the path
+     * @return path: list of vertices in the path
+     */
+    public static ArrayList<Vertex> path_vertex(Maze m, Vertex end, int[] parents){
+        ArrayList<Vertex> path = new ArrayList<>();
+        ArrayList<Vertex> vertices = m.getVertices();
+
+        int i = vertices.indexOf(end);
+
+        path.add(0, end);
+        while (parents[i] != i){
+            path.add(0, vertices.get(parents[i]));
+            i = parents[i];
+        }
+
+        return path;
+    }
+
+    /**
+     * get the path from start to end
+     * @param m: maze graph
+     * @param end: ending vertex
+     * @param parents: array of parents of each vertex in the path
+     * @return path: list of edges in the path
+     */
+    public static ArrayList<Edge> path_edge(Maze m, Vertex end, int[] parents){
+        ArrayList<Edge> path = new ArrayList<>();
+        ArrayList<Edge> edges = m.getEdges();
+        ArrayList<Vertex> vertices = m.getVertices();
+
+        int i = vertices.indexOf(end);
+
+        while (parents[i] != i){
+
+            /**
+             * ***********
+             * *à changer*
+             * ***********
+             */
+            for (Edge edge : edges){
+                if (edge.getVertexA().equals(vertices.get(i)) && edge.getVertexB().equals(vertices.get(parents[i]))){
+                    path.add(0, edge);
+                    break;
+                }
+                else if (edge.getVertexB().equals(vertices.get(i)) && edge.getVertexA().equals(vertices.get(parents[i]))){
+                    path.add(0, edge);
+                    break;
+                }
+            }
+
+            i = parents[i];
+        }
+
+        return path;
     }
 
     /**

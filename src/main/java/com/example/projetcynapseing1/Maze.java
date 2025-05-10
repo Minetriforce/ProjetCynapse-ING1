@@ -1,5 +1,6 @@
 package com.example.projetcynapseing1;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,8 +48,62 @@ public class Maze extends Graph{
     }
 
     /**
+     * convert a solution to a string
+     * @param solution: parent of each vertex in the solution
+     * @return the maze with the solution in a string format
+     */
+    public String solutionToString(int[] solution){
+        String s = "";
+        ArrayList<Vertex> vertices = this.getVertices();
+
+        for (int y = 0; y < nbLines; y++){
+            for (int x = 0; x <nbColumns; x++){
+                int n = y * nbColumns + x;
+                s += String.format(" %-2d", n);
+                if (x < nbColumns - 1){
+                    if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))){
+                        if (solution[n] == n + 1 || solution[n + 1] == n){
+                            s += "---";
+                        }
+                        else{
+                            s += "   ";
+                        }
+                    }
+                    else{
+                        s += " | ";
+                    }
+                }
+            }
+            s += "\n";
+            if (y < nbLines - 1){
+                for (int x = 0; x < nbColumns; x++){
+                    int n = y * nbColumns + x;
+                    if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))){
+                        if (solution[n] == n + nbColumns || solution[n + nbColumns] == n){
+                            s += " | ";
+                        }
+                        else{
+                            s += "   ";
+                        }
+                    }
+                    else{
+                        s += "---";
+                    }
+                    if (x < nbColumns - 1){
+                        s += "   ";
+                    }
+                }
+                s += "\n";
+            }
+        }
+
+        return s;
+    }
+
+    /**
      * @return the maze in a string format
      */
+    @Override
     public String toString(){
         String s = "";
         List<Vertex> vertices = this.getVertices();
@@ -56,18 +111,18 @@ public class Maze extends Graph{
         for (int y = 0; y < nbLines; y++){
             for (int x = 0; x <nbColumns; x++){
                 int n = y * nbColumns + x;
-                s += String.format("%-2d", n);
+                s += String.format(" %-2d", n);
                 if (x < nbColumns - 1){
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) ? "  " : "||";
+                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) ? "   " : " | ";
                 }
             }
             s += "\n";
             if (y < nbLines - 1){
                 for (int x = 0; x < nbColumns; x++){
                     int n = y * nbColumns + x;
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))) ? "  " : "--";
+                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))) ? "   " : "---";
                     if (x < nbColumns - 1){
-                        s += "  ";
+                        s += "   ";
                     }
                 }
                 s += "\n";

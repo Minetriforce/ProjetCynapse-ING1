@@ -116,6 +116,16 @@ public class Edge implements Comparable<Edge>, Serializable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Edge){
+            Edge e = (Edge) obj;
+            return (this.vertexA.equals(e.getVertexA()) && this.vertexB.equals(e.getVertexB())
+                    || this.vertexA.equals(e.getVertexB()) && this.vertexB.equals(e.getVertexA()));
+        }
+        return false;
+    }
+
+    @Override
     public int compareTo(Edge e) {
         return Integer.compare(this.weight, e.getWeight());
     }

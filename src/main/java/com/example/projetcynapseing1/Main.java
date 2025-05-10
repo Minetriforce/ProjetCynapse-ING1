@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Main Class of the application
@@ -38,6 +39,7 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         /* Test */
+        /*
         MazeController mazeController = new MazeController();
 
         mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
@@ -50,6 +52,30 @@ public class Main extends Application {
         System.out.println(mazeController.getCurrentMaze());
         System.out.println("--Solution found--");
         System.out.println(mazeController.getSolution());
+        */
+
+        Maze maze = new Maze(3, 3);
+        try {
+            ArrayList<Vertex> vertices = maze.getVertices();
+            vertices.get(0).addNeighbor(vertices.get(1));
+            vertices.get(1).addNeighbor(vertices.get(2));
+            vertices.get(0).addNeighbor(vertices.get(3));
+            vertices.get(1).addNeighbor(vertices.get(4));
+            vertices.get(4).addNeighbor(vertices.get(5));
+            vertices.get(6).addNeighbor(vertices.get(7));
+            vertices.get(7).addNeighbor(vertices.get(8));
+            vertices.get(4).addNeighbor(vertices.get(7));
+
+            System.out.println("Maze created:\n");
+            System.out.println(maze);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+        int[] solution = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
+        System.out.println("Solution found:\n");
+        System.out.println(maze.solutionToString(solution));
 
         // mazeController.getFileController().SaveData(mazeController.getCurrentMaze());
 
