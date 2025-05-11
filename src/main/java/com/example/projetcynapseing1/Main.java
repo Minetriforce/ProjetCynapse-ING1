@@ -7,13 +7,14 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import javafx.application.Platform;
 
 /**
  * Main Class of the application
  * TODO : rename this class
  */
 public class Main extends Application {
-
+    private static Maze maze;
     /**
      * Start a new JavaFX windows
      * 
@@ -31,7 +32,77 @@ public class Main extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+
+        maze = new Maze(3, 3);
+
+        new Thread(() -> {
+            try {
+                // All the connections you had
+                int[][] connections = {
+                        {0, 1},
+                        {1, 2},
+                        {0, 3},
+                        {1, 4},
+                        {4, 5},
+                        {6, 7},
+                        {7, 8},
+                        {4, 7}
+                };
+
+                // Add edges one by one with animation
+                for (int[] conn : connections) {
+                    final int from = conn[0];
+                    final int to = conn[1];
+
+                    maze.addEdge(new Edge(
+                            maze.getVertexByIDVertex(from),
+                            maze.getVertexByIDVertex(to)
+                    ));
+
+                    Platform.runLater(() -> control.displayMaze(maze));
+                    Thread.sleep(300); // delay between edge addition
+                }
+
+                // Solve the maze
+                Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+                int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
+                int[] solution = Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents);
+                ArrayList<Edge> path_edge = Solver.pathEdge(maze, maze.getVertexByIDVertex(8), parents);
+
+                // mark all visited vertices (which are in parents array)
+                for (int i = 0; i < parents.length; i++) {
+                    if (parents[i] != i || i == 0) {
+                        Vertex v = maze.getVertices().get(i);
+                        v.setState(VertexState.VISITED);
+                        Platform.runLater(() -> control.displayMaze(maze));
+                        Thread.sleep(100); // speed of visited path animation
+                    }
+                }
+
+                // draw the real path in blue (solution)
+                for (Vertex v : Solver.pathVertex(maze, maze.getVertexByIDVertex(8), parents)) {
+                    v.setState(VertexState.SOLUTION);
+                    Platform.runLater(() -> control.displayMaze(maze));
+                    Thread.sleep(200);
+                }
+
+
+                    Platform.runLater(() -> {
+                    System.out.println("Maze created:\n");
+                    System.out.println(maze);
+                    System.out.println("Solution found:\n");
+                    System.out.println(maze.solutionToString(solution));
+                    System.out.println("Edges of the path found:\n");
+                    System.out.println(path_edge);
+                    control.displayMaze(maze);
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
+
 
     /**
      * Entry point of application
@@ -55,37 +126,12 @@ public class Main extends Application {
         System.out.println(mazeController.getSolution());
         */
 
-        Maze maze = new Maze(3, 3);
-        try {
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(1)));
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(1), maze.getVertexByIDVertex(2)));
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(3)));
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(1), maze.getVertexByIDVertex(4)));
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(4), maze.getVertexByIDVertex(5)));
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(6), maze.getVertexByIDVertex(7)));
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(7), maze.getVertexByIDVertex(8)));
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(4), maze.getVertexByIDVertex(7)));
 
-            System.out.println("Maze created:\n");
-            System.out.println(maze);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-        int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
-        int[] solution = Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents);
-        ArrayList<Edge> path_edge = Solver.pathEdge(maze, maze.getVertexByIDVertex(8), parents);
-
-        System.out.println("Solution found:\n");
-        System.out.println(maze.solutionToString(solution));
-        System.out.println("Edges of the path found:\n");
-        System.out.println(path_edge);
 
         // mazeController.getFileController().SaveData(mazeController.getCurrentMaze());
 
         // mazeController.getFileController().loadMaze();
         /* JAVAFX Start application */
-        // launch();
+        launch();
     }
 }

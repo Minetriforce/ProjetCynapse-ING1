@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 /**
  * JavaFX Controller for handling maze display and button actions.
+ * @author Florianne
  */
 public class FXController {
 
@@ -70,9 +71,23 @@ public class FXController {
 
             int x = col * blockSize;
             int y = row * blockSize;
+            //colors based on the state of the case
+            Color fillColor;
 
-            g.setFill(Color.WHITE);
+            switch (v.getState()) {
+                case VISITED:
+                    fillColor = Color.rgb(169, 169, 169,0.1);
+                    break;
+                case SOLUTION:
+                    fillColor = Color.rgb(0, 0, 139,0.1);
+                    break;
+                default:
+                    fillColor = Color.WHITE;
+            }
+
+            g.setFill(fillColor);
             g.fillRect(x, y, blockSize, blockSize);
+
 
             if (!hasNeighbor(v, row - 1, col)) {
                 g.strokeLine(x, y, x + blockSize, y); // top
