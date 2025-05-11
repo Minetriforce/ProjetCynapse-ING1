@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -56,15 +57,14 @@ public class Main extends Application {
 
         Maze maze = new Maze(3, 3);
         try {
-            ArrayList<Vertex> vertices = maze.getVertices();
-            vertices.get(0).addNeighbor(vertices.get(1));
-            vertices.get(1).addNeighbor(vertices.get(2));
-            vertices.get(0).addNeighbor(vertices.get(3));
-            vertices.get(1).addNeighbor(vertices.get(4));
-            vertices.get(4).addNeighbor(vertices.get(5));
-            vertices.get(6).addNeighbor(vertices.get(7));
-            vertices.get(7).addNeighbor(vertices.get(8));
-            vertices.get(4).addNeighbor(vertices.get(7));
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(1)));
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(1), maze.getVertexByIDVertex(2)));
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(3)));
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(1), maze.getVertexByIDVertex(4)));
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(4), maze.getVertexByIDVertex(5)));
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(6), maze.getVertexByIDVertex(7)));
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(7), maze.getVertexByIDVertex(8)));
+            maze.addEdge(new Edge(maze.getVertexByIDVertex(4), maze.getVertexByIDVertex(7)));
 
             System.out.println("Maze created:\n");
             System.out.println(maze);
@@ -74,9 +74,13 @@ public class Main extends Application {
 
         Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
         int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
-        int[] solution = Solver.path_index(maze, maze.getVertexByIDVertex(8), parents);
+        int[] solution = Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents);
+        ArrayList<Edge> path_edge = Solver.pathEdge(maze, maze.getVertexByIDVertex(8), parents);
+
         System.out.println("Solution found:\n");
         System.out.println(maze.solutionToString(solution));
+        System.out.println("Edges of the path found:\n");
+        System.out.println(path_edge);
 
         // mazeController.getFileController().SaveData(mazeController.getCurrentMaze());
 
