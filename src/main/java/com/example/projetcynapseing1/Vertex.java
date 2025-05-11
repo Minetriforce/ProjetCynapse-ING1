@@ -19,9 +19,9 @@ import java.util.ArrayList;
  */
 
 enum VertexState {
-    DEFAULT,   // Pas encore visité
-    VISITED,   // Exploré (mais pas retenu)
-    SOLUTION   // Fait partie du chemin final
+    DEFAULT,   // not visited
+    VISITED,   // explored
+    SOLUTION   // part of final path
 }
 
 

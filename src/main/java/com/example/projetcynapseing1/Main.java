@@ -23,79 +23,75 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
+        int rows=21;
+        int cols=21;
+        int destination = rows*cols-1;
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
 
         FXController control = new FXController();
         fxmlLoader.setController(control);
-
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        control.setMazeSize(rows, cols);
+        Scene scene = new Scene(fxmlLoader.load(), 1000,1000);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
 
-        maze = new Maze(3, 3);
 
         new Thread(() -> {
             try {
-                // All the connections you had
-                int[][] connections = {
-                        {0, 1},
-                        {1, 2},
-                        {0, 3},
-                        {1, 4},
-                        {4, 5},
-                        {6, 7},
-                        {7, 8},
-                        {4, 7}
-                };
+                MazeController mazeController = new MazeController();
+                mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
+                        MethodName.Type.COMPLETE, rows, cols, 0.0, 8);
 
-                // Add edges one by one with animation
-                for (int[] conn : connections) {
-                    final int from = conn[0];
-                    final int to = conn[1];
+                Graph generatedGraph = mazeController.getCurrentMaze();
+                maze = new Maze(rows, cols);
+                for (Edge e : generatedGraph.getEdges()) {
+                    int fromID = e.getVertexA().getID();
+                    int toID = e.getVertexB().getID();
 
-                    maze.addEdge(new Edge(
-                            maze.getVertexByIDVertex(from),
-                            maze.getVertexByIDVertex(to)
-                    ));
+                    Vertex from = maze.getVertexByIDVertex(fromID);
+                    Vertex to = maze.getVertexByIDVertex(toID);
+
+                    maze.addEdge(new Edge(from, to));
 
                     Platform.runLater(() -> control.displayMaze(maze));
-                    Thread.sleep(300); // delay between edge addition
+                    Thread.sleep(10);
                 }
-
-                // Solve the maze
                 Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-                int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
-                int[] solution = Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents);
-                ArrayList<Edge> path_edge = Solver.pathEdge(maze, maze.getVertexByIDVertex(8), parents);
 
+                int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
+
+                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination), parents);
                 // mark all visited vertices (which are in parents array)
+
                 for (int i = 0; i < parents.length; i++) {
                     if (parents[i] != i || i == 0) {
                         Vertex v = maze.getVertices().get(i);
                         v.setState(VertexState.VISITED);
                         Platform.runLater(() -> control.displayMaze(maze));
-                        Thread.sleep(100); // speed of visited path animation
+                        Thread.sleep(25);
+
                     }
+
                 }
+
 
                 // draw the real path in blue (solution)
-                for (Vertex v : Solver.pathVertex(maze, maze.getVertexByIDVertex(8), parents)) {
+                for (Vertex v : solutionVertices) {
                     v.setState(VertexState.SOLUTION);
                     Platform.runLater(() -> control.displayMaze(maze));
-                    Thread.sleep(200);
+                    Thread.sleep(50);
                 }
 
 
-                    Platform.runLater(() -> {
+                Platform.runLater(() -> {
                     System.out.println("Maze created:\n");
                     System.out.println(maze);
                     System.out.println("Solution found:\n");
-                    System.out.println(maze.solutionToString(solution));
-                    System.out.println("Edges of the path found:\n");
-                    System.out.println(path_edge);
+                    System.out.println(maze.solutionToString(Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents)));
                     control.displayMaze(maze);
                 });
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -110,27 +106,7 @@ public class Main extends Application {
      * @param args arguments when lauching java application
      */
     public static void main(String[] args) {
-        /* Test */
-        /*
-        MazeController mazeController = new MazeController();
 
-        mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
-                MethodName.Type.COMPLETE, 3, 3, 0.0, 10);
-        mazeController.findSolution(MethodName.SolveMethodName.ASTAR,
-                mazeController.getCurrentMaze().getVertices().getFirst(),
-                mazeController.getCurrentMaze().getVertices().getLast(),
-                MethodName.Type.COMPLETE, 0.0);
-        System.out.println("--Maze generated--");
-        System.out.println(mazeController.getCurrentMaze());
-        System.out.println("--Solution found--");
-        System.out.println(mazeController.getSolution());
-        */
-
-
-
-        // mazeController.getFileController().SaveData(mazeController.getCurrentMaze());
-
-        // mazeController.getFileController().loadMaze();
         /* JAVAFX Start application */
         launch();
     }

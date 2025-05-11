@@ -18,8 +18,22 @@ public class FXController {
     @FXML
     private Canvas mazeCanvas;
 
-    private final int blockSize = 40;
+    private int blockSize = 40;
     private Maze maze;
+    private int rows;
+    private int cols;
+    public void setMazeSize(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+
+        if (rows > 20 || cols > 20) {
+            blockSize = 20;
+        } else {
+            blockSize = 40;
+        }
+    }
+
+
 
     /**
      * Called by the main application to pass the maze and draw it.
@@ -59,8 +73,8 @@ public class FXController {
 
         GraphicsContext g = mazeCanvas.getGraphicsContext2D();
 
-        int rows = 3;
-        int cols = 3;
+        mazeCanvas.setWidth(cols * blockSize);
+        mazeCanvas.setHeight(rows * blockSize);
 
         g.setLineWidth(2);
 
@@ -76,10 +90,10 @@ public class FXController {
 
             switch (v.getState()) {
                 case VISITED:
-                    fillColor = Color.rgb(169, 169, 169,0.1);
+                    fillColor = Color.rgb(169, 169, 169);
                     break;
                 case SOLUTION:
-                    fillColor = Color.rgb(0, 0, 139,0.1);
+                    fillColor = Color.rgb(173, 216, 230);
                     break;
                 default:
                     fillColor = Color.WHITE;
@@ -88,7 +102,7 @@ public class FXController {
             g.setFill(fillColor);
             g.fillRect(x, y, blockSize, blockSize);
 
-
+            //draw a wall between two cases if they are not neighbors.
             if (!hasNeighbor(v, row - 1, col)) {
                 g.strokeLine(x, y, x + blockSize, y); // top
             }
@@ -108,9 +122,9 @@ public class FXController {
      * Check if the vertex has a neighbor in a given direction.
      */
     private boolean hasNeighbor(Vertex v, int r, int c) {
-        if (r < 0 || r >= 3 || c < 0 || c >= 3)
+        if (r < 0 || r >= rows || c < 0 || c >= cols)
             return false;
-        Vertex neighbor = maze.getVertexByIDVertex(r * 3 + c);
+        Vertex neighbor = maze.getVertexByIDVertex(r * cols + c);
         return v.isNeighbor(neighbor);
     }
 }
