@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class Main extends Application {
 
     /**
-     * Start a new JavaFX windows
+     * Start a new JavaFX windows test90
      * 
      * @param stage can be set to null
      * @throws IOException if a problem occurs when creating javaFX Stage or scene
