@@ -63,7 +63,7 @@ public class Maze extends Graph{
                 if (x < nbColumns - 1){
                     if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))){
                         if (solution[n] == n + 1 || solution[n + 1] == n){
-                            s += "---";
+                            s += "***";
                         }
                         else{
                             s += "   ";
@@ -80,7 +80,7 @@ public class Maze extends Graph{
                     int n = y * nbColumns + x;
                     if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))){
                         if (solution[n] == n + nbColumns || solution[n + nbColumns] == n){
-                            s += " | ";
+                            s += " * ";
                         }
                         else{
                             s += "   ";
