@@ -1,6 +1,7 @@
 package com.example.projetcynapseing1;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -8,80 +9,110 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Main Class of the application
- * TODO : rename this class
+ * Main Class of the application.
+ * Entry point for the JavaFX Maze Generator.
+ * TODO: Rename this class to something more specific.
  */
 public class Main extends Application {
 
+    private static Maze maze;
+
     /**
-     * Start a new JavaFX windows
-     * 
-     * @param stage can be set to null
-     * @throws IOException if a problem occurs when creating javaFX Stage or scene
+     * Starts a new JavaFX window.
+     *
+     * @param stage Primary stage for this application.
+     * @throws IOException if a problem occurs when creating JavaFX Stage or loading FXML.
      */
     @Override
     public void start(Stage stage) throws IOException {
+        // Load FXML and controller
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
-
         FXController control = new FXController();
         fxmlLoader.setController(control);
 
+        // Load the interface only once
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        stage.setTitle("Maze Generator");
         stage.setScene(scene);
         stage.show();
+
+        // --- Maze initialization ---
+        maze = new Maze(3, 3);
+
+        new Thread(() -> {
+            try {
+                ArrayList<Vertex> vertices = maze.getVertices();
+
+                // List of connections to animate the maze generation
+                int[][] connections = {
+                        {0, 1},
+                        {1, 2},
+                        {0, 3},
+                        {1, 4},
+                        {4, 5},
+                        {6, 7},
+                        {7, 8},
+                        {4, 7}
+                };
+
+                for (int[] conn : connections) {
+                    int a = conn[0];
+                    int b = conn[1];
+
+                    // Update maze and refresh UI on JavaFX thread
+                    Platform.runLater(() -> {
+                        connect(vertices.get(a), vertices.get(b));
+                        control.displayMaze(maze);
+                    });
+
+                    Thread.sleep(300); // Delay between each step (in milliseconds)
+                }
+
+                Platform.runLater(() -> {
+                    System.out.println("Maze created:\n");
+                    System.out.println(maze);
+                });
+
+                // --- Solve the maze after generation ---
+                Thread.sleep(500); // Optional pause before solving
+                Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+                int[] parents = solver.solveAstar(
+                        maze,
+                        maze.getVertexByIDVertex(0),
+                        maze.getVertexByIDVertex(8),
+                        MethodName.Type.COMPLETE
+                );
+                int[] solution = Solver.path_index(maze, maze.getVertexByIDVertex(8), parents);
+
+                Platform.runLater(() -> {
+                    System.out.println("Solution found:\n");
+                    System.out.println(maze.solutionToString(solution));
+                    control.displayMaze(maze); // Refresh to include solution if visualized
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     /**
-     * Entry point of application
-     * 
-     * @param args arguments when lauching java application
+     * Entry point of application.
+     *
+     * @param args command line arguments.
      */
     public static void main(String[] args) {
-        /* Test */
-        /*
-        MazeController mazeController = new MazeController();
+        launch();
+    }
 
-        mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
-                MethodName.Type.COMPLETE, 3, 3, 0.0, 10);
-        mazeController.findSolution(MethodName.SolveMethodName.ASTAR,
-                mazeController.getCurrentMaze().getVertices().getFirst(),
-                mazeController.getCurrentMaze().getVertices().getLast(),
-                MethodName.Type.COMPLETE, 0.0);
-        System.out.println("--Maze generated--");
-        System.out.println(mazeController.getCurrentMaze());
-        System.out.println("--Solution found--");
-        System.out.println(mazeController.getSolution());
-        */
-
-        Maze maze = new Maze(3, 3);
-        try {
-            ArrayList<Vertex> vertices = maze.getVertices();
-            vertices.get(0).addNeighbor(vertices.get(1));
-            vertices.get(1).addNeighbor(vertices.get(2));
-            vertices.get(0).addNeighbor(vertices.get(3));
-            vertices.get(1).addNeighbor(vertices.get(4));
-            vertices.get(4).addNeighbor(vertices.get(5));
-            vertices.get(6).addNeighbor(vertices.get(7));
-            vertices.get(7).addNeighbor(vertices.get(8));
-            vertices.get(4).addNeighbor(vertices.get(7));
-
-            System.out.println("Maze created:\n");
-            System.out.println(maze);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-        int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
-        int[] solution = Solver.path_index(maze, maze.getVertexByIDVertex(8), parents);
-        System.out.println("Solution found:\n");
-        System.out.println(maze.solutionToString(solution));
-
-        // mazeController.getFileController().SaveData(mazeController.getCurrentMaze());
-
-        // mazeController.getFileController().loadMaze();
-        /* JAVAFX Start application */
-        // launch();
+    /**
+     * Utility method to connect two vertices as neighbors.
+     *
+     * @param a First vertex.
+     * @param b Second vertex.
+     */
+    private static void connect(Vertex a, Vertex b) {
+        a.addNeighbor(b);
+        b.addNeighbor(a);
     }
 }
