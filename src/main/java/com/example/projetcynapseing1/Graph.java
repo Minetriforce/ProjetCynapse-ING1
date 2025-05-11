@@ -98,6 +98,19 @@ public class Graph implements Serializable {
         }
         return edges;
     }
+    /**
+     * @param u: vertex
+     * @param v: vertex
+     * @return edge: the edge connecting u and v
+     */
+    public Edge getEdgeByVertices(Vertex u, Vertex v) {
+        for (Edge e : this.edges) {
+            if ((e.getVertexA().equals(u) && e.getVertexB().equals(v)) || (e.getVertexA().equals(v) && e.getVertexB().equals(u))) {
+                return e;
+            }
+        }
+        return null;
+    }
 
     /**
      * add a new Vertex to graph

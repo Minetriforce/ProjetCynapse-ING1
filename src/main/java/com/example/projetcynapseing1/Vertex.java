@@ -135,10 +135,7 @@ public class Vertex implements Serializable {
      * @since 1.0
      */
     public Boolean isNeighbor(Vertex v) {
-        if (this.neighbors.contains(v)) {
-            return true;
-        }
-        return false;
+        return this.neighbors.contains(v);
     }
 
     /**
@@ -147,7 +144,7 @@ public class Vertex implements Serializable {
      * with it's id and position in graph.
      * </p>
      * 
-     * @return the amount of health hero has after attack
+     * @return Vertexid: id; x: x; y: y
      * @since 1.0
      */
     @Override

@@ -11,7 +11,7 @@ public class Maze extends Graph{
     private final int nbColumns;
 
     /**
-     * constructor
+     * constructor: create c*l vertices without any edge
      * @param l: number of lines
      * @param c: number of columns
      */
@@ -63,7 +63,7 @@ public class Maze extends Graph{
                 if (x < nbColumns - 1){
                     if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))){
                         if (solution[n] == n + 1 || solution[n + 1] == n){
-                            s += "---";
+                            s += "***";
                         }
                         else{
                             s += "   ";
@@ -80,7 +80,7 @@ public class Maze extends Graph{
                     int n = y * nbColumns + x;
                     if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))){
                         if (solution[n] == n + nbColumns || solution[n + nbColumns] == n){
-                            s += " | ";
+                            s += " * ";
                         }
                         else{
                             s += "   ";
@@ -90,7 +90,7 @@ public class Maze extends Graph{
                         s += "---";
                     }
                     if (x < nbColumns - 1){
-                        s += "   ";
+                        s += " + ";
                     }
                 }
                 s += "\n";
@@ -122,7 +122,7 @@ public class Maze extends Graph{
                     int n = y * nbColumns + x;
                     s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))) ? "   " : "---";
                     if (x < nbColumns - 1){
-                        s += "   ";
+                        s += " + ";
                     }
                 }
                 s += "\n";

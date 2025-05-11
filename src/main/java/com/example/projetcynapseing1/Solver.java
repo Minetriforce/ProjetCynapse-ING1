@@ -126,7 +126,14 @@ public class Solver {
         return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
     }
 
-    public static int[] path_index(Maze m, Vertex end, int[] parents) {
+    /**
+     * index of the path without other information
+     * @param m: maze graph
+     * @param end: ending vertex
+     * @param parents: array of parents of each vertex in the path
+     * @return path: list of index (similiar to parents)
+     */
+    public static int[] pathIndex(Maze m, Vertex end, int[] parents) {
         ArrayList<Vertex> vertices = m.getVertices();
         int n = m.getVertices().size();
         int[] solution = new int[n];
@@ -150,7 +157,7 @@ public class Solver {
      * @param parents: array of parents of each vertex in the path
      * @return path: list of vertices in the path
      */
-    public static ArrayList<Vertex> path_vertex(Maze m, Vertex end, int[] parents){
+    public static ArrayList<Vertex> pathVertex(Maze m, Vertex end, int[] parents){
         ArrayList<Vertex> path = new ArrayList<>();
         ArrayList<Vertex> vertices = m.getVertices();
 
@@ -172,31 +179,14 @@ public class Solver {
      * @param parents: array of parents of each vertex in the path
      * @return path: list of edges in the path
      */
-    public static ArrayList<Edge> path_edge(Maze m, Vertex end, int[] parents){
+    public static ArrayList<Edge> pathEdge(Maze m, Vertex end, int[] parents){
         ArrayList<Edge> path = new ArrayList<>();
-        ArrayList<Edge> edges = m.getEdges();
         ArrayList<Vertex> vertices = m.getVertices();
 
         int i = vertices.indexOf(end);
 
         while (parents[i] != i){
-
-            /**
-             * ***********
-             * *à changer*
-             * ***********
-             */
-            for (Edge edge : edges){
-                if (edge.getVertexA().equals(vertices.get(i)) && edge.getVertexB().equals(vertices.get(parents[i]))){
-                    path.add(0, edge);
-                    break;
-                }
-                else if (edge.getVertexB().equals(vertices.get(i)) && edge.getVertexA().equals(vertices.get(parents[i]))){
-                    path.add(0, edge);
-                    break;
-                }
-            }
-
+            path.add(0, m.getEdgeByVertices(vertices.get(parents[i]), vertices.get(i)));
             i = parents[i];
         }
 
