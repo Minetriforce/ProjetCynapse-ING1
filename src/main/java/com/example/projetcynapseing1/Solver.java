@@ -3,6 +3,7 @@ package com.example.projetcynapseing1;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 /**
  * Class Solver is used to solve mazes with a specific method and a timestep.
@@ -110,6 +111,77 @@ public class Solver {
                 }
 
                 seen[ui] = true;
+            }
+        }
+
+        return parents;
+    }
+
+    public int[] solveRightHand(Maze m, Vertex start, Vertex end, MethodName.Type t){
+        ArrayList<Vertex> vertices = m.getVertices();
+        int n = m.getRows() * m.getColumns();
+        int si = start.getID();
+        int ei = end.getID();
+        int[] directions = {1, m.getColumns(), -1, -m.getColumns()};
+
+        boolean[] seen = new boolean[n];
+        int[] parents = new int[n];
+        for (int i = 0; i < n; i++){
+            seen[i] = false;
+            parents[i] = i;
+        }
+
+        Stack<Integer> toVisit = new Stack<>();
+        int ui;
+        int vi;
+        int di = 0;
+
+        seen[si] = true;
+        for (Vertex v: vertices.get(si).getNeighbors()){
+            vi = v.getID();
+            if (si + directions[di] == vi){
+                parents[vi] = si;
+                toVisit.push(vi);
+            }
+        }
+
+        while (!seen[ei]){
+            if (toVisit.isEmpty()){
+                return parents;
+            }
+            
+            ui = toVisit.pop();
+            if (seen[ui]){
+                return parents;
+            }
+            di = ui - parents[ui];
+            for (int i = 0; i < 4; i++){
+                if (di == directions[i]){
+                    di = (i + 2) % 4;
+                    break;
+                }
+            }
+
+            System.out.println("Sommet départ: " + ui);
+            for (int i = 1; i < 4; i++){
+                di = (di + 10) % 4;
+                System.out.println("Direction: " + di);
+                for (Vertex v: vertices.get(ui).getNeighbors()){
+                    vi = v.getID();
+                    if ((ui + directions[di] == vi) && (!seen[vi])){
+                        parents[vi] = ui;
+                        toVisit.push(vi);
+                        System.out.println("Sommet: " + vi);
+                    }
+                }
+            }
+
+            seen[ui] = true;
+        }
+
+        for (int i = 0; i < n; i++){
+            if (!seen[i]){
+                parents[i] = i;
             }
         }
 

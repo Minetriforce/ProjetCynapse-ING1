@@ -1,6 +1,7 @@
 package com.example.projetcynapseing1;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -8,6 +9,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Main Class of the application
@@ -30,8 +34,8 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows=21;
-        int cols=21;
+        int rows=5;
+        int cols=4;
         int destination = rows*cols-1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
@@ -49,7 +53,7 @@ public class Main extends Application {
             try {
                 MazeController mazeController = new MazeController();
                 mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
-                        MethodName.Type.COMPLETE, rows, cols, 0.0, 8);
+                        MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
 
                 Graph generatedGraph = mazeController.getCurrentMaze();
                 maze = new Maze(rows, cols, MethodName.GenMethodName.KRUSKAL);
