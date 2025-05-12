@@ -99,12 +99,11 @@ public class Solver {
             if (toVisit.isEmpty()) {
                 return parents;
             }
-            
             ui = toVisit.poll();
 
             if (!seen[ui]) {
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
-                    vi = v.getID();
+                    vi = vertices.indexOf(v);
                     if (!seen[vi]) {
                         if (distances[vi] > distances[ui] + 1) {
                             parents[vi] = ui;
