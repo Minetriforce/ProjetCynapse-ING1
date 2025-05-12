@@ -75,9 +75,9 @@ public class Solver {
      */
     public int[] solveAstar(Maze m, Vertex start, Vertex end, MethodName.Type t) {
         ArrayList<Vertex> vertices = m.getVertices();
-        int n = m.getNbLines() * m.getNbColumns();
+        int n = m.getRows() * m.getColumns();
         int si = start.getID();
-        int ei = start.getID();
+        int ei = end.getID();
 
         boolean[] seen = new boolean[n];
         int[] parents = new int[n];
@@ -88,7 +88,7 @@ public class Solver {
             distances[i] = Integer.MAX_VALUE;
         }
         PriorityQueue<Integer> toVisit = new PriorityQueue<Integer>(
-            Comparator.comparingInt(i -> distances[parents[i]] + distance(vertices.get(i), end)));
+                Comparator.comparingInt(i -> distances[parents[i]] + distance(vertices.get(i), end)));
 
         distances[si] = 0;
         toVisit.add(si);
@@ -99,8 +99,9 @@ public class Solver {
             if (toVisit.isEmpty()) {
                 return parents;
             }
-
+            
             ui = toVisit.poll();
+
             if (!seen[ui]) {
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
                     vi = v.getID();
@@ -122,10 +123,10 @@ public class Solver {
 
     public int[] solveRightHand(Maze m, Vertex start, Vertex end, MethodName.Type t){
         ArrayList<Vertex> vertices = m.getVertices();
-        int n = m.getNbLines() * m.getNbColumns();
+        int n = m.getRows() * m.getColumns();
         int si = start.getID();
         int ei = end.getID();
-        int[] directions = {1, m.getNbColumns(), -1, -m.getNbColumns()};
+        int[] directions = {1, m.getColumns(), -1, -m.getColumns()};
 
         boolean[] seen = new boolean[n];
         int[] parents = new int[n];
