@@ -1,7 +1,9 @@
 package com.example.projetcynapseing1;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  * Controller class for JavaFX Application
@@ -9,10 +11,33 @@ import javafx.scene.control.Label;
  */
 public class FXController {
     @FXML
-    private Label welcomeText;
+    private Button resolutionLabyrinth;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    private Button generationLabyrinth;
+
+    private boolean labyrinthIsGenerated = false;
+
+    @FXML
+    protected void onStartResolutionClick() {
+        if (! labyrinthIsGenerated) {
+            Alert alertLabyrinthNotGenerated = new Alert(AlertType.WARNING);
+            alertLabyrinthNotGenerated.setTitle("error lab");
+            alertLabyrinthNotGenerated.setHeaderText("Labyrinth isn't generated");
+            alertLabyrinthNotGenerated.setContentText("Please start by generating a labyrinth");
+            alertLabyrinthNotGenerated.showAndWait();
+        }
+        else {
+            resolutionLabyrinth.setText("Resolving the labyrinth");
+        }
+}
+
+    @FXML
+    protected void onStartGenerationClick() {
+        generationLabyrinth.setText("Generating the labyrinth");
+        labyrinthIsGenerated = true;
+
+        resolutionLabyrinth.setDisable(false);
+
     }
 }
