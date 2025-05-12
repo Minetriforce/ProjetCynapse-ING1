@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class MazeController {
     private Generator mazeGenerator;
-    private FXController fxController;
     private Solver mazeSolver;
     private int[] solution;
     private Graph maze;
@@ -17,7 +16,7 @@ public class MazeController {
     public void createMaze(MethodName.GenMethodName genMethod, MethodName.Type type, Integer x, Integer y,
             Double timeStep, Integer seed) {
         try {
-            mazeGenerator = new Generator(x, y, genMethod, seed, fxController, type, timeStep);
+            mazeGenerator = new Generator(x, y, genMethod, seed);
             maze = mazeGenerator.makeMaze();
         } catch (Exception e) {
             System.err.println("--MazeController Class--");
@@ -75,13 +74,5 @@ public class MazeController {
 
     public FileController getFileController() {
         return (fileController);
-    }
-
-    public void setFXController(FXController fxController) {
-        if (fxController == null) {
-            System.out.println("-- Maze Controller ");
-            System.err.println("Warning : fxController is null");
-        }
-        this.fxController = fxController;
     }
 }

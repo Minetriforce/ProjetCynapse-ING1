@@ -5,10 +5,6 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
-
 /**
  * Generator class is used to generate a maze according to differents
  * parameters.
@@ -35,12 +31,6 @@ public class Generator {
      */
     private MethodName.GenMethodName genMethod;
     /**
-     * Time step is the time between each maze generation step.
-     * It is only used when type of generation is "Step-by-Step"
-     */
-    private Double timeStep = 0.0;
-    private MethodName.Type type;
-    /**
      * Each generation method use a random number generator (RNG);
      * The user can change the seed of this RNG.
      */
@@ -50,24 +40,18 @@ public class Generator {
      * Constructor of class generator.
      * Rows and columns are used to set the size of a rectangle maze
      * 
-     * @param type         Step by step or Complete generation
-     * @param rows         follows y axis from bottom to top
-     * @param colums       follows x axis from elft to right
-     * @param genMethod    generation method used for the maze
-     * @param seed         integer used in the random number generator (the use of
-     *                     this
-     *                     generator depends on method generation). The same seed
-     *                     returns the same maze
-     * @param fxController FXController currently used by the javaFX application
-     *                     (used to notice when to update display)
+     * @param rows      follows y axis from bottom to top
+     * @param colums    follows x axis from elft to right
+     * @param genMethod generation method used for the maze
+     * @param seed      integer used in the random number generator (the use of
+     *                  this
+     *                  generator depends on method generation). The same seed
+     *                  returns the same maze
      * @throws Exception used to ensure Generator stays in a logical state
      */
-    public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed,
-            FXController fxController, MethodName.Type type, Double timeStep) throws Exception {
+    public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed) throws Exception {
         if (rows < 0 || colums < 0 || rows == null || colums == null) {
             throw new IllegalArgumentException("rows or column can't be negative/null");
-        } else if (timeStep < 0.0) {
-            throw new IllegalArgumentException("timeStep can't be negative");
         } else if (seed < 0) {
             throw new IllegalArgumentException("seed can't be negative");
         }
@@ -76,11 +60,6 @@ public class Generator {
         this.genMethod = genMethod;
 
         this.seed = seed;
-
-        this.fxController = fxController;
-        this.type = type;
-        this.timeStep = timeStep;
-
     }
 
     /**
@@ -292,12 +271,6 @@ public class Generator {
             System.out.println("Seed generated : " + this.seed);
         }
 
-        // In case javaFX application is not instantiate, stop application
-        if (this.type == MethodName.Type.STEPPER && this.fxController == null) {
-            throw new Exception(
-                    "--Generator Error--\n FXController is not instantiate and type is Stepper, try to instantiate javaFX.\n Note : if you are using the command line version of this application, please change type parameter to Complete");
-        }
-
         // Used to display generation time
         long time = System.currentTimeMillis();
 
@@ -355,7 +328,7 @@ public class Generator {
 
     @Override
     public String toString() {
-        return ("--Graph Generator--" + "\nGeneration Method: " + this.genMethod + "\nType: " + this.type + "\nSize: "
+        return ("--Graph Generator--" + "\nGeneration Method: " + this.genMethod + "\nSize: "
                 + this.columns + "x" + this.rows + "\nseed: " + this.seed);
     }
 }
