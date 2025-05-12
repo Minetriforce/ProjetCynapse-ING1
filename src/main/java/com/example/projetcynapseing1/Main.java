@@ -72,7 +72,7 @@ public class Main extends Application {
         }
 
         Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-        int[] parents = solver.solveRightHand(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
+        int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
         int[] solution = Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents);
 
         System.out.println("Solution found:\n");
