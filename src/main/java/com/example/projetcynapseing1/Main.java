@@ -28,8 +28,8 @@ public class Main extends Application {
         FXController control = new FXController();
         fxmlLoader.setController(control);
 
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
+        stage.setTitle("Cynapse");
         stage.setScene(scene);
         stage.show();
     }

@@ -23,7 +23,7 @@
     </top>
 
     <center>
-        <ImageView fx:id="logoImageView" fitHeight="180" fitWidth="210" preserveRatio="true">
+        <ImageView fx:id="logoImageView" fitHeight="1200" fitWidth="700" preserveRatio="true">
             <image>
                 <Image url="@images/logo.png" />
             </image>
