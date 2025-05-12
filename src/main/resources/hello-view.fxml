@@ -6,44 +6,43 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
 
-<BorderPane xmlns:fx="http://javafx.com/fxml">
+<BorderPane xmlns:fx="http://javafx.com/fxml " >
+
+    <StackPane alignment="TOP_LEFT">
+        <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
+            <image>
+                <Image url="@images/logo.png"/>
+            </image>
+        </ImageView>
+    </StackPane>
 
     <top>
-        <VBox spacing="5.0" alignment="CENTER">
+        <VBox spacing="5.0" alignment="CENTER" >
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="11.0"/>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
 
-            <Label fx:id="welcomeText" text="Welcome to Cynapse!" />
+            <Label fx:id="welcomeText" text="Welcome to Cynapse!" style="-fx-font-size:30; -fx-font-family:'Verdana'; -fx-text-fill:white ;  "/>
         </VBox>
     </top>
 
     <center>
-        <ImageView fx:id="logoImageView" fitHeight="1200" fitWidth="700" preserveRatio="true">
-            <image>
-                <Image url="@images/logo.png" />
-            </image>
-        </ImageView>
     </center>
 
     <bottom>
-        <VBox spacing="5.0" alignment="CENTER">
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="11.0"/>
-            </padding>
                 
-                <HBox spacing="10.0" alignment="CENTER">
-                    <padding>
-                        <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
-                    </padding>
-                    <Button fx:id="resolutionLabyrinth" text="Resolve" onAction="#onStartResolutionClick" disable="true"/>
-                    <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick"/>
-                </HBox>
-        </VBox>
+            <HBox spacing="50.0" alignment="CENTER">
+                <padding>
+                    <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+                <Button fx:id="resolutionLabyrinth" text="Resolve" onAction="#onStartResolutionClick" disable="true"/>
+                <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick"/>
+            </HBox>
     </bottom>
 
 </BorderPane>

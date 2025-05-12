@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import javafx.scene.image.Image;
 
 /**
  * Main Class of the application
@@ -28,7 +29,10 @@ public class Main extends Application {
         FXController control = new FXController();
         fxmlLoader.setController(control);
 
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
+        Image icon = new Image(getClass().getResourceAsStream("/images/smiley.png"));
+        stage.getIcons().add(icon);
+
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
         stage.setTitle("Cynapse");
         stage.setScene(scene);
         stage.show();
