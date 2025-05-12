@@ -78,7 +78,6 @@ public class Main extends Application {
 
                 }
 
-
                 // draw the real path in blue (solution)
                 for (Vertex v : solutionVertices) {
                     v.setState(VertexState.SOLUTION);
