@@ -17,6 +17,14 @@ import java.util.ArrayList;
  * @author Bari-joris
  * @version 1.0
  */
+
+enum VertexState {
+    DEFAULT,   // not visited
+    VISITED,   // explored
+    SOLUTION   // part of final path
+}
+
+
 public class Vertex implements Serializable {
 
     /**
@@ -33,6 +41,9 @@ public class Vertex implements Serializable {
     private ArrayList<Vertex> neighbors;
 
     private Integer ID;
+
+    private VertexState state = VertexState.DEFAULT;
+
 
     /**
      * Constructor of Vertex Object
@@ -90,6 +101,26 @@ public class Vertex implements Serializable {
     public Integer getID() {
         return this.ID;
     }
+
+
+    /**
+     * Get the current state of the vertex (used for coloring in GUI)
+     *
+     * @return the state of the vertex
+     */
+    public VertexState getState() {
+        return this.state;
+    }
+
+    /**
+     * Set a new state for the vertex
+     *
+     * @param state the new state to set
+     */
+    public void setState(VertexState state) {
+        this.state = state;
+    }
+
 
     /**
      * <p>
