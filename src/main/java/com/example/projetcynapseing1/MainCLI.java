@@ -6,7 +6,9 @@ import java.util.Scanner;
 public class MainCLI {
     
     public static void main(String args[]){
-    if (args.length > 0) {
+        MazeController mazeController = new MazeController();
+
+        if (args.length > 0) {
         String command = args[0];
         switch (command) {
             case "cli":
@@ -23,7 +25,9 @@ public class MainCLI {
                 System.out.println(" 2 - Load a labyrinth");
 
                 int choice = sc.nextInt();
-                
+
+
+
                 switch(choice){
                     case 1:
                         System.out.println("How would you like to generate it?");
@@ -46,10 +50,11 @@ public class MainCLI {
 
                             // Create the maze using Prim's algorithm
                             mazeController.createMaze(MethodName.GenMethodName.PRIM,
-                                    MethodName.Type.COMPLETE, rows, colums, 0.0, seed);
+                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                             
                             // Get the generated maze and copy its edges to the Maze object
                             Graph generatedMaze = mazeController.getCurrentMaze();
+
                             if (generatedMaze != null) {
                                 // Copy all edges from the generated maze to the Maze object
                                 for (Edge edge : generatedMaze.getEdges()) {
