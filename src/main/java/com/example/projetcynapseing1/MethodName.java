@@ -119,12 +119,13 @@ public class MethodName {
      * <p>
      * The available types are:
      * <ul>
-     *   <li>{@link #STEPPER} - Represents the "stepper" method.</li>
-     *   <li>{@link #COMPLETE} - Represents the "complete" method.</li>
+     * <li>{@link #STEPPER} - Represents the "stepper" method.</li>
+     * <li>{@link #COMPLETE} - Represents the "complete" method.</li>
      * </ul>
      * <p>
      * This enum provides methods to retrieve the name of a type and to find a type
-     * based on its name. If no matching type is found, the default type {@link #COMPLETE}
+     * based on its name. If no matching type is found, the default type
+     * {@link #COMPLETE}
      * is returned.
      */
     public enum Type {

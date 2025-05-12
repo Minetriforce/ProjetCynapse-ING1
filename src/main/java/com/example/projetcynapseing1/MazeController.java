@@ -15,9 +15,9 @@ public class MazeController {
     }
 
     public void createMaze(MethodName.GenMethodName genMethod, MethodName.Type type, Integer x, Integer y,
-            Double timeStamp, Integer seed) {
+                           Double timeStep, Integer seed) {
         try {
-            mazeGenerator = new Generator(x, y, genMethod, seed, fxController, type);
+            mazeGenerator = new Generator(x, y, genMethod, seed);
             maze = mazeGenerator.makeMaze();
         } catch (Exception e) {
             System.err.println("--MazeController Class--");
@@ -26,9 +26,9 @@ public class MazeController {
     }
 
     public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end, MethodName.Type type,
-            Double timeStamp) {
+                             Double timeStamp) {
         mazeSolver = new Solver(solveMethod);
-        //solution = mazeSolver.solveAstar(maze, start, end, type);
+        // solution = mazeSolver.solveAstar(maze, start, end, type);
     }
 
     public Graph getCurrentMaze() {
@@ -75,5 +75,13 @@ public class MazeController {
 
     public FileController getFileController() {
         return (fileController);
+    }
+
+    public void setFXController(FXController fxController) {
+        if (fxController == null) {
+            System.out.println("-- Maze Controller ");
+            System.err.println("Warning : fxController is null");
+        }
+        this.fxController = fxController;
     }
 }

@@ -40,7 +40,7 @@ public class Vertex implements Serializable {
      */
     private ArrayList<Vertex> neighbors;
 
-    private Integer ID;
+    private Integer id;
 
     private VertexState state = VertexState.DEFAULT;
 
@@ -54,13 +54,13 @@ public class Vertex implements Serializable {
      * @throws Exception it can be because the position is negative or because id is
      *                   negative.
      */
-    public Vertex(Integer x, Integer y, Integer ID) throws Exception {
+    public Vertex(Integer x, Integer y, Integer id) throws Exception {
         if (x < 0 || y < 0) {
             throw new Exception("Invalid Position");
         }
         this.x = x;
         this.y = y;
-        this.ID = ID;
+        this.id = id;
         this.neighbors = new ArrayList<Vertex>();
     }
 
@@ -94,12 +94,12 @@ public class Vertex implements Serializable {
     }
 
     /**
-     * return the unique ID of the vertex
+     * return the unique id of the vertex
      * 
      * @return Integer between 0 and0 (rows+columns)-1
      */
     public Integer getID() {
-        return this.ID;
+        return this.id;
     }
 
 
@@ -180,6 +180,6 @@ public class Vertex implements Serializable {
      */
     @Override
     public String toString() {
-        return ("Vertexid:" + this.ID + ";x:" + this.x + ";y:" + this.y);
+        return ("Vertexid:" + this.id + ";x:" + this.x + ";y:" + this.y);
     }
 }

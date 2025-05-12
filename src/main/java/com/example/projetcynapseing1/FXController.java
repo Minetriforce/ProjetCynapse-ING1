@@ -2,6 +2,10 @@ package com.example.projetcynapseing1;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,12 +20,27 @@ import javafx.stage.Stage;
 public class FXController {
 
     @FXML
+    private Button resolutionLabyrinth;
+
+    @FXML
+    private Button generationLabyrinth;
+
+    private MazeController mazeController;
+    private boolean labyrinthIsGenerated = false;
+
+    @FXML
     private Canvas mazeCanvas;
 
     private int blockSize = 40;
     private Maze maze;
     private int rows;
     private int cols;
+
+    public void setMazeController(MazeController mazeController) {
+        this.mazeController = mazeController;
+    }
+
+    // Method to set maze size
     public void setMazeSize(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
@@ -33,38 +52,25 @@ public class FXController {
         }
     }
 
+    // Called when the resolution button is clicked
+    @FXML
+    protected void onStartResolutionClick() {
+    }
 
+    // Called when the generation button is clicked
+    @FXML
+    protected void onStartGenerationClick() {
+        labyrinthIsGenerated = true;
+        resolutionLabyrinth.setDisable(false);
+    }
 
-    /**
-     * Called by the main application to pass the maze and draw it.
-     *
-     * @param maze the maze object to display
-     */
+    // Method to display the maze
     public void displayMaze(Maze maze) {
         this.maze = maze;
         drawMazeWithWalls();
     }
 
-    /**
-     * Handles click on "Hello" button.
-     */
-    @FXML
-    protected void onHelloButtonClick() {
-        System.out.println("Hello button clicked!");
-    }
-
-    /**
-     * Handles click on "Start Generation" button.
-     */
-    @FXML
-    protected void onStartGenerationClick() {
-        System.out.println("Start generation button clicked!");
-
-    }
-
-    /**
-     * Draw the maze by rendering each cell and its walls.
-     */
+    // Method to draw the maze
     private void drawMazeWithWalls() {
         if (mazeCanvas == null) {
             System.out.println("Canvas is not initialized!");
@@ -72,7 +78,6 @@ public class FXController {
         }
 
         GraphicsContext g = mazeCanvas.getGraphicsContext2D();
-
         mazeCanvas.setWidth(cols * blockSize);
         mazeCanvas.setHeight(rows * blockSize);
 
@@ -85,7 +90,6 @@ public class FXController {
 
             int x = col * blockSize;
             int y = row * blockSize;
-            //colors based on the state of the case
             Color fillColor;
 
             switch (v.getState()) {
@@ -102,7 +106,7 @@ public class FXController {
             g.setFill(fillColor);
             g.fillRect(x, y, blockSize, blockSize);
 
-            //draw a wall between two cases if they are not neighbors.
+            // Drawing walls between two cells if they are not neighbors
             if (!hasNeighbor(v, row - 1, col)) {
                 g.strokeLine(x, y, x + blockSize, y); // top
             }
@@ -118,13 +122,12 @@ public class FXController {
         }
     }
 
-    /**
-     * Check if the vertex has a neighbor in a given direction.
-     */
+    // Method to check if a vertex has a neighbor
     private boolean hasNeighbor(Vertex v, int r, int c) {
         if (r < 0 || r >= rows || c < 0 || c >= cols)
             return false;
         Vertex neighbor = maze.getVertexByIDVertex(r * cols + c);
         return v.isNeighbor(neighbor);
     }
+
 }
