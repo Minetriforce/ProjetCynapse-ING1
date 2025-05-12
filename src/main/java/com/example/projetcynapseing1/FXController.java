@@ -3,8 +3,6 @@ package com.example.projetcynapseing1;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
@@ -42,15 +40,6 @@ public class FXController {
     // Called when the resolution button is clicked
     @FXML
     protected void onStartResolutionClick() {
-        if (!labyrinthIsGenerated) {
-            Alert alertLabyrinthNotGenerated = new Alert(AlertType.WARNING);
-            alertLabyrinthNotGenerated.setTitle("Error");
-            alertLabyrinthNotGenerated.setHeaderText("Labyrinth isn't generated");
-            alertLabyrinthNotGenerated.setContentText("Please start by generating a labyrinth.");
-            alertLabyrinthNotGenerated.showAndWait();
-        } else {
-            resolutionLabyrinth.setText("Resolving the labyrinth");
-        }
     }
 
     // Called when the generation button is clicked
