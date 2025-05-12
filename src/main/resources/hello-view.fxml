@@ -25,7 +25,11 @@
 
     <center>
         <VBox spacing="10.0" alignment="CENTER">
-
+            <ImageView fx:id="logoImageView" fitHeight="500" fitWidth="500" preserveRatio="true">
+                <image>
+                    <Image url="@images/logo.png" />
+                </image>
+            </ImageView>
             <Canvas fx:id="mazeCanvas" width="300" height="300"/>
         </VBox>
     </center>

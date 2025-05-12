@@ -26,7 +26,7 @@ public class Main extends Application {
         int rows=21;
         int cols=21;
         int destination = rows*cols-1;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/projetcynapseing1/hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
 
 
