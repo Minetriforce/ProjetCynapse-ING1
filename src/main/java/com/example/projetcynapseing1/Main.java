@@ -46,7 +46,8 @@ public class Main extends Application {
                         MethodName.Type.COMPLETE, rows, cols, 0.0, 8);
 
                 Graph generatedGraph = mazeController.getCurrentMaze();
-                maze = new Maze(rows, cols);
+                maze = new Maze(rows, cols, MethodName.GenMethodName.KRUSKAL);
+
                 for (Edge e : generatedGraph.getEdges()) {
                     int fromID = e.getVertexA().getID();
                     int toID = e.getVertexB().getID();

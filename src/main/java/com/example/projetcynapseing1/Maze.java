@@ -12,7 +12,7 @@ public class Maze extends Graph {
     private final MethodName.GenMethodName genMethodName;
 
     /**
-     * constructor
+     * constructor: create c*l vertices without any edge
      *
      * @param l: number of lines
      * @param c: number of columns
@@ -39,7 +39,7 @@ public class Maze extends Graph {
 
     /**
      * getter of rows
-     *
+     * 
      * @return rows
      */
     public int getrows() {
@@ -48,7 +48,7 @@ public class Maze extends Graph {
 
     /**
      * getter of columns
-     *
+     * 
      * @return columns
      */
     public int getColumns() {
@@ -60,28 +60,88 @@ public class Maze extends Graph {
     }
 
     /**
-     * @return the maze in a string format
+     * convert a solution to a string
+     *
+     * @param solution: parent of each vertex in the solution
+     * @return the maze with the solution in a string format
      */
-    @Override
-    public String toString(){
+    public int getNbColumns() {
+        return columns;
+    }
+
+    /**
+     * convert a solution to a string
+     *
+     * @param solution: parent of each vertex in the solution
+     * @return the maze with the solution in a string format
+     */
+    public String solutionToString(int[] solution) {
         String s = "";
-        List<Vertex> vertices = this.getVertices();
+        ArrayList<Vertex> vertices = this.getVertices();
 
         for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < columns; x++) {
+            for (int x = 0; x < rows; x++) {
                 int n = y * columns + x;
-                s += String.format("%-2d", n);
+                s += String.format(" %-2d", n);
                 if (x < columns - 1) {
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) ? "  " : "||";
+                    if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) {
+                        if (solution[n] == n + 1 || solution[n + 1] == n) {
+                            s += "***";
+                        } else {
+                            s += "   ";
+                        }
+                    } else {
+                        s += " | ";
+                    }
                 }
             }
             s += "\n";
             if (y < rows - 1) {
                 for (int x = 0; x < columns; x++) {
                     int n = y * columns + x;
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + columns))) ? "  " : "--";
+                    if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + columns))) {
+                        if (solution[n] == n + columns || solution[n + columns] == n) {
+                            s += " * ";
+                        } else {
+                            s += "   ";
+                        }
+                    } else {
+                        s += "---";
+                    }
                     if (x < columns - 1) {
-                        s += "  ";
+                        s += " + ";
+                    }
+                }
+                s += "\n";
+            }
+        }
+
+        return s;
+    }
+
+    /**
+     * @return the maze in a string format
+     */
+    @Override
+    public String toString() {
+        String s = "";
+        List<Vertex> vertices = this.getVertices();
+
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < columns; x++) {
+                int n = y * columns + x;
+                s += String.format(" %-2d", n);
+                if (x < columns - 1) {
+                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) ? "   " : " | ";
+                }
+            }
+            s += "\n";
+            if (y < rows - 1) {
+                for (int x = 0; x < columns; x++) {
+                    int n = y * columns + x;
+                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + columns))) ? "   " : "---";
+                    if (x < columns - 1) {
+                        s += " + ";
                     }
                 }
                 s += "\n";

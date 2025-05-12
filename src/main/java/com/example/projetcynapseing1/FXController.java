@@ -7,37 +7,39 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
-import javafx.scene.control.Label;
 
-
-
-
-/**
- * JavaFX Controller for handling maze display and button actions.
- * @author Florianne
- * Controller class for JavaFX Application
- */
-
+public class FXController {
 
     @FXML
     private Button resolutionLabyrinth;
 
-    private MazeController mazeController;
+    @FXML
+    private Button generationLabyrinth;
 
-    public void setMazeController(MazeController mazeController) {
-        if (mazeController == null) {
-            System.out.println("-- FX Controller --");
-            System.out.println("Warning : maze controller is null");
+    private MazeController mazeController;
+    private boolean labyrinthIsGenerated = false;
+
+    @FXML
+    private Canvas mazeCanvas;
+
+    private int blockSize = 40;
+    private Maze maze;
+    private int rows;
+    private int cols;
+
+    // Method to set maze size
+    public void setMazeSize(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+
+        if (rows > 20 || cols > 20) {
+            blockSize = 20;
         } else {
-            this.mazeController = mazeController;
+            blockSize = 40;
         }
     }
 
-    private Button generationLabyrinth;
-
-
-    private boolean labyrinthIsGenerated = false;
-
+    // Called when the resolution button is clicked
     @FXML
     protected void onStartResolutionClick() {
         if (!labyrinthIsGenerated) {
@@ -51,6 +53,7 @@ import javafx.scene.control.Label;
         }
     }
 
+    // Called when the generation button is clicked
     @FXML
     protected void onStartGenerationClick() {
         generationLabyrinth.setText("Generating the labyrinth");
@@ -58,42 +61,13 @@ import javafx.scene.control.Label;
         resolutionLabyrinth.setDisable(false);
     }
 
-    @FXML
-    private Canvas mazeCanvas;
-
-
-    private int blockSize = 40;
-    private Maze maze;
-    private int rows;
-    private int cols;
-    public void setMazeSize(int rows, int cols) {
-        this.rows = rows;
-        this.cols = cols;
-
-        if (rows > 20 || cols > 20) {
-            blockSize = 20;
-        } else {
-            blockSize = 40;
-        }
-    }
-
-
-
-    /**
-     * Called by the main application to pass the maze and draw it.
-     *
-     * @param maze the maze object to display
-     */
+    // Method to display the maze
     public void displayMaze(Maze maze) {
         this.maze = maze;
         drawMazeWithWalls();
     }
 
-
-
-    /**
-     * Draw the maze by rendering each cell and its walls.
-     */
+    // Method to draw the maze
     private void drawMazeWithWalls() {
         if (mazeCanvas == null) {
             System.out.println("Canvas is not initialized!");
@@ -101,7 +75,6 @@ import javafx.scene.control.Label;
         }
 
         GraphicsContext g = mazeCanvas.getGraphicsContext2D();
-
         mazeCanvas.setWidth(cols * blockSize);
         mazeCanvas.setHeight(rows * blockSize);
 
@@ -114,7 +87,6 @@ import javafx.scene.control.Label;
 
             int x = col * blockSize;
             int y = row * blockSize;
-            //colors based on the state of the case
             Color fillColor;
 
             switch (v.getState()) {
@@ -131,7 +103,7 @@ import javafx.scene.control.Label;
             g.setFill(fillColor);
             g.fillRect(x, y, blockSize, blockSize);
 
-            //draw a wall between two cases if they are not neighbors.
+            // Drawing walls between two cells if they are not neighbors
             if (!hasNeighbor(v, row - 1, col)) {
                 g.strokeLine(x, y, x + blockSize, y); // top
             }
@@ -147,11 +119,12 @@ import javafx.scene.control.Label;
         }
     }
 
-    /**
-     * Check if the vertex has a neighbor in a given direction.
-     */
+    // Method to check if a vertex has a neighbor
     private boolean hasNeighbor(Vertex v, int r, int c) {
         if (r < 0 || r >= rows || c < 0 || c >= cols)
             return false;
         Vertex neighbor = maze.getVertexByIDVertex(r * cols + c);
         return v.isNeighbor(neighbor);
+    }
+
+}

@@ -42,16 +42,11 @@ public class MainCLI {
                             int seed = sc.nextInt();
                             
                             // Create a new Maze
-                            Maze maze = new Maze(rows, columns);
-                            
+                            Maze maze = new Maze(rows, columns,MethodName.GenMethodName.PRIM);
+
                             // Create the maze using Prim's algorithm
-                            MazeController mazeController = new MazeController();
-                            mazeController.createMaze(MethodName.GenMethodName.PRIM, 
-                                                    MethodName.Type.COMPLETE, 
-                                                    columns, 
-                                                    rows, 
-                                                    0.0, 
-                                                    seed);
+                            mazeController.createMaze(MethodName.GenMethodName.PRIM,
+                                    MethodName.Type.COMPLETE, rows, colums, 0.0, seed);
                             
                             // Get the generated maze and copy its edges to the Maze object
                             Graph generatedMaze = mazeController.getCurrentMaze();
