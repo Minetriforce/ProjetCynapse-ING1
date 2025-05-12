@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 /**
  * Main Class of the application
@@ -33,8 +34,11 @@ public class Main extends Application {
         FXController control = new FXController();
         fxmlLoader.setController(control);
         control.setMazeSize(rows, cols);
-        Scene scene = new Scene(fxmlLoader.load(), 1000,1000);
-        stage.setTitle("Hello!");
+        Scene scene = new Scene(fxmlLoader.load(), 1200,700);
+
+        Image icon = new Image(getClass().getResourceAsStream("/images/smiley.png"));
+        stage.getIcons().add(icon);
+        stage.setTitle("Cynapse");
         stage.setScene(scene);
         stage.show();
 
