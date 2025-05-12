@@ -14,7 +14,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml">
 
     <StackPane alignment="TOP_LEFT">
-        <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
+        <ImageView fx:id="backgroundImage" preserveRatio="false" opacity="0.7">
             <image>
                 <Image url="@images/logo.png"/>
             </image>

@@ -42,7 +42,7 @@ public class Maze extends Graph {
      * 
      * @return rows
      */
-    public int getrows() {
+    public int getRows() {
         return rows;
     }
 
@@ -57,16 +57,6 @@ public class Maze extends Graph {
 
     public MethodName.GenMethodName getGenMethod() {
         return this.genMethodName;
-    }
-
-    /**
-     * convert a solution to a string
-     *
-     * @param solution: parent of each vertex in the solution
-     * @return the maze with the solution in a string format
-     */
-    public int getNbColumns() {
-        return columns;
     }
 
     /**

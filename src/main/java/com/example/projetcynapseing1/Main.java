@@ -5,10 +5,12 @@ import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * Main Class of the application
@@ -16,6 +18,9 @@ import javafx.scene.image.Image;
  */
 public class Main extends Application {
     private static Maze maze;
+
+    @FXML
+    private ImageView backgroundImage;
     /**
      * Start a new JavaFX windows
      * 
@@ -38,8 +43,14 @@ public class Main extends Application {
 
         Image icon = new Image(getClass().getResourceAsStream("/images/smiley.png"));
         stage.getIcons().add(icon);
+
         stage.setTitle("Cynapse");
         stage.setScene(scene);
+
+    
+        backgroundImage.fitWidthProperty().bind(stage.widthProperty());
+        backgroundImage.fitHeightProperty().bind(stage.heightProperty());
+
         stage.show();
 
 
