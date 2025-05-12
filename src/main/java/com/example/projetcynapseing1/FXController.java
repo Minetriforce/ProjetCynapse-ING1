@@ -7,19 +7,32 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
+import javafx.scene.control.Label;
+
 
 
 
 /**
  * JavaFX Controller for handling maze display and button actions.
  * @author Florianne
+ * Controller class for JavaFX Application
  */
-public class FXController {
+
 
     @FXML
     private Button resolutionLabyrinth;
 
-    @FXML
+    private MazeController mazeController;
+
+    public void setMazeController(MazeController mazeController) {
+        if (mazeController == null) {
+            System.out.println("-- FX Controller --");
+            System.out.println("Warning : maze controller is null");
+        } else {
+            this.mazeController = mazeController;
+        }
+    }
+
     private Button generationLabyrinth;
 
 
@@ -142,5 +155,3 @@ public class FXController {
             return false;
         Vertex neighbor = maze.getVertexByIDVertex(r * cols + c);
         return v.isNeighbor(neighbor);
-    }
-}
