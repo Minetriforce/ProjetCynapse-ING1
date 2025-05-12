@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 /**
  * Main Class of the application
- * TODO : rename this class
  */
 public class Main extends Application {
 
@@ -73,14 +72,11 @@ public class Main extends Application {
         }
 
         Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-        int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
+        int[] parents = solver.solveRightHand(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(8), MethodName.Type.COMPLETE);
         int[] solution = Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents);
-        ArrayList<Edge> path_edge = Solver.pathEdge(maze, maze.getVertexByIDVertex(8), parents);
 
         System.out.println("Solution found:\n");
-        System.out.println(maze.solutionToString(solution));
-        System.out.println("Edges of the path found:\n");
-        System.out.println(path_edge);
+        System.out.println(maze.solutionToString(parents));
 
         // mazeController.getFileController().SaveData(mazeController.getCurrentMaze());
 
