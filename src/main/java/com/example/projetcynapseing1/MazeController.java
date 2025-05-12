@@ -14,8 +14,7 @@ public class MazeController {
         this.fileController = new FileController();
     }
 
-    public void createMaze(MethodName.GenMethodName genMethod, MethodName.Type type, Integer x, Integer y,
-            Double timeStamp, Integer seed) {
+    public void createMaze(MethodName.GenMethodName genMethod, MethodName.Type type, Integer x, Integer y, Double timeStamp, Integer seed) {
         try {
             mazeGenerator = new Generator(x, y, genMethod, seed, fxController, type);
             maze = mazeGenerator.makeMaze();
