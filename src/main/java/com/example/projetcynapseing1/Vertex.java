@@ -17,6 +17,14 @@ import java.util.ArrayList;
  * @author Bari-joris
  * @version 1.0
  */
+
+enum VertexState {
+    DEFAULT,   // not visited
+    VISITED,   // explored
+    SOLUTION   // part of final path
+}
+
+
 public class Vertex implements Serializable {
 
     /**
@@ -32,7 +40,10 @@ public class Vertex implements Serializable {
      */
     private ArrayList<Vertex> neighbors;
 
-    private Integer ID;
+    private Integer id;
+
+    private VertexState state = VertexState.DEFAULT;
+
 
     /**
      * Constructor of Vertex Object
@@ -43,13 +54,13 @@ public class Vertex implements Serializable {
      * @throws Exception it can be because the position is negative or because id is
      *                   negative.
      */
-    public Vertex(Integer x, Integer y, Integer ID) throws Exception {
+    public Vertex(Integer x, Integer y, Integer id) throws Exception {
         if (x < 0 || y < 0) {
             throw new Exception("Invalid Position");
         }
         this.x = x;
         this.y = y;
-        this.ID = ID;
+        this.id = id;
         this.neighbors = new ArrayList<Vertex>();
     }
 
@@ -83,13 +94,33 @@ public class Vertex implements Serializable {
     }
 
     /**
-     * return the unique ID of the vertex
+     * return the unique id of the vertex
      * 
      * @return Integer between 0 and0 (rows+columns)-1
      */
     public Integer getID() {
-        return this.ID;
+        return this.id;
     }
+
+
+    /**
+     * Get the current state of the vertex (used for coloring in GUI)
+     *
+     * @return the state of the vertex
+     */
+    public VertexState getState() {
+        return this.state;
+    }
+
+    /**
+     * Set a new state for the vertex
+     *
+     * @param state the new state to set
+     */
+    public void setState(VertexState state) {
+        this.state = state;
+    }
+
 
     /**
      * <p>
@@ -135,10 +166,7 @@ public class Vertex implements Serializable {
      * @since 1.0
      */
     public Boolean isNeighbor(Vertex v) {
-        if (this.neighbors.contains(v)) {
-            return true;
-        }
-        return false;
+        return this.neighbors.contains(v);
     }
 
     /**
@@ -147,11 +175,11 @@ public class Vertex implements Serializable {
      * with it's id and position in graph.
      * </p>
      * 
-     * @return the amount of health hero has after attack
+     * @return Vertexid: id; x: x; y: y
      * @since 1.0
      */
     @Override
     public String toString() {
-        return ("Vertexid:" + this.ID + ";x:" + this.x + ";y:" + this.y);
+        return ("Vertexid:" + this.id + ";x:" + this.x + ";y:" + this.y);
     }
 }

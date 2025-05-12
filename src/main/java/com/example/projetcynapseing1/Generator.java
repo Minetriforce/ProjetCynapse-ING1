@@ -2,13 +2,8 @@ package com.example.projetcynapseing1;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.Stack;
-
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
 
 /**
  * Generator class is used to generate a maze according to differents
@@ -17,10 +12,9 @@ import javafx.util.Duration;
  * {@link com.example.projetcynapseing1.Graph})
  * 
  * @author Bari-joris
- * @version 1.0
  */
 public class Generator {
-    private FXController FxController;
+    private FXController fxController;
     /**
      * Number of rows in the maze, strictly positive
      */
@@ -37,13 +31,7 @@ public class Generator {
      */
     private MethodName.GenMethodName genMethod;
     /**
-     * Time step is the time between each maze generation step.
-     * It is only used when type of generation is "Step-by-Step"
-     */
-    private double timeStep = 0.0;
-    private MethodName.Type type;
-    /**
-     * Ech generation method use a random number generator (RNG);
+     * Each generation method use a random number generator (RNG);
      * The user can change the seed of this RNG.
      */
     private Integer seed;
@@ -52,33 +40,27 @@ public class Generator {
      * Constructor of class generator.
      * Rows and columns are used to set the size of a rectangle maze
      * 
-     * @param type      Step by step or Complete generation
      * @param rows      follows y axis from bottom to top
      * @param colums    follows x axis from elft to right
      * @param genMethod generation method used for the maze
-     * @param seed      integer used in the random number generator (the use of this
+     * @param seed      integer used in the random number generator (the use of
+     *                  this
      *                  generator depends on method generation). The same seed
      *                  returns the same maze
      * @throws Exception used to ensure Generator stays in a logical state
      */
-    public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed,
-            FXController fxController, MethodName.Type type) throws Exception {
-        if (rows < 0 || colums < 0) {
-            throw new IllegalArgumentException("rows or column can't be negative");
-        } else if (timeStep < 0.0) {
-            throw new IllegalArgumentException("timeStep can't be negative");
+    public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed) throws Exception {
+        if (rows < 0 || colums < 0 || rows == null || colums == null) {
+            throw new IllegalArgumentException("rows or column can't be negative/null");
         } else if (seed < 0) {
             throw new IllegalArgumentException("seed can't be negative");
         }
         this.rows = rows;
         this.columns = colums;
         this.genMethod = genMethod;
-        this.seed = seed;
-        this.FxController = fxController;
-        this.type = type;
-    }
 
-    // TODO : Create an Exception Handler function
+        this.seed = seed;
+    }
 
     /**
      * <p>
@@ -92,26 +74,10 @@ public class Generator {
      * @see
      * @since 1.0
      */
-    private Graph makeGridGraph() {
-        Graph G = new Graph();
-        Integer i = 0;
+    private Maze makeGridGraph() {
+        Maze G = new Maze(this.rows, this.columns, null);
 
-        // Step 1 : Create all the vertices and give them their ID and postion in a grid
-        for (int n = 0; n < this.rows; n++) {
-            for (int m = 0; m < this.columns; m++) {
-                try {
-                    Vertex v = new Vertex(m, n, i);
-                    i = i + 1;
-                    G.addVertex(v);
-                } catch (Exception e) {
-                    System.out.println("Error occured while creating Vertex with parameters : ");
-                    System.out.println("n : " + n + ", m : " + m + ", i : " + i);
-                    System.out.println(e.getMessage());
-                }
-            }
-        }
-
-        // Step 2 : link every vertices to others in order to make a grid
+        // link every vertices to others in order to make a grid
         ArrayList<Vertex> ListVertex = G.getVertices();
         for (Vertex vertex : ListVertex) {
             if ((vertex.getX() + 1) != this.columns) {
@@ -150,9 +116,9 @@ public class Generator {
      * @param s2
      * @return Boolean (true: a path exists, false: there's no path)
      * @see Vertex
-     * @see Graph
+     * @see Maze
      */
-    private Boolean DFScheck(Graph graph, Vertex s1, Vertex s2) {
+    private Boolean DFScheck(Maze graph, Vertex s1, Vertex s2) {
         ArrayList<Boolean> mark = new ArrayList<Boolean>();
         for (int i = 0; i < graph.getVertices().size(); i++) {
             mark.add(false);
@@ -169,7 +135,7 @@ public class Generator {
      * @param mark
      * @return mark
      */
-    private ArrayList<Boolean> DFSRec(Graph graph, Vertex s, ArrayList<Boolean> mark) {
+    private ArrayList<Boolean> DFSRec(Maze graph, Vertex s, ArrayList<Boolean> mark) {
         mark.set(s.getID(), true);
         for (Vertex neighbor : s.getNeighbors()) {
             if (mark.get(neighbor.getID()) == false) {
@@ -186,7 +152,7 @@ public class Generator {
      * @param baseGraph
      * @param maze
      */
-    private void Kruskal(Graph baseGraph, Graph maze) {
+    private void Kruskal(Maze baseGraph, Maze maze) {
         Collections.sort(baseGraph.getEdges());
         for (Edge edge : baseGraph.getEdges()) {
             if (DFScheck(maze, maze.getVertexByIDVertex(edge.getVertexA().getID()),
@@ -197,34 +163,6 @@ public class Generator {
         }
     }
 
-    private void KruskalAnimated(Graph baseGraph, Graph maze) {
-        Collections.sort(baseGraph.getEdges());
-
-        List<Edge> edges = baseGraph.getEdges();
-        final int[] i = { 0 };
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), event -> {
-            if (i[0] < edges.size()) {
-                Edge edge = edges.get(i[0]);
-
-                if (!DFScheck(maze,
-                        maze.getVertexByIDVertex(edge.getVertexA().getID()),
-                        maze.getVertexByIDVertex(edge.getVertexB().getID()))) {
-                    maze.addEdge(new Edge(
-                            maze.getVertexByIDVertex(edge.getVertexA().getID()),
-                            maze.getVertexByIDVertex(edge.getVertexB().getID())));
-                }
-
-                // Affichage de l'étape
-                // this.FxController.afficherEtape(i[0]);
-                i[0]++;
-            }
-        }));
-
-        timeline.setCycleCount(edges.size()); // Autant de ticks que d'arêtes
-        timeline.play();
-    }
-
     /**
      * Create a maze according to Prim's algorithm
      * 
@@ -232,7 +170,7 @@ public class Generator {
      * @param maze
      * @param s
      */
-    private void Prim(Graph baseGraph, Graph maze, Vertex s) {
+    private void Prim(Maze baseGraph, Maze maze, Vertex s) {
         ArrayList<Edge> currentEdges = new ArrayList<Edge>(); // create list of current Edges
 
         // Create a mark list for all vertices in maze
@@ -321,16 +259,24 @@ public class Generator {
     /**
      * Create a maze according to a specific method.
      * 
-     * @return maze : Graph
-     * @see Graph
+     * @return maze : Maze
+     * @see Maze
      */
-    public Graph makeMaze() {
+    public Maze makeMaze() throws Exception {
 
+        // In case seed is null, generate a random seed
+        if (this.seed == null) {
+            System.out.println("Warning : seed is null, generating random seed");
+            this.seed = new Random().nextInt(100000);
+            System.out.println("Seed generated : " + this.seed);
+        }
+
+        // Used to display generation time
         long time = System.currentTimeMillis();
 
         // Create a basic grid graph and a second graph (maze is the result)
-        Graph base = this.makeGridGraph();
-        Graph maze = new Graph();
+        Maze base = this.makeGridGraph();
+        Maze maze = new Maze(this.rows, this.columns, this.genMethod);
 
         // add all vertices created in base to maze (reduce work)
         for (Vertex V : base.getVertices()) {
@@ -346,14 +292,7 @@ public class Generator {
         switch (this.genMethod) {
             case KRUSKAL:
                 this.addRandomWeight(base);
-
-                switch (this.type) {
-                    case STEPPER:
-                        KruskalAnimated(base, maze);
-                        break;
-                    case COMPLETE:
-                        Kruskal(base, maze);
-                }
+                Kruskal(base, maze);
                 base = null;
                 System.gc();
                 time = System.currentTimeMillis() - time;
@@ -381,17 +320,15 @@ public class Generator {
                     RandomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
                 }
                 break;
-
-            default:
-                break;
         }
+
         System.out.println("Timestamp : " + time + "ms");
         return maze;
     }
 
     @Override
     public String toString() {
-        return ("--Graph Generator--" + "\nGeneration Method: " + this.genMethod + "\nType: " + this.type + "\nSize: "
+        return ("--Graph Generator--" + "\nGeneration Method: " + this.genMethod + "\nSize: "
                 + this.columns + "x" + this.rows + "\nseed: " + this.seed);
     }
 }
