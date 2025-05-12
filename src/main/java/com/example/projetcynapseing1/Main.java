@@ -11,10 +11,19 @@ import javafx.stage.Stage;
 
 /**
  * Main Class of the application
- * TODO : rename this class
  */
 public class Main extends Application {
     private static Maze maze;
+    private final FXController fxController = new FXController();
+    private final MazeController mazeController = new MazeController();
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+        mazeController.setFXController(fxController);
+        fxController.setMazeController(mazeController);
+    }
+
     /**
      * Start a new JavaFX windows
      * 
@@ -23,21 +32,17 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows=21;
-        int cols=21;
-        int destination = rows*cols-1;
+        int rows = 20;
+        int cols = 20;
+        int destination = rows * cols - 1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
-
-
-        FXController control = new FXController();
-        fxmlLoader.setController(control);
-        control.setMazeSize(rows, cols);
-        Scene scene = new Scene(fxmlLoader.load(), 1000,1000);
+        fxmlLoader.setController(fxController);
+        fxController.setMazeSize(rows, cols);
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
-
 
         new Thread(() -> {
             try {
@@ -57,51 +62,50 @@ public class Main extends Application {
 
                     maze.addEdge(new Edge(from, to));
 
-                    Platform.runLater(() -> control.displayMaze(maze));
+                    Platform.runLater(() -> fxController.displayMaze(maze));
                     Thread.sleep(10);
                 }
                 Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
 
-                int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
+                int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0),
+                        maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
 
-                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination), parents);
+                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination),
+                        parents);
                 // mark all visited vertices (which are in parents array)
 
                 for (int i = 0; i < parents.length; i++) {
                     if (parents[i] != i || i == 0) {
                         Vertex v = maze.getVertices().get(i);
                         v.setState(VertexState.VISITED);
-                        Platform.runLater(() -> control.displayMaze(maze));
+                        Platform.runLater(() -> fxController.displayMaze(maze));
                         Thread.sleep(25);
 
                     }
 
                 }
 
-
                 // draw the real path in blue (solution)
                 for (Vertex v : solutionVertices) {
                     v.setState(VertexState.SOLUTION);
-                    Platform.runLater(() -> control.displayMaze(maze));
+                    Platform.runLater(() -> fxController.displayMaze(maze));
                     Thread.sleep(50);
                 }
-
 
                 Platform.runLater(() -> {
                     System.out.println("Maze created:\n");
                     System.out.println(maze);
                     System.out.println("Solution found:\n");
-                    System.out.println(maze.solutionToString(Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents)));
-                    control.displayMaze(maze);
+                    System.out.println(
+                            maze.solutionToString(Solver.pathIndex(maze, maze.getVertexByIDVertex(8), parents)));
+                    fxController.displayMaze(maze);
                 });
-
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
     }
-
 
     /**
      * Entry point of application

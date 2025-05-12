@@ -27,6 +27,10 @@ public class FXController {
     private int rows;
     private int cols;
 
+    public void setMazeController(MazeController mazeController) {
+        this.mazeController = mazeController;
+    }
+
     // Method to set maze size
     public void setMazeSize(int rows, int cols) {
         this.rows = rows;
