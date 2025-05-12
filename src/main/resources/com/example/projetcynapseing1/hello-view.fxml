@@ -11,7 +11,7 @@
     </padding>
 
     <Label fx:id="welcomeText"/>
-    <Label fx:id="etapeLabel"/>
+    <Label fx:id="counterLabel"/>
     <Button text="Hello!" onAction="#onHelloButtonClick"/>
     <Button text="gen" onAction="#onStartGenerationClick"/>
 

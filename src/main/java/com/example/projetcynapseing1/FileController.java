@@ -7,17 +7,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class FileController {
+
     public FileController() {
     }
 
-    public Boolean SaveData(Graph graph) {
+    public Boolean SaveData(Maze maze, String fileName) {
         try {
-            FileOutputStream fileOut = new FileOutputStream("test.ser");
+            // new ProcessBuilder("explorer.exe", "/select," + path).start();
+            FileOutputStream fileOut = new FileOutputStream(fileName + ".ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(graph);
+            out.writeObject(maze);
             out.close();
             fileOut.close();
-            System.out.println("Graph saved");
+            System.out.println("Maze saved with name :");
             return (true);
         } catch (IOException e) {
             e.printStackTrace();

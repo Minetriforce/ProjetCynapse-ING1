@@ -5,68 +5,80 @@ import java.util.List;
 /**
  * Class for mazes, it must be a rectangular
  */
-public class Maze extends Graph{
-    private final int nbLines;
-    private final int nbColumns;
+public class Maze extends Graph {
+    private final int rows;
+    private final int columns;
+    private final MethodName.GenMethodName genMethodName;
 
     /**
      * constructor
+     * 
      * @param l: number of lines
      * @param c: number of columns
      */
-    public Maze(int l, int c) {
+    public Maze(int l, int c, MethodName.GenMethodName genMethodName) {
         super();
-        nbLines = l;
-        nbColumns = c;
+        this.rows = l;
+        this.columns = c;
 
-        for (int y = 0; y < l; y++){
-            for (int x = 0; x < c; x++){
+        this.genMethodName = genMethodName;
+
+        for (int y = 0; y < l; y++) {
+            for (int x = 0; x < c; x++) {
                 try {
                     this.addVertex(new Vertex(x, y, y * c + x));
-                }
-                catch (Exception e){
+                } catch (Exception e) {
+                    System.out.print("-- Maze Class --");
                     System.out.println("Error while creating vertice: (" + x + ", " + y + ")");
                 }
             }
         }
+
     }
 
     /**
-     * getter of nbLines
-     * @return nbLines
+     * getter of rows
+     * 
+     * @return rows
      */
-    public int getNbLines(){
-        return nbLines;
+    public int getrows() {
+        return rows;
     }
+
     /**
-     * getter of nbColumns
-     * @return nbColumns
+     * getter of columns
+     * 
+     * @return columns
      */
-    public int getNbColumns(){
-        return nbColumns;
+    public int getColumns() {
+        return columns;
+    }
+
+    public MethodName.GenMethodName getGenMethod() {
+        return this.genMethodName;
     }
 
     /**
      * @return the maze in a string format
      */
-    public String toString(){
+    public String toString() {
         String s = "";
         List<Vertex> vertices = this.getVertices();
 
-        for (int y = 0; y < nbLines; y++){
-            for (int x = 0; x <nbColumns; x++){
-                int n = y * nbColumns + x;
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < columns; x++) {
+                int n = y * columns + x;
                 s += String.format("%-2d", n);
-                if (x < nbColumns - 1){
+                if (x < columns - 1) {
                     s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) ? "  " : "||";
                 }
             }
             s += "\n";
-            if (y < nbLines - 1){
-                for (int x = 0; x < nbColumns; x++){
-                    int n = y * nbColumns + x;
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))) ? "  " : "--";
-                    if (x < nbColumns - 1){
+            if (y < rows - 1) {
+                for (int x = 0; x < columns; x++) {
+                    int n = y * columns + x;
+                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + columns))) ? "  " : "--";
+                    if (x < columns - 1) {
                         s += "  ";
                     }
                 }
