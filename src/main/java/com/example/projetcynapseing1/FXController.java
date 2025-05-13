@@ -6,6 +6,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,6 +21,16 @@ import javafx.stage.Stage;
  * @author Florianne
  */
 public class FXController {
+
+    @FXML
+    private ImageView backgroundImage;
+    @FXML
+    private StackPane stackpane;
+    @FXML
+    private void initialize(){
+        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
+        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+    }
 
     @FXML
     private Button resolutionLabyrinth;

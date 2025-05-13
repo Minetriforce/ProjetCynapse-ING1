@@ -70,7 +70,7 @@ public class Maze extends Graph {
         ArrayList<Vertex> vertices = this.getVertices();
 
         for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < rows; x++) {
+            for (int x = 0; x < columns; x++) {
                 int n = y * columns + x;
                 s += String.format(" %-2d", n);
                 if (x < columns - 1) {
