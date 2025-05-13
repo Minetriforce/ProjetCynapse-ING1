@@ -15,7 +15,7 @@ public class MazeController {
     }
 
     public void createMaze(MethodName.GenMethodName genMethod, MethodName.Type type, Integer x, Integer y,
-            Double timeStep, Integer seed) {
+                           Double timeStep, Integer seed) {
         try {
             mazeGenerator = new Generator(x, y, genMethod, seed);
             maze = mazeGenerator.makeMaze();
@@ -26,7 +26,7 @@ public class MazeController {
     }
 
     public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end, MethodName.Type type,
-            Double timeStamp) {
+                             Double timeStamp) {
         mazeSolver = new Solver(solveMethod);
         // solution = mazeSolver.solveAstar(maze, start, end, type);
     }
