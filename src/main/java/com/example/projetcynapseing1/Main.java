@@ -20,33 +20,29 @@ import javafx.scene.image.ImageView;
  */
 public class Main extends Application {
     private static Maze maze;
+
     private final FXController fxController = new FXController();
     private final MazeController mazeController = new MazeController();
-
     @Override
     public void init() throws Exception {
         super.init();
         mazeController.setFXController(fxController);
     }
-
     /**
      * Start a new JavaFX windows
-     *
+     * 
      * @param stage can be set to null
      * @throws IOException if a problem occurs when creating javaFX Stage or scene
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows = 5;
-        int cols = 4;
-        int destination = rows * cols - 1;
+        int rows=10;
+        int cols=10;
+        int destination = rows*cols-1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
-
-
 
         fxmlLoader.setController(fxController);
         fxController.setMazeSize(rows, cols);
-
         Scene scene = new Scene(fxmlLoader.load(), 1200,700);
 
         stage.setTitle("Cynapse");
@@ -55,14 +51,15 @@ public class Main extends Application {
 
         stage.show();
 
+
         new Thread(() -> {
             try {
                 MazeController mazeController = new MazeController();
-                mazeController.createMaze(MethodName.GenMethodName.PRIM,
+                mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
                         MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
 
                 Graph generatedGraph = mazeController.getCurrentMaze();
-                maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
+                maze = new Maze(rows, cols, MethodName.GenMethodName.KRUSKAL);
 
                 for (Edge e : generatedGraph.getEdges()) {
                     int fromID = e.getVertexA().getID();
