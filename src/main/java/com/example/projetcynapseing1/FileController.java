@@ -6,6 +6,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+/**
+ * Class used to manage Saving / loading of Mazes Files
+ * 
+ * @author Bari-joris
+ * @see Maze, Serializable
+ */
 public class FileController {
 
     public FileController() {

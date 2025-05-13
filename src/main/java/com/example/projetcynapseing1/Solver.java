@@ -269,19 +269,42 @@ public class Solver {
         // number of vertices
         int n = m.getRows() * m.getColumns();
         // initialisation
-        int[] solution = new int[n];
+        int[] path = new int[n];
         for (int i = 0; i < n; i++) {
-            solution[i] = i;
+            path[i] = i;
         }
 
+        // verification
+        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
+            System.out.println("");
+            return path;
+        }
+        if (n != antecedents.length){
+            System.out.println("Inappropriate length of antecedents: " + antecedents.length + " (insted of " + n + ") !");
+            return path;
+        }
+        if (! vertices.contains(end)){
+            System.out.println("Vertex end id not in the maze given !");
+            return path;
+        }
+        for (int i = 0; i < n; i++){
+            if (antecedents[i] < 0 || antecedents[i] > n){
+                System.out.println("Table antecedents is inappropriately indexed: antecedents[" + i + "] = " + antecedents[i] + " !");
+                return path;
+            }
+        }
+
+        // counter to avoid infinite while
+        int cnt = 0;
         // from end to start
         int i = vertices.indexOf(end);
-        while (antecedents[i] != i) {
-            solution[i] = antecedents[i];
+        while (antecedents[i] != i && cnt <= n) {
+            path[i] = antecedents[i];
             i = antecedents[i];
+            cnt++;
         }
 
-        return solution;
+        return path;
     }
 
     /**
@@ -294,13 +317,34 @@ public class Solver {
     public static ArrayList<Vertex> pathVertex(Maze m, Vertex end, int[] antecedents){
         ArrayList<Vertex> path = new ArrayList<>();
         ArrayList<Vertex> vertices = m.getVertices();
+        // number of vertices
+        int n = m.getRows() * m.getColumns();
 
+        // verification
+        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
+            System.out.println("");
+            return path;
+        }
+        if (! vertices.contains(end)){
+            System.out.println("Vertex end id not in the maze given !");
+            return path;
+        }
+        for (int i = 0; i < antecedents.length; i++){
+            if (antecedents[i] < 0 || antecedents[i] > n){
+                System.out.println("Table antecedents is inappropriately indexed: antecedents[" + i + "] = " + antecedents[i] + " !");
+                return path;
+            }
+        }
+
+        // counter to avoid infinite while
+        int cnt = 0;
         // from end to start
         int i = vertices.indexOf(end);
         path.add(0, end);
-        while (antecedents[i] != i){
+        while (antecedents[i] != i && cnt <= n){
             path.add(0, vertices.get(antecedents[i]));
             i = antecedents[i];
+            cnt++;
         }
 
         return path;
@@ -316,12 +360,33 @@ public class Solver {
     public static ArrayList<Edge> pathEdge(Maze m, Vertex end, int[] antecedents){
         ArrayList<Edge> path = new ArrayList<>();
         ArrayList<Vertex> vertices = m.getVertices();
+        // number of vertices
+        int n = m.getRows() * m.getColumns();
 
+        // verification
+        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
+            System.out.println("");
+            return path;
+        }
+        if (! vertices.contains(end)){
+            System.out.println("Vertex end id not in the maze given !");
+            return path;
+        }
+        for (int i = 0; i < antecedents.length; i++){
+            if (antecedents[i] < 0 || antecedents[i] > n){
+                System.out.println("Table antecedents is inappropriately indexed: antecedents[" + i + "] = " + antecedents[i] + " !");
+                return path;
+            }
+        }
+
+        // counter to avoid infinite while
+        int cnt = 0;
         // from end to start
         int i = vertices.indexOf(end);
-        while (antecedents[i] != i){
+        while (antecedents[i] != i && cnt <= n){
             path.add(0, m.getEdgeByVertices(vertices.get(antecedents[i]), vertices.get(i)));
             i = antecedents[i];
+            cnt++;
         }
 
         return path;
