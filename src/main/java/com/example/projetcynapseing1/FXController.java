@@ -5,8 +5,21 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 public class FXController {
+
+    @FXML
+    private ImageView backgroundImage;
+    @FXML
+    private StackPane stackpane;
+    @FXML
+    private void initialize(){
+        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
+        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+    }
 
     @FXML
     private Button resolutionLabyrinth;
@@ -24,6 +37,7 @@ public class FXController {
     private Maze maze;
     private int rows;
     private int cols;
+
 
     public void setMazeController(MazeController mazeController) {
         this.mazeController = mazeController;
