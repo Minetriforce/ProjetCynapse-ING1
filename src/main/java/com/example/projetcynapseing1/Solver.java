@@ -66,6 +66,30 @@ public class Solver {
     }
 
     /**
+     * solve the maze with the corresponding method
+     * @param m: maze graph
+     * @param start: starting vertex
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return antecedents: array of antecedents of each vertex in the path
+     */
+    public int[] solve(Maze m, Vertex start, Vertex end, MethodName.Type t){
+        // verification
+        if (m.equals(null) || start.equals(null) || end.equals(null) || t.equals(null)){
+            System.out.println("Param null !");
+            return null;
+        }
+
+        switch (method) {
+            case ASTAR:
+                return this.solveAstar(m, start, end, t);
+            case RIGHTHAND:
+                return this.solveRightHand(m, start, end, t);
+            default:
+                return null;
+        }
+    }
+    /**
      * solve the maze with the A* algorithm
      * @param m: maze graph
      * @param start: starting vertex
@@ -74,12 +98,6 @@ public class Solver {
      * @return antecedents: array of antecedents of each vertex in the path
      */
     public int[] solveAstar(Maze m, Vertex start, Vertex end, MethodName.Type t) {
-        // verification
-        if (m.equals(null) || start.equals(null) || end.equals(null) || t.equals(null)){
-            System.out.println("Param null !");
-            return null;
-        }
-
         // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
@@ -158,7 +176,6 @@ public class Solver {
 
         return antecedents;
     }
-
     /**
      * solve the maze with the right hand algorithm
      * @param m: maze graph
@@ -168,12 +185,6 @@ public class Solver {
      * @return antecedents: array of antecedents of each vertex in the path
      */
     public int[] solveRightHand(Maze m, Vertex start, Vertex end, MethodName.Type t){
-        // verification
-        if (m.equals(null) || start.equals(null) || end.equals(null) || t.equals(null)){
-            System.out.println("Param null !");
-            return null;
-        }
-
         // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices

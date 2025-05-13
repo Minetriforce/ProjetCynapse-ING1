@@ -37,8 +37,8 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows = 5;
-        int cols = 4;
+        int rows = 10;
+        int cols = 10;
         int destination = rows * cols - 1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
@@ -73,9 +73,9 @@ public class Main extends Application {
                     Platform.runLater(() -> fxController.displayMaze(maze));
                     Thread.sleep(10);
                 }
-                Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+                Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND);
 
-                int[] antecedents = solver.solveRightHand(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
+                int[] antecedents = solver.solve(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
 
                 ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination), antecedents);
                 // mark all visited vertices (which are in antecedents array)
