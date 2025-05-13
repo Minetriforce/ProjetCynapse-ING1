@@ -82,57 +82,77 @@ public class Maze extends Graph implements Serializable {
      * @return the maze with the solution in a string format
      */
     public String solutionToString(int[] solution) {
+        // number of vertices
+        int n = rows * columns;
+
         // verification
         if (solution.equals(null)){
             System.out.println("Param null !");
             return this.toString();
         }
-        if (rows * columns != solution.length){
-            System.out.println("Inappropriate length of solution: " + solution.length + " (insted of " + rows * columns + ") !");
+        if (n != solution.length){
+            System.out.println("Inappropriate length of solution: " + solution.length + " (insted of " + n + ") !");
             return this.toString();
         }
-        for (int i = 0; i < rows * columns; i++){
-            if (solution[i] < 0 || solution[i] > rows * columns){
+        for (int i = 0; i < n; i++){
+            if (solution[i] < 0 || solution[i] > n){
                 System.out.println("Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
                 return this.toString();
             }
         }
 
+        // other chars: ·;■;▀;▄;▌;▐;█;▓;▒;░;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;+;=;-;|;*
         String s = "";
         ArrayList<Vertex> vertices = this.getVertices();
         // number of characters to print an int
-        int padding = (int)(Math.log10(rows * columns - 1) + 1);
+        int padding = (int)(Math.log10(n - 1) + 1);
         // padding must be odd
         padding += (padding % 2 == 0) ? 1 : 0;
         // padding must > 2
         padding = (padding < 3) ? 3 : padding;
+        // padding for special case
+        int pad = padding / 2;
         // absence of vertical wall
         String spaceVertical = "   ";
         // absence of horizontal wall
-        String spaceHorizontal = " ".repeat(padding);
+        String spaceHorizontal = " ".repeat(padding + 2);
+        // absence of horizontal wall next to border
+        String spaceHorizontalBorder = " ".repeat(padding + 1);
         // vertical wall
-        String wallVertical = " | ";
+        String wallVertical = " │ ";
         // horizontal wall
-        String wallHorizontal = "-".repeat(padding);
+        String wallHorizontal = "─".repeat(padding + 2);
+        // horizontal wall next to border
+        String wallHorizontalBorder = "─".repeat(padding + 1);
         // corner
-        String corner = " + ";
+        String corner = "┼";
         // vertical path
-        String pathVertical = " * ";
+        String pathVertical = " ".repeat(pad) + "·" + " ".repeat(pad);
+        // vertical path next to left border
+        String pathVerticalBorderLeft = pathVertical + " ";
+        // vertical path next to right border
+        String pathVerticalBorderRight = " " + pathVertical;
+        pathVertical = pathVerticalBorderRight + " ";
         // horizontal path
-        String pathHorizontal = "*".repeat(padding);
+        String pathHorizontal = "·".repeat(3);
 
+        //border
+        s += " ╔" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╗ " + "\n";
+
+        // id of vertex
+        int i = 0;
         // the maze
         for (int y = 0; y < rows; y++) {
+            s += " ║ ";
             for (int x = 0; x < columns; x++) {
-                // id of the vertex
-                int n = y * columns + x;
-                s += Maze.paddingInt(n, padding);
+                i = y * columns + x;
+                s += Maze.paddingInt(i, padding);
                 // if not the last column
                 if (x < columns - 1) {
                     // if vertex n + 1 neighboring
-                    if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) {
+                    if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + 1))) {
                         // if path
-                        if (solution[n] == n + 1 || solution[n + 1] == n) {
+                        if (solution[i] == i + 1 || solution[i + 1] == i) {
                             s += pathHorizontal;
                         }
                         // if not path
@@ -147,26 +167,26 @@ public class Maze extends Graph implements Serializable {
                 }
             }
             // line between 2 rows
-            s += "\n";
+            s += " ║ " + "\n";
             // if not the last row
             if (y < rows - 1) {
+                s += " ║ ";
                 for (int x = 0; x < columns; x++) {
-                    // id of the vertex
-                    int n = y * columns + x;
+                    i = y * columns + x;
                     // if vertex n + columns neighboring
-                    if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + columns))) {
+                    if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
                         // if path
-                        if (solution[n] == n + columns || solution[n + columns] == n) {
-                            s += pathVertical;
+                        if (solution[i] == i + columns || solution[i + columns] == i) {
+                            s += (x == 0) ? pathVerticalBorderLeft : ((x == columns - 1) ? pathVerticalBorderRight : pathVertical);
                         }
                         // if not path
                         else {
-                            s += spaceHorizontal;
+                            s += (x > 0 && x < columns - 1) ? spaceHorizontal : spaceHorizontalBorder;
                         }
                     }
                     // if there's a wall
                     else {
-                        s += wallHorizontal;
+                        s += (x > 0 && x < columns - 1) ? wallHorizontal : wallHorizontalBorder;
                     }
                     // if not the last column
                     if (x < columns - 1) {
@@ -174,9 +194,12 @@ public class Maze extends Graph implements Serializable {
                     }
                 }
                 // next row
-                s += "\n";
+                s += " ║ " + "\n";
             }
         }
+
+        //border
+        s += " ╚" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╝ " + "\n";
 
         return s;
     }
@@ -186,11 +209,13 @@ public class Maze extends Graph implements Serializable {
      */
     @Override
     public String toString() {
-        // other chars: ●;•;·;■;▀;▄;▌;▐;█;▓;▒;░;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;+;=;-;|;*
+        // other chars: ·;■;▀;▄;▌;▐;█;▓;▒;░;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;+;=;-;|;*
         String s = "";
         List<Vertex> vertices = this.getVertices();
+        // number vertices
+        int n = rows * columns;
         // number of characters to print an int
-        int padding = (int)(Math.log10(rows * columns - 1) + 1);
+        int padding = (int)(Math.log10(n - 1) + 1);
         // padding must be odd
         padding += (padding % 2 == 0) ? 1 : 0;
         // padding must > 2
@@ -200,22 +225,27 @@ public class Maze extends Graph implements Serializable {
         // absence of horizontal wall
         String spaceHorizontal = " ".repeat(padding);
         // vertical wall
-        String wallVertical = " | ";
+        String wallVertical = " │ ";
         // horizontal wall
-        String wallHorizontal = "-".repeat(padding);
+        String wallHorizontal = "─".repeat(padding);
         // corner
-        String corner = " + ";
+        String corner = " · ";
 
+        //border
+        s += " ╔" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╗ " + "\n";
+
+        // id of vertex
+        int i = 0;
         // the maze
         for (int y = 0; y < rows; y++) {
+            s += " ║ ";
             for (int x = 0; x < columns; x++) {
-                // id of the vertex
-                int n = y * columns + x;
-                s += Maze.paddingInt(n, padding);
+                i = y * columns + x;
+                s += Maze.paddingInt(i, padding);
                 // if not the last column
                 if (x < columns - 1) {
                     // if there's not a wall
-                    if (((vertices.get(n)).isNeighbor(vertices.get(n + 1)))){
+                    if (((vertices.get(i)).isNeighbor(vertices.get(i + 1)))){
                         s += spaceVertical;
                     }
                     // if there's a wall
@@ -225,14 +255,14 @@ public class Maze extends Graph implements Serializable {
                 }
             }
             // line between 2 rows
-            s += "\n";
+            s += " ║ " + "\n";
             // if not the last row
             if (y < rows - 1) {
+                s += " ║ ";
                 for (int x = 0; x < columns; x++) {
-                    // id of the vertex
-                    int n = y * columns + x;
+                    i = y * columns + x;
                     // if there's not a wall
-                    if (((vertices.get(n)).isNeighbor(vertices.get(n + columns)))){
+                    if (((vertices.get(i)).isNeighbor(vertices.get(i + columns)))){
                         s += spaceHorizontal;
                     }
                     // if there's a wall
@@ -245,9 +275,12 @@ public class Maze extends Graph implements Serializable {
                     }
                 }
                 // next row
-                s += "\n";
+                s += " ║ " + "\n";
             }
         }
+
+        //border
+        s += " ╚" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╝ " + "\n";
 
         return s;
     }
