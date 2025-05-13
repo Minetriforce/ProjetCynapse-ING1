@@ -50,7 +50,7 @@ public class Vertex implements Serializable {
      * 
      * @param x  horizontal coordinate
      * @param y  vertical coordinate
-     * @param ID unique ID of vertex
+     * @param id unique ID of vertex
      * @throws Exception it can be because the position is negative or because id is
      *                   negative.
      */

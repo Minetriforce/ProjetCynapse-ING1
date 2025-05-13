@@ -7,7 +7,7 @@ public class MazeController {
     private FXController fxController;
     private Solver mazeSolver;
     private int[] solution;
-    private Graph maze;
+    private Maze maze;
     private FileController fileController;
 
     public MazeController() {
@@ -31,7 +31,7 @@ public class MazeController {
         // solution = mazeSolver.solveAstar(maze, start, end, type);
     }
 
-    public Graph getCurrentMaze() {
+    public Maze getCurrentMaze() {
         if (maze == null) {
             System.out.println("No maze has been created/instantiated !");
         }
