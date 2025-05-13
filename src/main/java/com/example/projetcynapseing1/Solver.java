@@ -75,9 +75,9 @@ public class Solver {
      */
     public int[] solveAstar(Maze m, Vertex start, Vertex end, MethodName.Type t) {
         ArrayList<Vertex> vertices = m.getVertices();
-        int n = m.getVertices().size();
-        int si = vertices.indexOf(start);
-        int ei = vertices.indexOf(end);
+        int n = m.getRows() * m.getColumns();
+        int si = start.getID();
+        int ei = end.getID();
 
         boolean[] seen = new boolean[n];
         int[] parents = new int[n];
@@ -92,15 +92,18 @@ public class Solver {
 
         distances[si] = 0;
         toVisit.add(si);
+        int ui;
+        int vi;
+
         while (parents[ei] == ei) {
             if (toVisit.isEmpty()) {
                 return parents;
             }
-            int ui = toVisit.poll();
+            ui = toVisit.poll();
 
             if (!seen[ui]) {
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
-                    int vi = vertices.indexOf(v);
+                    vi = vertices.indexOf(v);
                     if (!seen[vi]) {
                         if (distances[vi] > distances[ui] + 1) {
                             parents[vi] = ui;
