@@ -20,25 +20,26 @@ import javafx.scene.image.ImageView;
  */
 public class Main extends Application {
     private static Maze maze;
-
     private final FXController fxController = new FXController();
     private final MazeController mazeController = new MazeController();
+
     @Override
     public void init() throws Exception {
         super.init();
         mazeController.setFXController(fxController);
     }
+
     /**
      * Start a new JavaFX windows
-     * 
+     *
      * @param stage can be set to null
      * @throws IOException if a problem occurs when creating javaFX Stage or scene
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows=10;
-        int cols=10;
-        int destination = rows*cols-1;
+        int rows = 5;
+        int cols = 4;
+        int destination = rows * cols - 1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
         fxmlLoader.setController(fxController);
@@ -51,15 +52,14 @@ public class Main extends Application {
 
         stage.show();
 
-
         new Thread(() -> {
             try {
                 MazeController mazeController = new MazeController();
-                mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
+                mazeController.createMaze(MethodName.GenMethodName.PRIM,
                         MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
 
                 Graph generatedGraph = mazeController.getCurrentMaze();
-                maze = new Maze(rows, cols, MethodName.GenMethodName.KRUSKAL);
+                maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
 
                 for (Edge e : generatedGraph.getEdges()) {
                     int fromID = e.getVertexA().getID();
@@ -86,11 +86,8 @@ public class Main extends Application {
                         v.setState(VertexState.VISITED);
                         Platform.runLater(() -> fxController.displayMaze(maze));
                         Thread.sleep(25);
-
                     }
-
                 }
-
 
                 // draw the real path in blue (solution)
                 for (Vertex v : solutionVertices) {
@@ -98,7 +95,6 @@ public class Main extends Application {
                     Platform.runLater(() -> fxController.displayMaze(maze));
                     Thread.sleep(50);
                 }
-
 
                 Platform.runLater(() -> {
                     System.out.println("Maze created:\n");
@@ -114,7 +110,6 @@ public class Main extends Application {
             }
         }).start();
     }
-
 
     /**
      * Entry point of application

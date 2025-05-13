@@ -101,7 +101,7 @@ public class MainCLI {
                         System.out.println(path_edge);
 
 
-
+                    break;
                     default:
                         System.out.println("Unvalid command");
                         break;

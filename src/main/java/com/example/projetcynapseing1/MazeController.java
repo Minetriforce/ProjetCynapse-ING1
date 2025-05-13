@@ -2,11 +2,44 @@ package com.example.projetcynapseing1;
 
 import java.util.ArrayList;
 
+/**
+ * Class used to manage mazes : creating, saving, solving and loading mazes
+ * 
+ * @author Bari-joris
+ * @see Maze
+ */
 public class MazeController {
+    /**
+     * Maze generator is saved each time a maze is generated. It is saved to keep
+     * informations of generation
+     */
     private Generator mazeGenerator;
+
+    /**
+     * FX controller variable is used in case communication is necessary between
+     * maze controller and FX Controller
+     */
     private FXController fxController;
+
+    /**
+     * Maze Solver is saved each time a request to solve a maze is made. It is saved
+     * to keep informations of solving
+     */
     private Solver mazeSolver;
+
+    /**
+     * solution is a list of index of vertices for a path between a vertex A and a
+     * vertex B
+     * WARNING: maze and solution can be on differents basis, make sure to run
+     * findSolution function if you have generated and solved multiple mazes
+     */
     private int[] solution;
+
+    /**
+     * current maze saved.
+     * WARNING: maze and solution can be on differents basis, make sure to run
+     * findSolution function if you have generated and solved multiple mazes
+     */
     private Maze maze;
     private FileController fileController;
 
