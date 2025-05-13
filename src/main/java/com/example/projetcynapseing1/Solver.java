@@ -71,153 +71,214 @@ public class Solver {
      * @param start: starting vertex
      * @param end: ending vertex
      * @param t: type of printing
-     * @return parents: array of parents of each vertex in the path
+     * @return antecedents: array of antecedents of each vertex in the path
      */
     public int[] solveAstar(Maze m, Vertex start, Vertex end, MethodName.Type t) {
+        // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
+        // number of vertices
         int n = m.getRows() * m.getColumns();
+        // index of the starting vertex
         int si = start.getID();
+        // index of the ending vertex
         int ei = end.getID();
 
-        boolean[] seen = new boolean[n];
-        int[] parents = new int[n];
+        // visited[i] indicates if vertex i has been visited
+        boolean[] visited = new boolean[n];
+        // antecedents[i] indicates the vertex antecedent taken to access vertex i
+        int[] antecedents = new int[n];
+        // distances[i] indicates the length of the path between start and vertex i
         int[] distances = new int[n];
+        // initialisation
         for (int i = 0; i < n; i++) {
-            seen[i] = false;
-            parents[i] = i;
+            visited[i] = false;
+            antecedents[i] = i;
             distances[i] = Integer.MAX_VALUE;
         }
+        // priority queue for the next vertex to visit, it compares the length of the path to vertex i and also it Manhattan distance to end
         PriorityQueue<Integer> toVisit = new PriorityQueue<Integer>(
-                Comparator.comparingInt(i -> distances[parents[i]] + distance(vertices.get(i), end)));
+                Comparator.comparingInt(i -> distances[i] + 2 * distance(vertices.get(i), end)));
 
+        // initialisation
         distances[si] = 0;
         toVisit.add(si);
         int ui;
         int vi;
 
-        while (parents[ei] == ei) {
+        // while there's no path leading to end
+        while (antecedents[ei] == ei) {
+            // if toVisit is empty, it means that there's no path from start to end in this maze
             if (toVisit.isEmpty()) {
-                return parents;
+                return antecedents;
             }
+
+            // ui the index of the vertex visiting
             ui = toVisit.poll();
 
-            if (!seen[ui]) {
+            // if vertex uihas not been visited
+            if (!visited[ui]) {
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
+                    // vi the index of the vertex neighboring vertex ui
                     vi = vertices.indexOf(v);
-                    if (!seen[vi]) {
+                    // if vertex vi has not been visited
+                    if (!visited[vi]) {
+                        // if the path start -> u -> v is shorter than the actual path start -> v
                         if (distances[vi] > distances[ui] + 1) {
-                            parents[vi] = ui;
+                            // change the antecedent of vi
+                            antecedents[vi] = ui;
+                            // update the distance
                             distances[vi] = distances[ui] + 1;
+                            // add vi in to the vertex that we have to visit
                             toVisit.add(vi);
                         }
                     }
                 }
 
-                seen[ui] = true;
+                // vertex ui is now visited
+                visited[ui] = true;
             }
         }
 
-        return parents;
+        return antecedents;
     }
 
+    /**
+     * solve the maze with the right hand algorithm
+     * @param m: maze graph
+     * @param start: starting vertex
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return antecedents: array of antecedents of each vertex in the path
+     */
     public int[] solveRightHand(Maze m, Vertex start, Vertex end, MethodName.Type t){
+        // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
+        // number of vertices
         int n = m.getRows() * m.getColumns();
+        // index of the starting vertex
         int si = start.getID();
+        // index of the ending vertex
         int ei = end.getID();
+        // right, down, left, up: it indicates the number to add to the id for a direction
         int[] directions = {1, m.getColumns(), -1, -m.getColumns()};
 
-        boolean[] seen = new boolean[n];
-        int[] parents = new int[n];
+        // visited[i] indicates if vertex i has been visited
+        boolean[] visited = new boolean[n];
+        // antecedents[i] indicates the vertex antecedent taken to access vertex i
+        int[] antecedents = new int[n];
+        // initialisation
         for (int i = 0; i < n; i++){
-            seen[i] = false;
-            parents[i] = i;
+            visited[i] = false;
+            antecedents[i] = i;
         }
-
+        
+        // LIFO
         Stack<Integer> toVisit = new Stack<>();
         int ui;
         int vi;
         int di = 0;
 
-        seen[si] = true;
-        for (Vertex v: vertices.get(si).getNeighbors()){
-            vi = v.getID();
-            parents[vi] = si;
-            toVisit.push(vi);
+        // initialisation
+        visited[si] = true;
+        for (int i = 0; i < 4; i++){
+            for (Vertex v: vertices.get(si).getNeighbors()){
+                vi = v.getID();
+                if (si + directions[i] == vi){
+                    antecedents[vi] = si;
+                    toVisit.push(vi);
+                }
+            }
         }
 
-        while (!seen[ei]){
+        // while end has not been visited
+        while (!visited[ei]){
+            // if toVisit is empty, it means that there's no path from start to end in this maze
             if (toVisit.isEmpty()){
-                return parents;
+                return antecedents;
             }
-            
+
+            // ui the index of the vertex visiting
             ui = toVisit.pop();
-            if (seen[ui]){
-                return parents;
+            // if u has been visited, it means that the algorithme fell into a loop
+            if (visited[ui]){
+                return antecedents;
             }
-            di = ui - parents[ui];
+            // the difference of id between vertex u and vertex antecedent to u
+            di = ui - antecedents[ui];
             for (int i = 0; i < 4; i++){
+                // if i is the direction from vertex antecedent to vertex u
                 if (di == directions[i]){
+                    // the coming direction to vertex u
                     di = (i + 2) % 4;
                     break;
                 }
             }
 
-            System.out.println("Sommet départ: " + ui);
+            // for each direction that is not the coming direction
             for (int i = 1; i < 4; i++){
+                // next direction
                 di = (di + 1) % 4;
-                System.out.println("Direction: " + di);
+                // for each neighbors
                 for (Vertex v: vertices.get(ui).getNeighbors()){
+                    // index of vertex v
                     vi = v.getID();
-                    if ((ui + directions[di] == vi) && (!seen[vi])){
-                        parents[vi] = ui;
+                    // if vertex v not visited and vertex v in the direction di
+                    if ((ui + directions[di] == vi) && (!visited[vi])){
+                        // update the antecedent
+                        antecedents[vi] = ui;
+                        // add vertex v into the vertices to visit
                         toVisit.push(vi);
-                        System.out.println("Sommet: " + vi);
                     }
                 }
             }
 
-            seen[ui] = true;
+            visited[ui] = true;
         }
 
+        // antecedents only shows the vertices that has been visited
         for (int i = 0; i < n; i++){
-            if (!seen[i]){
-                parents[i] = i;
+            if (!visited[i]){
+                antecedents[i] = i;
             }
         }
 
-        return parents;
+        return antecedents;
     }
 
     /**
-     * distance
      * @param a: First vertex
      * @param b: Second vertex
      * @return Manhattan distance between 2 vertices
      */
     public static int distance(Vertex a, Vertex b) {
+        // |a.x - b.x| + |a.y - b.y|
         return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
+        // Euclidean distance
+        //return Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()));
     }
 
     /**
      * index of the path without other information
      * @param m: maze graph
      * @param end: ending vertex
-     * @param parents: array of parents of each vertex in the path
-     * @return path: list of index (similiar to parents)
+     * @param antecedents: array of antecedents of each vertex in the path
+     * @return path: list of index (similiar to antecedents)
      */
-    public static int[] pathIndex(Maze m, Vertex end, int[] parents) {
+    public static int[] pathIndex(Maze m, Vertex end, int[] antecedents) {
         ArrayList<Vertex> vertices = m.getVertices();
-        int n = m.getVertices().size();
+        // number of vertices
+        int n = m.getRows() * m.getColumns();
+        // initialisation
         int[] solution = new int[n];
         for (int i = 0; i < n; i++) {
             solution[i] = i;
         }
 
+        // from end to start
         int i = vertices.indexOf(end);
-        while (parents[i] != i) {
-            solution[i] = parents[i];
-            i = parents[i];
+        while (antecedents[i] != i) {
+            solution[i] = antecedents[i];
+            i = antecedents[i];
         }
 
         return solution;
@@ -227,19 +288,19 @@ public class Solver {
      * get the path from start to end
      * @param m: maze graph
      * @param end: ending vertex
-     * @param parents: array of parents of each vertex in the path
+     * @param antecedents: array of antecedents of each vertex in the path
      * @return path: list of vertices in the path
      */
-    public static ArrayList<Vertex> pathVertex(Maze m, Vertex end, int[] parents){
+    public static ArrayList<Vertex> pathVertex(Maze m, Vertex end, int[] antecedents){
         ArrayList<Vertex> path = new ArrayList<>();
         ArrayList<Vertex> vertices = m.getVertices();
 
+        // from end to start
         int i = vertices.indexOf(end);
-
         path.add(0, end);
-        while (parents[i] != i){
-            path.add(0, vertices.get(parents[i]));
-            i = parents[i];
+        while (antecedents[i] != i){
+            path.add(0, vertices.get(antecedents[i]));
+            i = antecedents[i];
         }
 
         return path;
@@ -249,18 +310,18 @@ public class Solver {
      * get the path from start to end
      * @param m: maze graph
      * @param end: ending vertex
-     * @param parents: array of parents of each vertex in the path
+     * @param antecedents: array of antecedents of each vertex in the path
      * @return path: list of edges in the path
      */
-    public static ArrayList<Edge> pathEdge(Maze m, Vertex end, int[] parents){
+    public static ArrayList<Edge> pathEdge(Maze m, Vertex end, int[] antecedents){
         ArrayList<Edge> path = new ArrayList<>();
         ArrayList<Vertex> vertices = m.getVertices();
 
+        // from end to start
         int i = vertices.indexOf(end);
-
-        while (parents[i] != i){
-            path.add(0, m.getEdgeByVertices(vertices.get(parents[i]), vertices.get(i)));
-            i = parents[i];
+        while (antecedents[i] != i){
+            path.add(0, m.getEdgeByVertices(vertices.get(antecedents[i]), vertices.get(i)));
+            i = antecedents[i];
         }
 
         return path;
