@@ -17,33 +17,36 @@ import javafx.scene.image.ImageView;
 
 /**
  * Main Class of the application
- * TODO : rename this class
  */
 public class Main extends Application {
     private static Maze maze;
-
     private final FXController fxController = new FXController();
     private final MazeController mazeController = new MazeController();
+
     @Override
     public void init() throws Exception {
         super.init();
         mazeController.setFXController(fxController);
     }
+
     /**
      * Start a new JavaFX windows
-     * 
+     *
      * @param stage can be set to null
      * @throws IOException if a problem occurs when creating javaFX Stage or scene
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows=15;
-        int cols=15;
-        int destination = rows*cols-1;
+        int rows = 5;
+        int cols = 4;
+        int destination = rows * cols - 1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
+
+
 
         fxmlLoader.setController(fxController);
         fxController.setMazeSize(rows, cols);
+
         Scene scene = new Scene(fxmlLoader.load(), 1200,700);
 
         stage.setTitle("Cynapse");
@@ -51,7 +54,6 @@ public class Main extends Application {
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/smiley.png")));
 
         stage.show();
-
 
         new Thread(() -> {
             try {
@@ -119,7 +121,7 @@ public class Main extends Application {
 
     /**
      * Entry point of application
-     * 
+     *
      * @param args arguments when lauching java application
      */
     public static void main(String[] args) {

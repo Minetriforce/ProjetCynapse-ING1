@@ -323,6 +323,7 @@ public class Generator {
         }
 
         System.out.println("Timestamp : " + time + "ms");
+        System.out.println(maze);
         return maze;
     }
 

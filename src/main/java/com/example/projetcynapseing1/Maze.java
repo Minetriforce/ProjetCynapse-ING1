@@ -1,12 +1,13 @@
 package com.example.projetcynapseing1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Class for mazes, it must be a rectangular
  */
-public class Maze extends Graph {
+public class Maze extends Graph implements Serializable {
     private final int rows;
     private final int columns;
     private final MethodName.GenMethodName genMethodName;
