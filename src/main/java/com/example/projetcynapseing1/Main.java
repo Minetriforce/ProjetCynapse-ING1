@@ -37,8 +37,8 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows=5;
-        int cols=4;
+        int rows=15;
+        int cols=15;
         int destination = rows*cols-1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
@@ -76,13 +76,13 @@ public class Main extends Application {
                 }
                 Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
 
-                int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
+                int[] antecedents = solver.solveRightHand(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
 
-                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination), parents);
-                // mark all visited vertices (which are in parents array)
+                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination), antecedents);
+                // mark all visited vertices (which are in antecedents array)
 
-                for (int i = 0; i < parents.length; i++) {
-                    if (parents[i] != i || i == 0) {
+                for (int i = 0; i < antecedents.length; i++) {
+                    if (antecedents[i] != i || i == 0) {
                         Vertex v = maze.getVertices().get(i);
                         v.setState(VertexState.VISITED);
                         Platform.runLater(() -> fxController.displayMaze(maze));
@@ -105,7 +105,7 @@ public class Main extends Application {
                     System.out.println("Maze created:\n");
                     System.out.println(maze);
                     System.out.println("Solution found:\n");
-                    System.out.println(maze.solutionToString(Solver.pathIndex(maze, maze.getVertexByIDVertex(destination), parents)));
+                    System.out.println(maze.solutionToString(Solver.pathIndex(maze, maze.getVertexByIDVertex(destination), antecedents)));
                     fxController.displayMaze(maze);
                 });
 

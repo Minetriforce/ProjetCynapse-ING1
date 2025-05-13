@@ -43,6 +43,7 @@ public class FXController {
     private int rows;
     private int cols;
 
+
     public void setMazeController(MazeController mazeController) {
         this.mazeController = mazeController;
     }
