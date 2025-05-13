@@ -142,10 +142,8 @@ public class Solver {
         seen[si] = true;
         for (Vertex v: vertices.get(si).getNeighbors()){
             vi = v.getID();
-            if (si + directions[di] == vi){
-                parents[vi] = si;
-                toVisit.push(vi);
-            }
+            parents[vi] = si;
+            toVisit.push(vi);
         }
 
         while (!seen[ei]){
@@ -167,7 +165,7 @@ public class Solver {
 
             System.out.println("Sommet départ: " + ui);
             for (int i = 1; i < 4; i++){
-                di = (di + 10) % 4;
+                di = (di + 1) % 4;
                 System.out.println("Direction: " + di);
                 for (Vertex v: vertices.get(ui).getNeighbors()){
                     vi = v.getID();
