@@ -4,7 +4,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainCLI {
+    
     public static void main(String args[]){
+        // ANSI escape codes for colors
+        final String RESET = "\u001B[0m";
+        final String RED = "\u001B[31m";
+        final String GREEN = "\u001b[38;5;46m";
+        final String YELLOW = "\u001B[33m";
+        final String BLUE = "\u001B[34m";
+        final String CYAN = "\u001B[36m";
+        final String MAGENTA = "\u001B[35m";
+        final String BOLD = "\u001B[1m";
+        final String ITALIC = "\u001B[3m";
+        final String UNDERLINE = "\u001B[4m";
+        final String GRAY = "\u001b[38;5;244m";
+
         int rows=0;
         int columns=0;
         int seed=0;
@@ -19,29 +33,29 @@ public class MainCLI {
             String command = args[0];
             switch (command) {
                 case "cli":
-                    System.out.println("  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n" + //
+                    System.out.println(BLUE+BOLD+"  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n" + //
                     " |  _ \\  |  _ \\   / _ \\      | | | ____| |_   _|    / ___| \\ \\ / / | \\ | |    / \\    |  _ \\  / ___|  | ____|\n" + //
                     " | |_) | | |_) | | | | |  _  | | |  _|     | |     | |      \\ V /  |  \\| |   / _ \\   | |_) | \\___ \\  |  _|  \n" + //
                     " |  __/  |  _ <  | |_| | | |_| | | |___    | |     | |___    | |   | |\\  |  / ___ \\  |  __/   ___) | | |___ \n" + //
-                    " |_|     |_| \\_\\  \\___/   \\___/  |_____|   |_|      \\____|   |_|   |_| \\_| /_/   \\_\\ |_|     |____/  |_____|\n");
+                    " |_|     |_| \\_\\  \\___/   \\___/  |_____|   |_|      \\____|   |_|   |_| \\_| /_/   \\_\\ |_|     |____/  |_____|\n"+RESET);
 
                     Scanner sc = new Scanner(System.in);
 
-                    System.out.println("MENU ");
-                    System.out.println(" 1 - Generate a labyrinth");
-                    System.out.println(" 2 - Load a labyrinth");
+                    System.out.println(BOLD+UNDERLINE+ "MENU"+RESET);
+                    System.out.println(BOLD + " 1 " + RESET + "- Generate a labyrinth");
+                    System.out.println(BOLD+" 2 " + RESET + "- Load a labyrinth" + RESET);
 
                     menuChoice = sc.nextLine().toLowerCase().trim();
 
                     if(menuChoice.equalsIgnoreCase("1") || menuChoice.equalsIgnoreCase("generate a labyrinth")){
-                        System.out.println("Enter the number of rows:");
+                        System.out.println(ITALIC + "Enter the number of rows:" + RESET);
                         rows = sc.nextInt();
-                        System.out.println("Enter the number of columns:");
+                        System.out.println(ITALIC + "Enter the number of columns:" + RESET);
                         columns = sc.nextInt();
-                        System.out.println("Enter a seed (or 0 for random):");
+                        System.out.println(ITALIC + "Enter a seed (or 0 for random):" + RESET);
                         seed = sc.nextInt();
 
-                        System.out.println("How would you like to generate it?");
+                        System.out.println(ITALIC + "How would you like to generate it?" + RESET);
                         System.out.println(" 1 - Prim");
                         System.out.println(" 2 - Kruskal");
                         System.out.println(" 3 - RNG_DFS");

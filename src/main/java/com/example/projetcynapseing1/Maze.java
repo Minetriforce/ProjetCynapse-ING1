@@ -12,6 +12,11 @@ public class Maze extends Graph implements Serializable {
     private final int columns;
     private final MethodName.GenMethodName genMethodName;
 
+    // ANSI escape codes for colors
+    final String RESET = "\u001B[0m";
+    final String GREEN = "\u001b[38;5;46m";
+    final String GRAY = "\u001b[38;5;244m";
+
     /**
      * constructor: create c*l vertices without any edge
      * @param l: number of lines
@@ -119,31 +124,31 @@ public class Maze extends Graph implements Serializable {
         // absence of horizontal wall next to border
         String spaceHorizontalBorder = " ".repeat(padding + 1);
         // vertical wall
-        String wallVertical = " │ ";
+        String wallVertical = GRAY+" │ "+RESET;
         // horizontal wall
-        String wallHorizontal = "─".repeat(padding + 2);
+        String wallHorizontal = GRAY+"─".repeat(padding + 2)+RESET;
         // horizontal wall next to border
-        String wallHorizontalBorder = "─".repeat(padding + 1);
+        String wallHorizontalBorder = GRAY+"─".repeat(padding + 1)+RESET;
         // corner
-        String corner = "┼";
+        String corner = GRAY+"┼"+RESET;
         // vertical path
-        String pathVertical = " ".repeat(pad) + "·" + " ".repeat(pad);
+        String pathVertical = GREEN + " ".repeat(pad) + "│" + " ".repeat(pad) + RESET;
         // vertical path next to left border
-        String pathVerticalBorderLeft = pathVertical + " ";
+        String pathVerticalBorderLeft = GREEN + pathVertical + " " + RESET;
         // vertical path next to right border
         String pathVerticalBorderRight = " " + pathVertical;
         pathVertical = pathVerticalBorderRight + " ";
         // horizontal path
-        String pathHorizontal = "·".repeat(3);
+        String pathHorizontal = GREEN + "─".repeat(3) + RESET;
 
         //border
-        s += " ╔" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╗ " + "\n";
+        s += GRAY+" ╔" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╗ " + "\n"+RESET;
 
         // id of vertex
         int i = 0;
         // the maze
         for (int y = 0; y < rows; y++) {
-            s += " ║ ";
+            s += GRAY + " ║ " + RESET;
             for (int x = 0; x < columns; x++) {
                 i = y * columns + x;
                 s += Maze.paddingInt(i, padding);
@@ -167,10 +172,10 @@ public class Maze extends Graph implements Serializable {
                 }
             }
             // line between 2 rows
-            s += " ║ " + "\n";
+            s += GRAY+" ║ " + "\n"+RESET;
             // if not the last row
             if (y < rows - 1) {
-                s += " ║ ";
+                s += GRAY+" ║ "+RESET;
                 for (int x = 0; x < columns; x++) {
                     i = y * columns + x;
                     // if vertex n + columns neighboring
@@ -194,12 +199,12 @@ public class Maze extends Graph implements Serializable {
                     }
                 }
                 // next row
-                s += " ║ " + "\n";
+                s += GRAY + " ║ " + "\n" + RESET;
             }
         }
 
         //border
-        s += " ╚" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╝ " + "\n";
+        s += GRAY+" ╚" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╝ " + "\n"+RESET;
 
         return s;
     }
