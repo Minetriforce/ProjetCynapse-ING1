@@ -8,6 +8,7 @@ public class MainCLI {
         int rows=0;
         int columns=0;
         int seed=0;
+        FXController fxController = new FXController();
 
         String menuChoice=null;
         String generationChoice=null;
@@ -82,7 +83,7 @@ public class MainCLI {
                         System.out.println("\nGenerated Maze:");
                         System.out.println(maze);
                         // Solve the maze from top-left to bottom-right
-                        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+                        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR,fxController);
                         int startId = 0;  // Top-left corner
                         int endId = (rows * columns) - 1;  // Bottom-right corner
                         int[] parents = solver.solveAstar(maze,
