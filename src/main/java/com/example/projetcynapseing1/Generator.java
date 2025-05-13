@@ -278,17 +278,6 @@ public class Generator {
         Maze base = this.makeGridGraph();
         Maze maze = new Maze(this.rows, this.columns, this.genMethod);
 
-        // add all vertices created in base to maze (reduce work)
-        for (Vertex V : base.getVertices()) {
-            try {
-                Vertex newV = new Vertex(V.getX(), V.getY(), V.getID());
-                maze.addVertex(newV);
-            } catch (Exception e) {
-                System.err.println("--MAZE GENERATOR ERROR--");
-                System.err.println("Error while creating new Vertex for maze");
-            }
-        }
-
         switch (this.genMethod) {
             case KRUSKAL:
                 this.addRandomWeight(base);
@@ -323,7 +312,6 @@ public class Generator {
         }
 
         System.out.println("Timestamp : " + time + "ms");
-        System.out.println(maze);
         return maze;
     }
 

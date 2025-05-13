@@ -32,8 +32,8 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows = 5;
-        int cols = 4;
+        int rows = 10;
+        int cols = 10;
         int destination = rows * cols - 1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
@@ -47,11 +47,13 @@ public class Main extends Application {
         new Thread(() -> {
             try {
                 MazeController mazeController = new MazeController();
-                mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
+                mazeController.createMaze(MethodName.GenMethodName.PRIM,
                         MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
 
+                System.out.println(mazeController.getCurrentMaze());
+
                 Graph generatedGraph = mazeController.getCurrentMaze();
-                maze = new Maze(rows, cols, MethodName.GenMethodName.KRUSKAL);
+                maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
 
                 for (Edge e : generatedGraph.getEdges()) {
                     int fromID = e.getVertexA().getID();
