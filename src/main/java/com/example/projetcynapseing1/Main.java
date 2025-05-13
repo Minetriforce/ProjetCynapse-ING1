@@ -1,17 +1,19 @@
 package com.example.projetcynapseing1;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * Main Class of the application
@@ -19,6 +21,7 @@ import java.util.ArrayList;
  */
 public class Main extends Application {
     private static Maze maze;
+
     private final FXController fxController = new FXController();
     private final MazeController mazeController = new MazeController();
     @Override
@@ -28,7 +31,7 @@ public class Main extends Application {
     }
     /**
      * Start a new JavaFX windows
-     *
+     * 
      * @param stage can be set to null
      * @throws IOException if a problem occurs when creating javaFX Stage or scene
      */
@@ -39,13 +42,14 @@ public class Main extends Application {
         int destination = rows*cols-1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
-
-
         fxmlLoader.setController(fxController);
         fxController.setMazeSize(rows, cols);
         Scene scene = new Scene(fxmlLoader.load(), 1200,700);
-        stage.setTitle("Hello!");
+
+        stage.setTitle("Cynapse");
         stage.setScene(scene);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/smiley.png")));
+
         stage.show();
 
 
@@ -88,6 +92,7 @@ public class Main extends Application {
 
                 }
 
+
                 // draw the real path in blue (solution)
                 for (Vertex v : solutionVertices) {
                     v.setState(VertexState.SOLUTION);
@@ -114,7 +119,7 @@ public class Main extends Application {
 
     /**
      * Entry point of application
-     *
+     * 
      * @param args arguments when lauching java application
      */
     public static void main(String[] args) {
