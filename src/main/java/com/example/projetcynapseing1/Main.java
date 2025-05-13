@@ -58,11 +58,11 @@ public class Main extends Application {
         new Thread(() -> {
             try {
                 MazeController mazeController = new MazeController();
-                mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
+                mazeController.createMaze(MethodName.GenMethodName.PRIM,
                         MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
 
                 Graph generatedGraph = mazeController.getCurrentMaze();
-                maze = new Maze(rows, cols, MethodName.GenMethodName.KRUSKAL);
+                maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
 
                 for (Edge e : generatedGraph.getEdges()) {
                     int fromID = e.getVertexA().getID();
