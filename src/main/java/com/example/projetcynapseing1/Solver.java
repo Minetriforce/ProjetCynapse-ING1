@@ -74,6 +74,12 @@ public class Solver {
      * @return antecedents: array of antecedents of each vertex in the path
      */
     public int[] solveAstar(Maze m, Vertex start, Vertex end, MethodName.Type t) {
+        // verification
+        if (m.equals(null) || start.equals(null) || end.equals(null) || t.equals(null)){
+            System.out.println("Param null !");
+            return null;
+        }
+
         // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
@@ -95,6 +101,17 @@ public class Solver {
             antecedents[i] = i;
             distances[i] = Integer.MAX_VALUE;
         }
+
+        // verification
+        if (! vertices.contains(start)){
+            System.out.println("Vertex start isn't in the maze given !");
+            return antecedents;
+        }
+        if (! vertices.contains(end)){
+            System.out.println("Vertex end isn't in the maze given !");
+            return antecedents;
+        }
+
         // priority queue for the next vertex to visit, it compares the length of the path to vertex i and also it Manhattan distance to end
         PriorityQueue<Integer> toVisit = new PriorityQueue<Integer>(
                 Comparator.comparingInt(i -> distances[i] + 2 * distance(vertices.get(i), end)));
@@ -151,6 +168,12 @@ public class Solver {
      * @return antecedents: array of antecedents of each vertex in the path
      */
     public int[] solveRightHand(Maze m, Vertex start, Vertex end, MethodName.Type t){
+        // verification
+        if (m.equals(null) || start.equals(null) || end.equals(null) || t.equals(null)){
+            System.out.println("Param null !");
+            return null;
+        }
+
         // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
@@ -170,6 +193,16 @@ public class Solver {
         for (int i = 0; i < n; i++){
             visited[i] = false;
             antecedents[i] = i;
+        }
+
+        // verification
+        if (! vertices.contains(start)){
+            System.out.println("Vertex start isn't in the maze given !");
+            return antecedents;
+        }
+        if (! vertices.contains(end)){
+            System.out.println("Vertex end isn't in the maze given !");
+            return antecedents;
         }
         
         // LIFO
@@ -265,6 +298,12 @@ public class Solver {
      * @return path: list of index (similiar to antecedents)
      */
     public static int[] pathIndex(Maze m, Vertex end, int[] antecedents) {
+        // verification
+        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
+            System.out.println("Param null !");
+            return null;
+        }
+
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
         int n = m.getRows() * m.getColumns();
@@ -275,16 +314,12 @@ public class Solver {
         }
 
         // verification
-        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
-            System.out.println("");
-            return path;
-        }
         if (n != antecedents.length){
             System.out.println("Inappropriate length of antecedents: " + antecedents.length + " (insted of " + n + ") !");
             return path;
         }
         if (! vertices.contains(end)){
-            System.out.println("Vertex end id not in the maze given !");
+            System.out.println("Vertex end isn't in the maze given !");
             return path;
         }
         for (int i = 0; i < n; i++){
@@ -316,17 +351,20 @@ public class Solver {
      */
     public static ArrayList<Vertex> pathVertex(Maze m, Vertex end, int[] antecedents){
         ArrayList<Vertex> path = new ArrayList<>();
+
+        // verification
+        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
+            System.out.println("Param null !");
+            return path;
+        }
+
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
         int n = m.getRows() * m.getColumns();
 
         // verification
-        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
-            System.out.println("");
-            return path;
-        }
         if (! vertices.contains(end)){
-            System.out.println("Vertex end id not in the maze given !");
+            System.out.println("Vertex end isn't in the maze given !");
             return path;
         }
         for (int i = 0; i < antecedents.length; i++){
@@ -359,17 +397,20 @@ public class Solver {
      */
     public static ArrayList<Edge> pathEdge(Maze m, Vertex end, int[] antecedents){
         ArrayList<Edge> path = new ArrayList<>();
+
+        // verification
+        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
+            System.out.println("Param null !");
+            return path;
+        }
+
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
         int n = m.getRows() * m.getColumns();
 
         // verification
-        if (m.equals(null) || end.equals(null) || antecedents.equals(null)){
-            System.out.println("");
-            return path;
-        }
         if (! vertices.contains(end)){
-            System.out.println("Vertex end id not in the maze given !");
+            System.out.println("Vertex end isn't in the maze given !");
             return path;
         }
         for (int i = 0; i < antecedents.length; i++){

@@ -18,8 +18,8 @@ public class Maze extends Graph {
      */
     public Maze(int l, int c, MethodName.GenMethodName genMethodName) {
         super();
-        this.rows = l;
-        this.columns = c;
+        this.rows = (l > 0) ? l : 1;
+        this.columns = (c > 0) ? c : 1;
 
         this.genMethodName = genMethodName;
 
@@ -67,6 +67,7 @@ public class Maze extends Graph {
      */
     public static String paddingInt(int n, int padding){
         // number of spaces to add
+        padding = (padding > 0) ? padding : 1;
         int pad = padding - (int)(Math.log10((n > 1) ? n : 2) + 1);
         int padRight = pad / 2;
         int padLeft = pad - padRight;
