@@ -82,6 +82,22 @@ public class Maze extends Graph implements Serializable {
      * @return the maze with the solution in a string format
      */
     public String solutionToString(int[] solution) {
+        // verification
+        if (solution.equals(null)){
+            System.out.println("Param null !");
+            return this.toString();
+        }
+        if (rows * columns != solution.length){
+            System.out.println("Inappropriate length of solution: " + solution.length + " (insted of " + rows * columns + ") !");
+            return this.toString();
+        }
+        for (int i = 0; i < rows * columns; i++){
+            if (solution[i] < 0 || solution[i] > rows * columns){
+                System.out.println("Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
+                return this.toString();
+            }
+        }
+
         String s = "";
         ArrayList<Vertex> vertices = this.getVertices();
         // number of characters to print an int
