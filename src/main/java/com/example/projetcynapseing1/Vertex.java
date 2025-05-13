@@ -3,6 +3,12 @@ package com.example.projetcynapseing1;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+enum VertexState {
+    DEFAULT, // not visited
+    VISITED, // explored
+    SOLUTION // part of final path
+}
+
 /**
  * Class Vertex is used in a Graph Object.
  * For a maze, it represents a case if a grid (intersection).
@@ -17,14 +23,6 @@ import java.util.ArrayList;
  * @author Bari-joris
  * @version 1.0
  */
-
-enum VertexState {
-    DEFAULT,   // not visited
-    VISITED,   // explored
-    SOLUTION   // part of final path
-}
-
-
 public class Vertex implements Serializable {
 
     /**
@@ -44,13 +42,12 @@ public class Vertex implements Serializable {
 
     private VertexState state = VertexState.DEFAULT;
 
-
     /**
      * Constructor of Vertex Object
      * 
      * @param x  horizontal coordinate
      * @param y  vertical coordinate
-     * @param ID unique ID of vertex
+     * @param id unique ID of vertex
      * @throws Exception it can be because the position is negative or because id is
      *                   negative.
      */
@@ -102,7 +99,6 @@ public class Vertex implements Serializable {
         return this.id;
     }
 
-
     /**
      * Get the current state of the vertex (used for coloring in GUI)
      *
@@ -120,7 +116,6 @@ public class Vertex implements Serializable {
     public void setState(VertexState state) {
         this.state = state;
     }
-
 
     /**
      * <p>

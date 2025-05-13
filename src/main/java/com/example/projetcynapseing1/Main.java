@@ -9,23 +9,21 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * Main Class of the application
- * TODO : rename this class
  */
 public class Main extends Application {
     private static Maze maze;
     private final FXController fxController = new FXController();
     private final MazeController mazeController = new MazeController();
+
     @Override
     public void init() throws Exception {
         super.init();
         mazeController.setFXController(fxController);
     }
+
     /**
      * Start a new JavaFX windows
      *
@@ -34,20 +32,17 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows=5;
-        int cols=4;
-        int destination = rows*cols-1;
+        int rows = 5;
+        int cols = 4;
+        int destination = rows * cols - 1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
-
-
 
         fxmlLoader.setController(fxController);
         fxController.setMazeSize(rows, cols);
-        Scene scene = new Scene(fxmlLoader.load(), 1200,700);
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
-
 
         new Thread(() -> {
             try {
@@ -72,9 +67,11 @@ public class Main extends Application {
                 }
                 Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
 
-                int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
+                int[] parents = solver.solveAstar(maze, maze.getVertexByIDVertex(0),
+                        maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
 
-                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination), parents);
+                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination),
+                        parents);
                 // mark all visited vertices (which are in parents array)
 
                 for (int i = 0; i < parents.length; i++) {
@@ -83,9 +80,7 @@ public class Main extends Application {
                         v.setState(VertexState.VISITED);
                         Platform.runLater(() -> fxController.displayMaze(maze));
                         Thread.sleep(25);
-
                     }
-
                 }
 
                 // draw the real path in blue (solution)
@@ -95,22 +90,20 @@ public class Main extends Application {
                     Thread.sleep(50);
                 }
 
-
                 Platform.runLater(() -> {
                     System.out.println("Maze created:\n");
                     System.out.println(maze);
                     System.out.println("Solution found:\n");
-                    System.out.println(maze.solutionToString(Solver.pathIndex(maze, maze.getVertexByIDVertex(destination), parents)));
+                    System.out.println(maze
+                            .solutionToString(Solver.pathIndex(maze, maze.getVertexByIDVertex(destination), parents)));
                     fxController.displayMaze(maze);
                 });
-
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
     }
-
 
     /**
      * Entry point of application
