@@ -13,7 +13,6 @@ public class Maze extends Graph {
 
     /**
      * constructor: create c*l vertices without any edge
-     *
      * @param l: number of lines
      * @param c: number of columns
      */
@@ -39,7 +38,6 @@ public class Maze extends Graph {
 
     /**
      * getter of rows
-     * 
      * @return rows
      */
     public int getRows() {
@@ -48,40 +46,65 @@ public class Maze extends Graph {
 
     /**
      * getter of columns
-     * 
      * @return columns
      */
     public int getColumns() {
         return columns;
     }
 
+    /**
+     * getter of genMethodName
+     * @return genMethoName
+     */
     public MethodName.GenMethodName getGenMethod() {
         return this.genMethodName;
     }
 
     /**
+     * @param n: number to convert
+     * @param padding: total length of the string
+     * @return number to string with padding
+     */
+    public static String paddingInt(int n, int padding){
+        int pad = padding - (int)(Math.log10((n > 1) ? n : 2) + 1);
+        int padRight = pad / 2;
+        int padLeft = pad - padRight;
+        
+        return " ".repeat(padLeft) + n + " ".repeat(padRight);
+    }
+
+    /**
      * convert a solution to a string
-     *
      * @param solution: parent of each vertex in the solution
      * @return the maze with the solution in a string format
      */
     public String solutionToString(int[] solution) {
         String s = "";
         ArrayList<Vertex> vertices = this.getVertices();
+        int padding = (int)(Math.log10(rows * columns - 1) + 1);
+        padding += (padding % 2 == 0) ? 1 : 0;
+        padding = (padding < 3) ? 3 : padding;
+        String spaceVertical = "   ";
+        String spaceHorizontal = " ".repeat(padding);
+        String wallVertical = " | ";
+        String wallHorizontal = "-".repeat(padding);
+        String corner = " + ";
+        String pathVertical = " * ";
+        String pathHorizontal = "*".repeat(padding);
 
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
                 int n = y * columns + x;
-                s += String.format(" %-2d", n);
+                s += Maze.paddingInt(n, padding);
                 if (x < columns - 1) {
                     if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) {
                         if (solution[n] == n + 1 || solution[n + 1] == n) {
-                            s += "***";
+                            s += pathHorizontal;
                         } else {
-                            s += "   ";
+                            s += spaceVertical;
                         }
                     } else {
-                        s += " | ";
+                        s += wallVertical;
                     }
                 }
             }
@@ -91,15 +114,15 @@ public class Maze extends Graph {
                     int n = y * columns + x;
                     if (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + columns))) {
                         if (solution[n] == n + columns || solution[n + columns] == n) {
-                            s += " * ";
+                            s += pathVertical;
                         } else {
-                            s += "   ";
+                            s += spaceHorizontal;
                         }
                     } else {
-                        s += "---";
+                        s += wallHorizontal;
                     }
                     if (x < columns - 1) {
-                        s += " + ";
+                        s += corner;
                     }
                 }
                 s += "\n";
@@ -114,24 +137,43 @@ public class Maze extends Graph {
      */
     @Override
     public String toString() {
+        // other chars: ●;•;·;■;▀;▄;▌;▐;█;▓;▒;░;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;+;=;-;|;*
         String s = "";
         List<Vertex> vertices = this.getVertices();
+        int padding = (int)(Math.log10(rows * columns - 1) + 1);
+        padding += (padding % 2 == 0) ? 1 : 0;
+        padding = (padding < 3) ? 3 : padding;
+        String spaceVertical = "   ";
+        String spaceHorizontal = " ".repeat(padding);
+        String wallVertical = " | ";
+        String wallHorizontal = "-".repeat(padding);
+        String corner = " + ";
 
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
                 int n = y * columns + x;
-                s += String.format(" %-2d", n);
+                s += Maze.paddingInt(n, padding);
                 if (x < columns - 1) {
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) ? "   " : " | ";
+                    if (((vertices.get(n)).isNeighbor(vertices.get(n + 1)))){
+                        s += spaceVertical;
+                    }
+                    else{
+                        s += wallVertical;
+                    }
                 }
             }
             s += "\n";
             if (y < rows - 1) {
                 for (int x = 0; x < columns; x++) {
                     int n = y * columns + x;
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + columns))) ? "   " : "---";
+                    if (((vertices.get(n)).isNeighbor(vertices.get(n + columns)))){
+                        s += spaceHorizontal;
+                    }
+                    else{
+                        s += wallHorizontal;
+                    }
                     if (x < columns - 1) {
-                        s += " + ";
+                        s += corner;
                     }
                 }
                 s += "\n";

@@ -17,7 +17,6 @@ import javafx.scene.image.ImageView;
 
 /**
  * Main Class of the application
- * TODO : rename this class
  */
 public class Main extends Application {
     private static Maze maze;
@@ -37,8 +36,8 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        int rows=15;
-        int cols=15;
+        int rows=10;
+        int cols=10;
         int destination = rows*cols-1;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
 
