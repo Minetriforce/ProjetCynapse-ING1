@@ -2,7 +2,9 @@ package com.example.projetcynapseing1;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class for mazes, it must be a rectangular
@@ -106,7 +108,7 @@ public class Maze extends Graph implements Serializable {
             }
         }
 
-        // other chars: ·;■;▀;▄;▌;▐;█;▓;▒;░;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;+;=;-;|;*
+        // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;├;┤;┬;┴;╭;╮;╯;╰;+;=;-;|;*
         String s = "";
         ArrayList<Vertex> vertices = this.getVertices();
         // number of characters to print an int
@@ -117,41 +119,91 @@ public class Maze extends Graph implements Serializable {
         padding = (padding < 3) ? 3 : padding;
         // padding for special case
         int pad = padding / 2;
+
         // absence of vertical wall
         String spaceVertical = "   ";
         // absence of horizontal wall
         String spaceHorizontal = " ".repeat(padding + 2);
         // absence of horizontal wall next to border
         String spaceHorizontalBorder = " ".repeat(padding + 1);
+
         // vertical wall
-        String wallVertical = GRAY+" │ "+RESET;
+        String wallVertical = GRAY + " │ " + RESET;
         // horizontal wall
-        String wallHorizontal = GRAY+"─".repeat(padding + 2)+RESET;
+        String wallHorizontal = GRAY + "─".repeat(padding + 2) + RESET;
         // horizontal wall next to border
-        String wallHorizontalBorder = GRAY+"─".repeat(padding + 1)+RESET;
-        // corner
-        String corner = GRAY+"┼"+RESET;
+        String wallHorizontalBorder = GRAY + "─".repeat(padding + 1) + RESET;
+
+        // corners
+        String cornerEmpty = " ";
+        String cornerRight = GRAY + "─" + RESET;
+        String cornerDown = GRAY + "│" + RESET;
+        String cornerLeft = GRAY + "─" + RESET;
+        String cornerUp = GRAY + "│" + RESET;
+        String cornerRightDown = GRAY + "┌" + RESET;
+        String cornerRightLeft = GRAY + "─" + RESET;
+        String cornerRightUp = GRAY + "└" + RESET;
+        String cornerDownLeft = GRAY + "┐" + RESET;
+        String cornerDownUp = GRAY + "│" + RESET;
+        String cornerLeftUp = GRAY + "┘" + RESET;
+        String cornerRightDownLeft = GRAY + "┬" + RESET;
+        String cornerRightDownUp = GRAY + "├" + RESET;
+        String cornerRightLeftUp = GRAY + "┴" + RESET;
+        String cornerDownLeftUp = GRAY + "┤" + RESET;
+        String cornerAll = GRAY + "┼" + RESET;
+        Map<Integer, String> corners = new HashMap<>();
+        corners.put(1 , cornerEmpty);
+        corners.put(2 , cornerRight);
+        corners.put(3 , cornerDown);
+        corners.put(5 , cornerLeft);
+        corners.put(7 , cornerUp);
+        corners.put(6 , cornerRightDown);
+        corners.put(10 , cornerRightLeft);
+        corners.put(14 , cornerRightUp);
+        corners.put(15 , cornerDownLeft);
+        corners.put(21 , cornerDownUp);
+        corners.put(35 , cornerLeftUp);
+        corners.put(30 , cornerRightDownLeft);
+        corners.put(42 , cornerRightDownUp);
+        corners.put(70 , cornerRightLeftUp);
+        corners.put(105 , cornerDownLeftUp);
+        corners.put(210 , cornerAll);
+
         // vertical path
         String pathVertical = GREEN + " ".repeat(pad) + "│" + " ".repeat(pad) + RESET;
         // vertical path next to left border
-        String pathVerticalBorderLeft = GREEN + pathVertical + " " + RESET;
+        String pathVerticalBorderLeft = pathVertical + " ";
         // vertical path next to right border
         String pathVerticalBorderRight = " " + pathVertical;
         pathVertical = pathVerticalBorderRight + " ";
         // horizontal path
         String pathHorizontal = GREEN + "─".repeat(3) + RESET;
 
-        //border
-        s += GRAY+" ╔" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╗ " + "\n"+RESET;
+        // vertical border
+        String borderVertical = GRAY + " ║ " + RESET;
+        // border horizontal
+        String borderHorizontal = "═".repeat(padding * columns + 3 * (columns - 1) + 2);
+        // border up
+        String borderUp = GRAY + " ╔" + borderHorizontal + "╗ " + RESET;
+        // border down
+        String borderDown = GRAY + " ╚" + borderHorizontal + "╝ " + RESET;
 
         // id of vertex
         int i = 0;
+        // counter for borders
+        int c = 1;
+
+        //border
+        s += borderUp + "\n";
+
         // the maze
         for (int y = 0; y < rows; y++) {
-            s += GRAY + " ║ " + RESET;
+            s += borderVertical;
+
             for (int x = 0; x < columns; x++) {
                 i = y * columns + x;
                 s += Maze.paddingInt(i, padding);
+
                 // if not the last column
                 if (x < columns - 1) {
                     // if vertex n + 1 neighboring
@@ -171,13 +223,16 @@ public class Maze extends Graph implements Serializable {
                     }
                 }
             }
+
             // line between 2 rows
-            s += GRAY+" ║ " + "\n"+RESET;
+            s += borderVertical + "\n";
             // if not the last row
             if (y < rows - 1) {
-                s += GRAY+" ║ "+RESET;
+                s += borderVertical;
+
                 for (int x = 0; x < columns; x++) {
                     i = y * columns + x;
+
                     // if vertex n + columns neighboring
                     if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
                         // if path
@@ -193,18 +248,36 @@ public class Maze extends Graph implements Serializable {
                     else {
                         s += (x > 0 && x < columns - 1) ? wallHorizontal : wallHorizontalBorder;
                     }
+
                     // if not the last column
                     if (x < columns - 1) {
-                        s += corner;
+                        // tests to chose the corner
+                        if (! ((vertices.get(i + 1)).getNeighbors()).contains(vertices.get(i + 1 + columns))){
+                            c *= 2;
+                        }
+                        if (! ((vertices.get(i + columns)).getNeighbors()).contains(vertices.get(i + 1 + columns))){
+                            c *= 3;
+                        }
+                        if (! ((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))){
+                            c *= 5;
+                        }
+                        if (! ((vertices.get(i)).getNeighbors()).contains(vertices.get(i + 1))){
+                            c *= 7;
+                        }
+
+                        s += corners.get(c);
+
+                        c = 1;
                     }
                 }
+
                 // next row
-                s += GRAY + " ║ " + "\n" + RESET;
+                s += borderVertical + "\n";
             }
         }
 
         //border
-        s += GRAY+" ╚" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╝ " + "\n"+RESET;
+        s += borderDown + "\n";
 
         return s;
     }
