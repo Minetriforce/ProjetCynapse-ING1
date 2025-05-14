@@ -4,68 +4,96 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Main CLI is the second version of the application that is not using JavaFX.
- * Some functionalities aren't available in CLI mode such as Stepper generation
- * / solution
+ * Main class that runs the command-line interface (CLI) for generating and
+ * solving mazes.
+ * It allows the user to choose a maze generation method, set the maze
+ * dimensions,
+ * and solve the maze using the A* algorithm.
+ * 
+ * @author Jonathan
  */
 public class MainCLI {
+    // ANSI escape codes for colors
+    static final String RESET = "\u001B[0m";
+    static final String RED = "\u001B[31m";
+    static final String GREEN = "\u001b[38;5;46m";
+    static final String YELLOW = "\u001B[33m";
+    static final String BLUE = "\u001B[34m";
+    static final String CYAN = "\u001B[36m";
+    static final String MAGENTA = "\u001B[35m";
+    static final String BOLD = "\u001B[1m";
+    static final String ITALIC = "\u001B[3m";
+    static final String UNDERLINE = "\u001B[4m";
+    static final String GRAY = "\u001b[38;5;244m";
 
     /**
-     * Entry point of main CLI
-     * 
-     * @param args cli
+     * Main entry point of the application.
+     * It prompts the user to choose options from a menu, define maze dimensions,
+     * select a generation method, and solve the maze using the A* algorithm.
+     *
+     * @param args Command line arguments. If "cli" is passed, the menu is
+     *             displayed.
      */
     public static void main(String args[]) {
+
+        // Variables to store maze dimensions and seed value
         int rows = 0;
         int columns = 0;
         int seed = 0;
 
+        // Variables to store user menu choices
         String menuChoice = null;
         String generationChoice = null;
 
+        // Maze controller to manage maze creation and solving
         MazeController mazeController = new MazeController();
 
+        // Check if command-line arguments are provided
         if (args.length > 0) {
             String command = args[0];
+            // If the command is "cli", display the CLI menu
             switch (command) {
                 case "cli":
-                    System.out.println(
-                            "  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n"
-                                    + //
-                                    " |  _ \\  |  _ \\   / _ \\      | | | ____| |_   _|    / ___| \\ \\ / / | \\ | |    / \\    |  _ \\  / ___|  | ____|\n"
-                                    + //
-                                    " | |_) | | |_) | | | | |  _  | | |  _|     | |     | |      \\ V /  |  \\| |   / _ \\   | |_) | \\___ \\  |  _|  \n"
-                                    + //
-                                    " |  __/  |  _ <  | |_| | | |_| | | |___    | |     | |___    | |   | |\\  |  / ___ \\  |  __/   ___) | | |___ \n"
-                                    + //
-                                    " |_|     |_| \\_\\  \\___/   \\___/  |_____|   |_|      \\____|   |_|   |_| \\_| /_/   \\_\\ |_|     |____/  |_____|\n");
+                    // Print the program title
+                    System.out.println(BLUE + BOLD
+                            + "  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n"
+                            + //
+                            " |  _ \\  |  _ \\   / _ \\      | | | ____| |_   _|    / ___| \\ \\ / / | \\ | |    / \\    |  _ \\  / ___|  | ____|\n"
+                            + //
+                            " | |_) | | |_) | | | | |  _  | | |  _|     | |     | |      \\ V /  |  \\| |   / _ \\   | |_) | \\___ \\  |  _|  \n"
+                            + //
+                            " |  __/  |  _ <  | |_| | | |_| | | |___    | |     | |___    | |   | |\\  |  / ___ \\  |  __/   ___) | | |___ \n"
+                            + //
+                            " |_|     |_| \\_\\  \\___/   \\___/  |_____|   |_|      \\____|   |_|   |_| \\_| /_/   \\_\\ |_|     |____/  |_____|\n"
+                            + RESET);
 
                     Scanner sc = new Scanner(System.in);
 
-                    System.out.println("MENU ");
-                    System.out.println(" 1 - Generate a labyrinth");
-                    System.out.println(" 2 - Load a labyrinth");
-
+                    // Read the user's choice for the menu
                     menuChoice = sc.nextLine().toLowerCase().trim();
 
+                    // If the user chooses to generate a labyrinth
                     if (menuChoice.equalsIgnoreCase("1") || menuChoice.equalsIgnoreCase("generate a labyrinth")) {
-                        System.out.println("Enter the number of rows:");
+                        // Ask the user for maze dimensions and seed value
+                        System.out.println(ITALIC + "Enter the number of rows:" + RESET);
+
                         rows = sc.nextInt();
-                        System.out.println("Enter the number of columns:");
                         columns = sc.nextInt();
-                        System.out.println("Enter a seed (or 0 for random):");
+                        System.out.println(ITALIC + "Enter a seed (or 0 for random):" + RESET);
                         seed = sc.nextInt();
 
-                        System.out.println("How would you like to generate it?");
-                        System.out.println(" 1 - Prim");
-                        System.out.println(" 2 - Kruskal");
-                        System.out.println(" 3 - RNG_DFS");
+                        // Ask the user to select a generation method
+                        System.out.println(ITALIC + "How would you like to generate it?" + RESET);
+                        System.out.println(BOLD + " 1 " + RESET + "- Prim");
+                        System.out.println(BOLD + " 2 " + RESET + "- Kruskal" + RESET);
+                        System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
 
-                        sc.nextLine();
+                        sc.nextLine(); // Consume the newline after nextInt()
 
                         generationChoice = sc.nextLine().toLowerCase().trim();
                     }
 
+                    // Based on the user's choice, create the maze
                     switch (generationChoice) {
                         case "1":
                         case "prim":
@@ -92,9 +120,11 @@ public class MainCLI {
 
                     }
 
+                    // Retrieve the generated maze
                     Maze maze = mazeController.getCurrentMaze();
                     System.out.println("\nGenerated Maze:");
                     System.out.println(maze);
+
                     // Solve the maze from top-left to bottom-right
                     Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
                     int startId = 0; // Top-left corner
@@ -106,20 +136,23 @@ public class MainCLI {
                     int[] solution = Solver.pathIndex(maze,
                             maze.getVertexByID(endId),
                             parents);
-                    ArrayList<Edge> path_edge = Solver.pathEdge(maze,
-                            maze.getVertexByID(endId),
-                            parents);
+
                     System.out.println("\nSolution found:");
                     System.out.println(maze.solutionToString(solution));
-                    System.out.println("\nEdges of the path found:");
-                    System.out.println(path_edge);
 
                     break;
+
                 default:
+                    // If the command is invalid
                     System.out.println("Unvalid command");
                     break;
 
                 /*
+                 * case "save":
+                 * saveLabyrinthe();
+                 * break;
+                 * 
+                 * /*
                  * case "save":
                  * saveLabyrinthe();
                  * break;
