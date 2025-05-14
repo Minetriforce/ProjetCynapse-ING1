@@ -108,7 +108,7 @@ public class Maze extends Graph implements Serializable {
             }
         }
 
-        // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;├;┤;┬;┴;╭;╮;╯;╰;+;=;-;|;*
+        // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;├;┤;┬;┴;+;=;-;|;*
         String s = "";
         ArrayList<Vertex> vertices = this.getVertices();
         // number of characters to print an int
@@ -191,7 +191,7 @@ public class Maze extends Graph implements Serializable {
         // id of vertex
         int i = 0;
         // counter for borders
-        int c = 1;
+        int c;
 
         //border
         s += borderUp + "\n";
@@ -251,6 +251,8 @@ public class Maze extends Graph implements Serializable {
 
                     // if not the last column
                     if (x < columns - 1) {
+                        c = 1;
+
                         // tests to chose the corner
                         if (! ((vertices.get(i + 1)).getNeighbors()).contains(vertices.get(i + 1 + columns))){
                             c *= 2;
@@ -266,8 +268,6 @@ public class Maze extends Graph implements Serializable {
                         }
 
                         s += corners.get(c);
-
-                        c = 1;
                     }
                 }
 
@@ -287,7 +287,7 @@ public class Maze extends Graph implements Serializable {
      */
     @Override
     public String toString() {
-        // other chars: ·;■;▀;▄;▌;▐;█;▓;▒;░;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;+;=;-;|;*
+        // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;+;=;-;|;*
         String s = "";
         List<Vertex> vertices = this.getVertices();
         // number vertices
