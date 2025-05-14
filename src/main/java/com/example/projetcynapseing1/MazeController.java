@@ -60,9 +60,10 @@ public class MazeController {
 
     public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end, MethodName.Type type,
             Double timeStamp) {
-        mazeSolver = new Solver(solveMethod);
+        mazeSolver = new Solver(solveMethod,fxController);
         // solution = mazeSolver.solveAstar(maze, start, end, type);
     }
+
 
     public Maze getCurrentMaze() {
         if (maze == null) {

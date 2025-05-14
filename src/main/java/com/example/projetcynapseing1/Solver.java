@@ -1,5 +1,5 @@
 package com.example.projetcynapseing1;
-
+import javafx.application.Platform;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -21,7 +21,7 @@ public class Solver {
      * constructor of Solver object
      * @param m: method's name
      * @param t: time step
-     * @param fxController : FXController
+     *
      */
     public Solver(MethodName.SolveMethodName m, float t,FXController fxController) {
         method = m;
@@ -32,7 +32,6 @@ public class Solver {
     /**
      * constructor of Solver object
      * @param m: Solving method name
-     * @param fxController : FXController
      */
     public Solver(MethodName.SolveMethodName m,FXController fxController) {
         this(m, 0f,fxController);
@@ -176,6 +175,14 @@ public class Solver {
 
                 // vertex ui is now visited
                 visited[ui] = true;
+                vertices.get(ui).setState(VertexState.VISITED);
+                Platform.runLater(() -> fxController.displayMaze(m));
+                try {
+                    Thread.sleep(40); // Sleep between each update to show the visited vertices
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
 
@@ -220,7 +227,7 @@ public class Solver {
             System.out.println("Vertex end isn't in the maze given !");
             return antecedents;
         }
-        
+
         // LIFO
         Stack<Integer> toVisit = new Stack<>();
         int ui;
@@ -282,6 +289,13 @@ public class Solver {
             }
 
             visited[ui] = true;
+            vertices.get(ui).setState(VertexState.VISITED);
+            Platform.runLater(() -> fxController.displayMaze(m));
+            try {
+                Thread.sleep(40); // Sleep between each update to show the visited vertices
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // antecedents only shows the vertices that has been visited
