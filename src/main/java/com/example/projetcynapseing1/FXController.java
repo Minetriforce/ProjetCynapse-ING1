@@ -34,10 +34,12 @@ public class FXController {
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private int rows = 10;
-    private int cols = 10;
+    private static int rows = 10;
+    private static int cols = 10;
     private int blockSize = (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
+    private static int destination = rows * cols - 1;
+
 
     /**
      * Initializes the background image and binds it to the StackPane.
@@ -109,8 +111,8 @@ public class FXController {
     /**
      * Solves the maze using the specified algorithm, visualizing the steps one by one.
      */
+
     private void solveMaze() {
-        int destination = rows * cols - 1;
         Solver solver = new Solver(MethodName.SolveMethodName.ASTAR,this);
 
         try {
@@ -132,7 +134,8 @@ public class FXController {
      * @param antecedents the array of antecedents for each vertex
      */
     private void markVisitedAndSolutionPath(ArrayList<Vertex> solutionVertices, int[] antecedents) {
-
+            Vertex visited = maze.getVertices().get(destination);
+            visited.setState(VertexState.VISITED);
         for (Vertex v : solutionVertices) {
             v.setState(VertexState.SOLUTION);
             Platform.runLater(() -> displayMaze(maze));
