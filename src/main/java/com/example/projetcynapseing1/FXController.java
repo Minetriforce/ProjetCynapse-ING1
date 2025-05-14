@@ -34,12 +34,13 @@ public class FXController {
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows = 10;
-    private static int cols = 10;
-    private int blockSize = (rows > 20 || cols > 20) ? 20 : 40;
+    private static int rows = 42;
+    private static int cols = 42;
+    private int blockSize = (rows > 40 || cols > 40) ? 12 :
+                            (rows > 30 || cols > 30) ? 15 :
+                            (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
     private static int destination = rows * cols - 1;
-
 
     /**
      * Initializes the background image and binds it to the StackPane.
