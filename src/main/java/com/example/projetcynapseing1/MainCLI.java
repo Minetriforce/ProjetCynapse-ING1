@@ -10,6 +10,18 @@ import java.util.Scanner;
  * @author Jonathan
  */
 public class MainCLI {
+    // ANSI escape codes for colors
+    static final String RESET = "\u001B[0m";
+    static final String RED = "\u001B[31m";
+    static final String GREEN = "\u001b[38;5;46m";
+    static final String YELLOW = "\u001B[33m";
+    static final String BLUE = "\u001B[34m";
+    static final String CYAN = "\u001B[36m";
+    static final String MAGENTA = "\u001B[35m";
+    static final String BOLD = "\u001B[1m";
+    static final String ITALIC = "\u001B[3m";
+    static final String UNDERLINE = "\u001B[4m";
+    static final String GRAY = "\u001b[38;5;244m";
         /**
      * Main entry point of the application.
      * It prompts the user to choose options from a menu, define maze dimensions,
@@ -18,18 +30,6 @@ public class MainCLI {
      * @param args Command line arguments. If "cli" is passed, the menu is displayed.
      */
     public static void main(String args[]){
-        // ANSI escape codes for colors
-        final String RESET = "\u001B[0m";
-        final String RED = "\u001B[31m";
-        final String GREEN = "\u001b[38;5;46m";
-        final String YELLOW = "\u001B[33m";
-        final String BLUE = "\u001B[34m";
-        final String CYAN = "\u001B[36m";
-        final String MAGENTA = "\u001B[35m";
-        final String BOLD = "\u001B[1m";
-        final String ITALIC = "\u001B[3m";
-        final String UNDERLINE = "\u001B[4m";
-        final String GRAY = "\u001b[38;5;244m";
 
         // Variables to store maze dimensions and seed value
         int rows=0;
@@ -59,9 +59,9 @@ public class MainCLI {
                     Scanner sc = new Scanner(System.in);
 
                     // Display the menu
-                    System.out.println(BOLD+UNDERLINE+ "MENU"+RESET);
+                    System.out.println(BOLD + UNDERLINE + "MENU"+ RESET);
                     System.out.println(BOLD + " 1 " + RESET + "- Generate a labyrinth");
-                    System.out.println(BOLD+" 2 " + RESET + "- Load a labyrinth" + RESET);
+                    System.out.println(BOLD + " 2 " + RESET + "- Load a labyrinth" + RESET);
 
                     // Read the user's choice for the menu
                     menuChoice = sc.nextLine().toLowerCase().trim();
@@ -78,9 +78,9 @@ public class MainCLI {
 
                         // Ask the user to select a generation method
                         System.out.println(ITALIC + "How would you like to generate it?" + RESET);
-                        System.out.println(" 1 - Prim");
-                        System.out.println(" 2 - Kruskal");
-                        System.out.println(" 3 - RNG_DFS");
+                        System.out.println(BOLD + " 1 " + RESET + "- Prim");
+                        System.out.println(BOLD + " 2 " + RESET + "- Kruskal" + RESET);
+                        System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
 
                         sc.nextLine(); // Consume the newline after nextInt()
 
@@ -136,8 +136,6 @@ public class MainCLI {
 
                     System.out.println("\nSolution found:");
                     System.out.println(maze.solutionToString(solution));
-                    System.out.println("\nEdges of the path found:");
-                    System.out.println(path_edge);
 
                     break;
 
