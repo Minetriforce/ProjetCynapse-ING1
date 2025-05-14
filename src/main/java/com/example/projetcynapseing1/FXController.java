@@ -58,6 +58,7 @@ public class FXController {
     // Called when the resolution button is clicked
     @FXML
     protected void onStartResolutionClick() {
+        mazeController.loadMaze();
     }
 
     // Called when the generation button is clicked

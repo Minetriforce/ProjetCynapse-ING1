@@ -49,7 +49,7 @@ public class Generator {
      * @throws Exception used to ensure Generator stays in a logical state
      */
     public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed) throws Exception {
-        if (rows < 0 || colums < 0 || rows == null || colums == null) {
+        if (rows < 1 || colums < 1 || rows == null || colums == null) {
             throw new IllegalArgumentException("rows or column can't be negative/null");
         } else if (seed < 0) {
             throw new IllegalArgumentException("seed can't be negative");
