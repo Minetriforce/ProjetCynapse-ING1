@@ -69,6 +69,11 @@ public class MainCLI {
 
                     Scanner sc = new Scanner(System.in);
 
+                    // Display the menu
+                    System.out.println(BOLD + UNDERLINE + "MENU" + RESET);
+                    System.out.println(BOLD + " 1 " + RESET + "- Generate a labyrinth");
+                    System.out.println(BOLD + " 2 " + RESET + "- Load a labyrinth" + RESET);
+
                     // Read the user's choice for the menu
                     menuChoice = sc.nextLine().toLowerCase().trim();
 
@@ -76,8 +81,8 @@ public class MainCLI {
                     if (menuChoice.equalsIgnoreCase("1") || menuChoice.equalsIgnoreCase("generate a labyrinth")) {
                         // Ask the user for maze dimensions and seed value
                         System.out.println(ITALIC + "Enter the number of rows:" + RESET);
-
                         rows = sc.nextInt();
+                        System.out.println(ITALIC + "Enter the number of columns:" + RESET);
                         columns = sc.nextInt();
                         System.out.println(ITALIC + "Enter a seed (or 0 for random):" + RESET);
                         seed = sc.nextInt();
@@ -148,11 +153,6 @@ public class MainCLI {
                     break;
 
                 /*
-                 * case "save":
-                 * saveLabyrinthe();
-                 * break;
-                 * 
-                 * /*
                  * case "save":
                  * saveLabyrinthe();
                  * break;

@@ -50,6 +50,7 @@ public class Main extends Application {
 
         new Thread(() -> {
             try {
+                MazeController mazeController = new MazeController();
                 mazeController.createMaze(MethodName.GenMethodName.PRIM,
                         MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
 
