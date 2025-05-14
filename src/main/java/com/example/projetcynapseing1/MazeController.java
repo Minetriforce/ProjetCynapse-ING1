@@ -77,19 +77,11 @@ public class MazeController {
      * @throws Exception if there's no maze instantiated
      */
     public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end, MethodName.Type type,
-            Double timeStep) throws Exception {
-        if (maze == null) {
-            throw new Exception("ERROR : no maze is instantiated / was created !");
-        }
-        mazeSolver = new Solver(solveMethod);
-        solution = mazeSolver.solve(maze, start, end, type);
+            Double timeStamp) {
+        mazeSolver = new Solver(solveMethod,fxController);
+        // solution = mazeSolver.solveAstar(maze, start, end, type);
     }
 
-    /**
-     * return the current maze or null if there's no maze created / instantiated
-     * 
-     * @return current Maze or null
-     */
     public Maze getCurrentMaze() {
         if (maze == null) {
             System.out.println("No maze has been created/instantiated !");

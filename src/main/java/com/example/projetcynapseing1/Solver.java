@@ -1,5 +1,5 @@
 package com.example.projetcynapseing1;
-
+import javafx.application.Platform;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -15,16 +15,20 @@ public class Solver {
     private MethodName.SolveMethodName method;
     // time step used in the solving process, must be >= 0
     private float timeStep;
+    private FXController fxController;
+
 
     /**
      * constructor of Solver object
      * 
      * @param m: method's name
      * @param t: time step
+     *
      */
-    public Solver(MethodName.SolveMethodName m, float t) {
+    public Solver(MethodName.SolveMethodName m, float t,FXController fxController) {
         method = m;
         timeStep = (t >= 0) ? t : 0f;
+        this.fxController = fxController;
     }
 
     /**
@@ -32,8 +36,8 @@ public class Solver {
      * 
      * @param m: Solving method name
      */
-    public Solver(MethodName.SolveMethodName m) {
-        this(m, 0f);
+    public Solver(MethodName.SolveMethodName m,FXController fxController) {
+        this(m, 0f,fxController);
     }
 
     /**
@@ -183,6 +187,14 @@ public class Solver {
 
                 // vertex ui is now visited
                 visited[ui] = true;
+                vertices.get(ui).setState(VertexState.VISITED);
+                Platform.runLater(() -> fxController.displayMaze(m));
+                try {
+                    Thread.sleep(40); // Sleep between each update to show the visited vertices
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
 
@@ -293,6 +305,13 @@ public class Solver {
             }
 
             visited[ui] = true;
+            vertices.get(ui).setState(VertexState.VISITED);
+            Platform.runLater(() -> fxController.displayMaze(m));
+            try {
+                Thread.sleep(40); // Sleep between each update to show the visited vertices
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // antecedents only shows the vertices that has been visited
