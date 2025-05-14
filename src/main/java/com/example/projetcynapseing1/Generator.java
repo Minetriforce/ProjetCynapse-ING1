@@ -14,7 +14,6 @@ import java.util.Stack;
  * @author Bari-joris
  */
 public class Generator {
-    private FXController fxController;
     /**
      * Number of rows in the maze, strictly positive
      */
@@ -81,10 +80,10 @@ public class Generator {
         ArrayList<Vertex> ListVertex = G.getVertices();
         for (Vertex vertex : ListVertex) {
             if ((vertex.getX() + 1) != this.columns) {
-                G.addEdge(new Edge(vertex, G.getVertexByIDVertex(vertex.getID() + 1)));
+                G.addEdge(new Edge(vertex, G.getVertexByID(vertex.getID() + 1)));
             }
             if (vertex.getY() != 0) {
-                G.addEdge(new Edge(vertex, G.getVertexByIDVertex(vertex.getID() - this.columns)));
+                G.addEdge(new Edge(vertex, G.getVertexByID(vertex.getID() - this.columns)));
             }
         }
         return G;
@@ -155,10 +154,10 @@ public class Generator {
     private void Kruskal(Maze baseGraph, Maze maze) {
         Collections.sort(baseGraph.getEdges());
         for (Edge edge : baseGraph.getEdges()) {
-            if (DFScheck(maze, maze.getVertexByIDVertex(edge.getVertexA().getID()),
-                    maze.getVertexByIDVertex(edge.getVertexB().getID())) == false) {
-                maze.addEdge(new Edge(maze.getVertexByIDVertex(edge.getVertexA().getID()),
-                        maze.getVertexByIDVertex(edge.getVertexB().getID())));
+            if (DFScheck(maze, maze.getVertexByID(edge.getVertexA().getID()),
+                    maze.getVertexByID(edge.getVertexB().getID())) == false) {
+                maze.addEdge(new Edge(maze.getVertexByID(edge.getVertexA().getID()),
+                        maze.getVertexByID(edge.getVertexB().getID())));
             }
         }
     }
@@ -195,11 +194,11 @@ public class Generator {
             Edge e = currentEdges.getFirst();
 
             // Check if there is no path between vertices in the edge to prevents cycle
-            if (DFScheck(maze, maze.getVertexByIDVertex(e.getVertexA().getID()),
-                    maze.getVertexByIDVertex(e.getVertexB().getID())) == false) {
+            if (DFScheck(maze, maze.getVertexByID(e.getVertexA().getID()),
+                    maze.getVertexByID(e.getVertexB().getID())) == false) {
                 // add choosen edge to maze
-                maze.addEdge(new Edge(maze.getVertexByIDVertex(e.getVertexA().getID()),
-                        maze.getVertexByIDVertex(e.getVertexB().getID())));
+                maze.addEdge(new Edge(maze.getVertexByID(e.getVertexA().getID()),
+                        maze.getVertexByID(e.getVertexB().getID())));
 
                 /**
                  * check wether vertex A or Vertex B is marked (it's Edges is already in
@@ -250,8 +249,8 @@ public class Generator {
         } else {
             Vertex nextVertex = availableNeighbors.get(randomGen.nextInt(availableNeighbors.size()));
             visitedStack.push(currentVertex);
-            maze.addEdge(new Edge(maze.getVertexByIDVertex(currentVertex.getID()),
-                    maze.getVertexByIDVertex(nextVertex.getID())));
+            maze.addEdge(new Edge(maze.getVertexByID(currentVertex.getID()),
+                    maze.getVertexByID(nextVertex.getID())));
             RandomDFS(baseGraph, maze, visitedStack, nextVertex, mark, randomGen);
         }
     }
@@ -262,7 +261,7 @@ public class Generator {
      * @return maze : Maze
      * @see Maze
      */
-    public Maze makeMaze() throws Exception {
+    public Maze makeMaze() {
 
         // In case seed is null, generate a random seed
         if (this.seed == null) {

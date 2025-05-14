@@ -15,8 +15,9 @@ public class FXController {
     private ImageView backgroundImage;
     @FXML
     private StackPane stackpane;
+
     @FXML
-    private void initialize(){
+    private void initialize() {
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
     }
@@ -37,7 +38,6 @@ public class FXController {
     private Maze maze;
     private int rows;
     private int cols;
-
 
     public void setMazeController(MazeController mazeController) {
         this.mazeController = mazeController;
@@ -129,7 +129,7 @@ public class FXController {
     private boolean hasNeighbor(Vertex v, int r, int c) {
         if (r < 0 || r >= rows || c < 0 || c >= cols)
             return false;
-        Vertex neighbor = maze.getVertexByIDVertex(r * cols + c);
+        Vertex neighbor = maze.getVertexByID(r * cols + c);
         return v.isNeighbor(neighbor);
     }
 

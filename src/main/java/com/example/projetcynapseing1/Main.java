@@ -5,15 +5,10 @@ import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 /**
  * Main Class of the application
@@ -27,6 +22,7 @@ public class Main extends Application {
     public void init() throws Exception {
         super.init();
         mazeController.setFXController(fxController);
+        fxController.setMazeController(mazeController);
     }
 
     /**
@@ -44,7 +40,7 @@ public class Main extends Application {
 
         fxmlLoader.setController(fxController);
         fxController.setMazeSize(rows, cols);
-        Scene scene = new Scene(fxmlLoader.load(), 1200,700);
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
 
         stage.setTitle("Cynapse");
         stage.setScene(scene);
@@ -54,7 +50,6 @@ public class Main extends Application {
 
         new Thread(() -> {
             try {
-                MazeController mazeController = new MazeController();
                 mazeController.createMaze(MethodName.GenMethodName.PRIM,
                         MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
 
@@ -65,8 +60,8 @@ public class Main extends Application {
                     int fromID = e.getVertexA().getID();
                     int toID = e.getVertexB().getID();
 
-                    Vertex from = maze.getVertexByIDVertex(fromID);
-                    Vertex to = maze.getVertexByIDVertex(toID);
+                    Vertex from = maze.getVertexByID(fromID);
+                    Vertex to = maze.getVertexByID(toID);
 
                     maze.addEdge(new Edge(from, to));
 
@@ -75,9 +70,11 @@ public class Main extends Application {
                 }
                 Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND);
 
-                int[] antecedents = solver.solve(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
+                int[] antecedents = solver.solve(maze, maze.getVertexByID(0),
+                        maze.getVertexByID(destination), MethodName.Type.COMPLETE);
 
-                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination), antecedents);
+                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(destination),
+                        antecedents);
                 // mark all visited vertices (which are in antecedents array)
 
                 for (int i = 0; i < antecedents.length; i++) {
@@ -100,10 +97,10 @@ public class Main extends Application {
                     System.out.println("Maze created:\n");
                     System.out.println(maze);
                     System.out.println("Solution found:\n");
-                    System.out.println(maze.solutionToString(Solver.pathIndex(maze, maze.getVertexByIDVertex(destination), antecedents)));
+                    System.out.println(maze.solutionToString(
+                            Solver.pathIndex(maze, maze.getVertexByID(destination), antecedents)));
                     fxController.displayMaze(maze);
                 });
-
 
             } catch (Exception e) {
                 e.printStackTrace();
