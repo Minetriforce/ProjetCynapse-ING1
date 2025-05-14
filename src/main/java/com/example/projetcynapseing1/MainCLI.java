@@ -1,5 +1,6 @@
 package com.example.projetcynapseing1;
 
+import java.beans.MethodDescriptor;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -92,6 +93,7 @@ public class MainCLI {
                         System.out.println(BOLD + " 1 " + RESET + "- Prim");
                         System.out.println(BOLD + " 2 " + RESET + "- Kruskal" + RESET);
                         System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
+                        System.out.println(BOLD + " 4 " + RESET + "- "+MethodName.GenMethodName.UNPERFECT + RESET);
 
                         sc.nextLine(); // Consume the newline after nextInt()
 
@@ -122,7 +124,11 @@ public class MainCLI {
                             mazeController.createMaze(MethodName.GenMethodName.DFS,
                                     MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                             break;
-
+                        case "4":
+                        case "unperfect":
+                            // Create the maze using Unperfect's algorithm
+                            mazeController.createMaze(MethodName.GenMethodName.UNPERFECT,
+                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                     }
 
                     // Retrieve the generated maze
@@ -130,6 +136,7 @@ public class MainCLI {
                     System.out.println("\nGenerated Maze:");
                     System.out.println(maze);
 
+                    // TODO : wtf ?? utilise findSolution de mazeController
                     // Solve the maze from top-left to bottom-right
                     Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
                     int startId = 0; // Top-left corner

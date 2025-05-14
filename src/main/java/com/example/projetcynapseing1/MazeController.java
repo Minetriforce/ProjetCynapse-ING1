@@ -43,11 +43,6 @@ public class MazeController {
     private Maze maze;
 
     /**
-     * File controller class is unique and is used to save or load mazes
-     */
-    private static FileController fileController = new FileController();
-
-    /**
      * Method to generate maze : it creates a specific generator, saves it and use
      * it to generate a maze
      * 
@@ -155,15 +150,6 @@ public class MazeController {
     }
 
     /**
-     * Return the unique instance of File Controller.
-     * 
-     * @return File Controller
-     */
-    public FileController getFileController() {
-        return (fileController);
-    }
-
-    /**
      * Set the Instance of the fx controller currently used by JavaFX
      * 
      * @param fxController instance of FXController class
@@ -184,7 +170,7 @@ public class MazeController {
      */
     public Boolean saveMaze() {
         try {
-            fileController.SaveData(maze);
+            FileController.SaveData(maze);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -197,7 +183,7 @@ public class MazeController {
      * to current maze variable
      */
     public void loadMaze() {
-        maze = fileController.loadMaze();
+        maze = FileController.loadMaze();
         if (maze == null) {
             System.out.println("--- Maze Controller ---");
             System.out.println("WARNING : loaded maze seems to be null, try to load it again or change file");

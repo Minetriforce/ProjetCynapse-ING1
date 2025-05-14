@@ -37,7 +37,12 @@ public class MethodName {
         /**
          * Random Depth first Search Method
          */
-        DFS("DFS");
+        DFS("DFS"),
+        /**
+         * this type of generation is completly random and don't ensure the maze to be
+         * perfect
+         */
+        UNPERFECT("Unperfect");
 
         // name of the method
         private final String name;

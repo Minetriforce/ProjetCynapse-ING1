@@ -107,75 +107,99 @@ public class Generator {
     }
 
     /**
-     * This function is used to know if a path exists between s1 and s2 in graph,
-     * using Depth-first search (DFS)
+     * get the representative Vertex ID of the group of vertex i
      * 
-     * @param graph
-     * @param s1    (Vertex)
-     * @param s2
-     * @return Boolean (true: a path exists, false: there's no path)
-     * @see Vertex
-     * @see Maze
+     * @param i      ID of the Vertex
+     * @param parent list of groups (trees)
+     * @return representative ID of the tree OR recusive call
      */
-    private Boolean DFScheck(Maze graph, Vertex s1, Vertex s2) {
-        ArrayList<Boolean> mark = new ArrayList<Boolean>();
-        for (int i = 0; i < graph.getVertices().size(); i++) {
-            mark.add(false);
+    private Integer find(Integer i, int[] parent) {
+        if (parent[i] == i) {
+            return i;
         }
-        DFSRec(graph, s1, mark);
-        return (mark.get(s2.getID()));
+        return find(parent[i], parent);
     }
 
     /**
-     * Recursive Depth-first Search.
+     * Create a union between two tree (groups)
      * 
-     * @param graph
-     * @param s
-     * @param mark
-     * @return mark
+     * @param i      Representative ID of the first tree
+     * @param j      Representative ID of the second tree
+     * @param parent list of groups (trees)
      */
-    private ArrayList<Boolean> DFSRec(Maze graph, Vertex s, ArrayList<Boolean> mark) {
-        mark.set(s.getID(), true);
-        for (Vertex neighbor : s.getNeighbors()) {
-            if (mark.get(neighbor.getID()) == false) {
-                DFSRec(graph, neighbor, mark);
-            }
-        }
-        return mark;
+    private void union(Integer i, Integer j, int[] parent) {
+        Integer irep = find(i, parent);
+        Integer jrep = find(j, parent);
+
+        parent[irep] = jrep;
     }
 
     /**
-     * Apply Kruskal algorithm to baseGraph and uptade the minimum Spanning Tree
-     * (MST) in maze
+     * Complete union find method.
+     * It is used to detect cylce in a graph : If two vertices are in the same tree
+     * (i.e. have the same representive vertex ID), then return true
      * 
-     * @param baseGraph
-     * @param maze
+     * @param a      First Vertex to check
+     * @param b      Second Vertex to check
+     * @param parent List of groups (trees)
+     * @return True: these two Vertices are in the same tree; False: these two
+     *         Vertices are NOT in the same tree
      */
-    private void Kruskal(Maze baseGraph, Maze maze) {
+    private Boolean unionFind(Vertex a, Vertex b, int[] parent) {
+        Integer arep = find(a.getID(), parent);
+        Integer brep = find(b.getID(), parent);
+
+        return arep == brep;
+    }
+
+    /**
+     * Use the Kruskal's algorithm to generate the maze.
+     * After this fuction, maze will be the minimum spanning tree (MST)
+     * 
+     * @param baseGraph Grid, weighted graph used as a base to generate maze
+     * @param maze      generated maze
+     */
+    private void kruskal(Maze baseGraph, Maze maze) {
+        // Initialize List of representative Vertex ID for the union Find method
+        int[] parents = new int[maze.getVertices().size()];
+        for (int m = 0; m < maze.getVertices().size(); m++) {
+            parents[m] = m; // each Vertex have itself as a representative ID, each vertex have it's unique
+                            // own tree
+        }
+
+        // Uses merge sort algorithm O(n*log(n)), to sort edges in ascending order
         Collections.sort(baseGraph.getEdges());
-        for (Edge edge : baseGraph.getEdges()) {
-            if (DFScheck(maze, maze.getVertexByID(edge.getVertexA().getID()),
-                    maze.getVertexByID(edge.getVertexB().getID())) == false) {
+
+        for (Edge edge : baseGraph.getEdges()) { // look at each edges in ascending order
+            if (unionFind(edge.getVertexA(), edge.getVertexB(), parents) == false) { // add edge to maze only if it does
+                                                                                     // not create a cycle
                 maze.addEdge(new Edge(maze.getVertexByID(edge.getVertexA().getID()),
-                        maze.getVertexByID(edge.getVertexB().getID())));
+                        maze.getVertexByID(edge.getVertexB().getID()))); // Add adge to maze
+                union(edge.getVertexA().getID(), edge.getVertexB().getID(), parents); // merge trees in the list of
+                                                                                      // trees (parents)
             }
         }
     }
 
     /**
      * Create a maze according to Prim's algorithm
+     * After this fuction, maze will be the minimum spanning tree (MST)
      * 
      * @param baseGraph
      * @param maze
      * @param s
      */
-    private void Prim(Maze baseGraph, Maze maze, Vertex s) {
+    private void prim(Maze baseGraph, Maze maze, Vertex s) {
         ArrayList<Edge> currentEdges = new ArrayList<Edge>(); // create list of current Edges
+
+        // Union Find algorithm initilializer
+        int[] parents = new int[maze.getVertices().size()];
 
         // Create a mark list for all vertices in maze
         ArrayList<Boolean> mark = new ArrayList<Boolean>();
         for (int i = 0; i < baseGraph.getVertices().size(); i++) {
             mark.add(false);
+            parents[i] = i;
         }
 
         /**
@@ -194,8 +218,10 @@ public class Generator {
             Edge e = currentEdges.getFirst();
 
             // Check if there is no path between vertices in the edge to prevents cycle
-            if (DFScheck(maze, maze.getVertexByID(e.getVertexA().getID()),
-                    maze.getVertexByID(e.getVertexB().getID())) == false) {
+            if (unionFind(e.getVertexA(), e.getVertexB(), parents) == false) {
+                // update union find groups
+                union(e.getVertexA().getID(), e.getVertexB().getID(), parents);
+
                 // add choosen edge to maze
                 maze.addEdge(new Edge(maze.getVertexByID(e.getVertexA().getID()),
                         maze.getVertexByID(e.getVertexB().getID())));
@@ -229,7 +255,7 @@ public class Generator {
      * @param randomGen     random number generator, it ensures us to keep the same
      *                      maze if we send the same seed
      */
-    private void RandomDFS(Graph baseGraph, Graph maze, Stack<Vertex> visitedStack, Vertex currentVertex,
+    private void randomDFS(Graph baseGraph, Graph maze, Stack<Vertex> visitedStack, Vertex currentVertex,
             ArrayList<Boolean> mark, Random randomGen) {
         mark.set(currentVertex.getID(), true);
         ArrayList<Vertex> availableNeighbors = new ArrayList<Vertex>();
@@ -245,13 +271,45 @@ public class Generator {
             System.out.println("End of RandomDFS generation");
         } else if (availableNeighbors.size() == 0) {
             Vertex previousVertex = visitedStack.pop();
-            RandomDFS(baseGraph, maze, visitedStack, previousVertex, mark, randomGen);
+            randomDFS(baseGraph, maze, visitedStack, previousVertex, mark, randomGen);
         } else {
             Vertex nextVertex = availableNeighbors.get(randomGen.nextInt(availableNeighbors.size()));
             visitedStack.push(currentVertex);
             maze.addEdge(new Edge(maze.getVertexByID(currentVertex.getID()),
                     maze.getVertexByID(nextVertex.getID())));
-            RandomDFS(baseGraph, maze, visitedStack, nextVertex, mark, randomGen);
+            randomDFS(baseGraph, maze, visitedStack, nextVertex, mark, randomGen);
+        }
+    }
+
+    /**
+     * generate an unperfect Maze.
+     * First step : pick a number between 1/4 numbers of edges and all the edges
+     * name numberEdges
+     * Second step : make a loop of numberEdges iteration and pick a Edge from
+     * gridGraph
+     * Third Step : add this Edge to maze
+     * 
+     * @param baseGraph grid base of possible edges
+     * @param maze      output maze
+     */
+    private void unperfect(Maze baseGraph, Maze maze) {
+        // get minimum 1/4 of the edge of grid graph and maximum all the edges
+        Random rng = new Random(this.seed);
+        Integer numberEdges = rng.nextInt(baseGraph.getEdges().size() * (3 / 2)) + baseGraph.getEdges().size() / 4;
+        ArrayList<Edge> edgesGridMaze = baseGraph.getEdges();
+
+        for (int m = 0; m < numberEdges; m++) {
+            Edge e = edgesGridMaze.get(rng.nextInt(edgesGridMaze.size())); // pick a random Edge in the grid Graph
+            edgesGridMaze.remove(e); // removes it from the grid Graph : it makes sure to not pick the same Edge in
+                                     // the following iterations
+
+            maze.addEdge(
+                    new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
+                                                                                                                       // this
+                                                                                                                       // picked
+                                                                                                                       // edge
+                                                                                                                       // to
+                                                                                                                       // maze
         }
     }
 
@@ -280,7 +338,7 @@ public class Generator {
         switch (this.genMethod) {
             case KRUSKAL:
                 this.addRandomWeight(base);
-                Kruskal(base, maze);
+                kruskal(base, maze);
                 base = null;
                 System.gc();
                 time = System.currentTimeMillis() - time;
@@ -289,9 +347,10 @@ public class Generator {
 
             case PRIM:
                 this.addRandomWeight(base);
-                Prim(base, maze, base.getVertices().getFirst());
+                prim(base, maze, base.getVertices().getFirst());
                 base = null;
                 System.gc();
+                time = System.currentTimeMillis() - time;
                 System.out.println("End of PRIM generation");
                 break;
 
@@ -302,12 +361,12 @@ public class Generator {
                     mark.add(false);
                 }
 
-                if (base.getVertices().getFirst().getNeighbors().size() == 0) {
-                    System.err.println("Error in DFS : " + base.getVertices().getFirst() + " has no neighbors");
-                } else {
-                    RandomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
-                }
+                randomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
+
                 break;
+            case UNPERFECT:
+                unperfect(base, maze);
+                System.out.println("End of Unperfect geenration.");
         }
 
         System.out.println("Timestamp : " + time + "ms");

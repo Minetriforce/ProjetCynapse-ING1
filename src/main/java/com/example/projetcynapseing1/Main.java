@@ -51,11 +51,11 @@ public class Main extends Application {
         new Thread(() -> {
             try {
                 MazeController mazeController = new MazeController();
-                mazeController.createMaze(MethodName.GenMethodName.PRIM,
-                        MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
+                mazeController.createMaze(MethodName.GenMethodName.UNPERFECT,
+                        MethodName.Type.COMPLETE, rows, cols, 0.0, 100);
 
                 Graph generatedGraph = mazeController.getCurrentMaze();
-                maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
+                maze = new Maze(rows, cols, MethodName.GenMethodName.UNPERFECT);
 
                 for (Edge e : generatedGraph.getEdges()) {
                     int fromID = e.getVertexA().getID();
@@ -69,39 +69,40 @@ public class Main extends Application {
                     Platform.runLater(() -> fxController.displayMaze(maze));
                     Thread.sleep(10);
                 }
-                Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND);
+                // Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND);
 
-                int[] antecedents = solver.solve(maze, maze.getVertexByID(0),
-                        maze.getVertexByID(destination), MethodName.Type.COMPLETE);
+                // int[] antecedents = solver.solve(maze, maze.getVertexByID(0),
+                // maze.getVertexByID(destination), MethodName.Type.COMPLETE);
 
-                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(destination),
-                        antecedents);
-                // mark all visited vertices (which are in antecedents array)
+                // ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze,
+                // maze.getVertexByID(destination),
+                // antecedents);
+                // // mark all visited vertices (which are in antecedents array)
 
-                for (int i = 0; i < antecedents.length; i++) {
-                    if (antecedents[i] != i || i == 0) {
-                        Vertex v = maze.getVertices().get(i);
-                        v.setState(VertexState.VISITED);
-                        Platform.runLater(() -> fxController.displayMaze(maze));
-                        Thread.sleep(25);
-                    }
-                }
+                // for (int i = 0; i < antecedents.length; i++) {
+                // if (antecedents[i] != i || i == 0) {
+                // Vertex v = maze.getVertices().get(i);
+                // v.setState(VertexState.VISITED);
+                // Platform.runLater(() -> fxController.displayMaze(maze));
+                // Thread.sleep(25);
+                // }
+                // }
 
-                // draw the real path in blue (solution)
-                for (Vertex v : solutionVertices) {
-                    v.setState(VertexState.SOLUTION);
-                    Platform.runLater(() -> fxController.displayMaze(maze));
-                    Thread.sleep(50);
-                }
+                // // draw the real path in blue (solution)
+                // for (Vertex v : solutionVertices) {
+                // v.setState(VertexState.SOLUTION);
+                // Platform.runLater(() -> fxController.displayMaze(maze));
+                // Thread.sleep(50);
+                // }
 
-                Platform.runLater(() -> {
-                    System.out.println("Maze created:\n");
-                    System.out.println(maze);
-                    System.out.println("Solution found:\n");
-                    System.out.println(maze.solutionToString(
-                            Solver.pathIndex(maze, maze.getVertexByID(destination), antecedents)));
-                    fxController.displayMaze(maze);
-                });
+                // Platform.runLater(() -> {
+                // System.out.println("Maze created:\n");
+                // System.out.println(maze);
+                // System.out.println("Solution found:\n");
+                // System.out.println(maze.solutionToString(
+                // Solver.pathIndex(maze, maze.getVertexByID(destination), antecedents)));
+                // fxController.displayMaze(maze);
+                // });
 
             } catch (Exception e) {
                 e.printStackTrace();

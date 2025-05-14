@@ -33,7 +33,7 @@ import java.util.Set;
  * @author Bari-joris
  * @version 1.0
  */
-public class Graph implements Serializable {
+public class Graph {
     /**
      * List of unique vertices in graph
      */

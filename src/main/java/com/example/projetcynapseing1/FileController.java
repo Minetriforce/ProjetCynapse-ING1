@@ -26,7 +26,7 @@ public class FileController {
      * @param fileName name of the file
      * @return if saving was succesfull
      */
-    public Boolean SaveData(Maze maze) throws Exception {
+    public static Boolean SaveData(Maze maze) throws Exception {
         if (maze == null) {
             throw new Exception("--- File Controller ---\nEXCEPTION : maze is null, saving aborted");
         }
@@ -64,7 +64,7 @@ public class FileController {
      * 
      * @return the Maze loaded
      */
-    public Maze loadMaze() {
+    public static Maze loadMaze() {
         Maze emp = null;
         try {
             // Open a system "Open File" dialog
