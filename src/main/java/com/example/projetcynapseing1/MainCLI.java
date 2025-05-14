@@ -1,7 +1,5 @@
 package com.example.projetcynapseing1;
 
-import java.beans.MethodDescriptor;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -50,7 +48,6 @@ public class MainCLI {
         MazeController mazeController = new MazeController();
         FXController fxController = new FXController();
 
-
         // Check if command-line arguments are provided
         if (args.length > 0) {
             String command = args[0];
@@ -95,7 +92,7 @@ public class MainCLI {
                         System.out.println(BOLD + " 1 " + RESET + "- Prim");
                         System.out.println(BOLD + " 2 " + RESET + "- Kruskal" + RESET);
                         System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
-                        System.out.println(BOLD + " 4 " + RESET + "- "+MethodName.GenMethodName.UNPERFECT + RESET);
+                        System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.UNPERFECT + RESET);
 
                         sc.nextLine(); // Consume the newline after nextInt()
 
@@ -138,11 +135,10 @@ public class MainCLI {
                     System.out.println("\nGenerated Maze:");
                     System.out.println(maze);
 
-                    // TODO : wtf ?? utilise findSolution de mazeController
                     // Solve the maze from top-left to bottom-right
-                    Solver solver = new Solver(MethodName.SolveMethodName.ASTAR,fxController);
-                    int startId = 0;  // Top-left corner
-                    int endId = (rows * columns) - 1;  // Bottom-right corner
+                    Solver solver = new Solver(MethodName.SolveMethodName.ASTAR, fxController);
+                    int startId = 0; // Top-left corner
+                    int endId = (rows * columns) - 1; // Bottom-right corner
                     int[] parents = solver.solveAstar(maze,
                             maze.getVertexByID(startId),
                             maze.getVertexByID(endId),
