@@ -3,8 +3,20 @@ package com.example.projetcynapseing1;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Main class that runs the command-line interface (CLI) for generating and solving mazes.
+ * It allows the user to choose a maze generation method, set the maze dimensions, 
+ * and solve the maze using the A* algorithm.
+ * @author Jonathan
+ */
 public class MainCLI {
-    
+        /**
+     * Main entry point of the application.
+     * It prompts the user to choose options from a menu, define maze dimensions,
+     * select a generation method, and solve the maze using the A* algorithm.
+     *
+     * @param args Command line arguments. If "cli" is passed, the menu is displayed.
+     */
     public static void main(String args[]){
         // ANSI escape codes for colors
         final String RESET = "\u001B[0m";
@@ -19,20 +31,25 @@ public class MainCLI {
         final String UNDERLINE = "\u001B[4m";
         final String GRAY = "\u001b[38;5;244m";
 
+        // Variables to store maze dimensions and seed value
         int rows=0;
         int columns=0;
         int seed=0;
 
+        // Variables to store user menu choices
         String menuChoice=null;
         String generationChoice=null;
 
-
+        // Maze controller to manage maze creation and solving
         MazeController mazeController = new MazeController();
 
+        // Check if command-line arguments are provided
         if (args.length > 0) {
             String command = args[0];
+            // If the command is "cli", display the CLI menu
             switch (command) {
                 case "cli":
+                    // Print the program title
                     System.out.println(BLUE+BOLD+"  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n" + //
                     " |  _ \\  |  _ \\   / _ \\      | | | ____| |_   _|    / ___| \\ \\ / / | \\ | |    / \\    |  _ \\  / ___|  | ____|\n" + //
                     " | |_) | | |_) | | | | |  _  | | |  _|     | |     | |      \\ V /  |  \\| |   / _ \\   | |_) | \\___ \\  |  _|  \n" + //
@@ -41,13 +58,17 @@ public class MainCLI {
 
                     Scanner sc = new Scanner(System.in);
 
+                    // Display the menu
                     System.out.println(BOLD+UNDERLINE+ "MENU"+RESET);
                     System.out.println(BOLD + " 1 " + RESET + "- Generate a labyrinth");
                     System.out.println(BOLD+" 2 " + RESET + "- Load a labyrinth" + RESET);
 
+                    // Read the user's choice for the menu
                     menuChoice = sc.nextLine().toLowerCase().trim();
 
+                    // If the user chooses to generate a labyrinth
                     if(menuChoice.equalsIgnoreCase("1") || menuChoice.equalsIgnoreCase("generate a labyrinth")){
+                        // Ask the user for maze dimensions and seed value
                         System.out.println(ITALIC + "Enter the number of rows:" + RESET);
                         rows = sc.nextInt();
                         System.out.println(ITALIC + "Enter the number of columns:" + RESET);
@@ -55,17 +76,18 @@ public class MainCLI {
                         System.out.println(ITALIC + "Enter a seed (or 0 for random):" + RESET);
                         seed = sc.nextInt();
 
+                        // Ask the user to select a generation method
                         System.out.println(ITALIC + "How would you like to generate it?" + RESET);
                         System.out.println(" 1 - Prim");
                         System.out.println(" 2 - Kruskal");
                         System.out.println(" 3 - RNG_DFS");
 
-                        sc.nextLine();
+                        sc.nextLine(); // Consume the newline after nextInt()
 
                         generationChoice = sc.nextLine().toLowerCase().trim();
                     }
 
-
+                    // Based on the user's choice, create the maze
                     switch(generationChoice){
                         case "1":
                         case "prim":
@@ -92,31 +114,35 @@ public class MainCLI {
 
                         }
 
+                    // Retrieve the generated maze
                     Maze maze = mazeController.getCurrentMaze();
-                        System.out.println("\nGenerated Maze:");
-                        System.out.println(maze);
-                        // Solve the maze from top-left to bottom-right
-                        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-                        int startId = 0;  // Top-left corner
-                        int endId = (rows * columns) - 1;  // Bottom-right corner
-                        int[] parents = solver.solveAstar(maze,
-                                                        maze.getVertexByIDVertex(startId),
-                                                        maze.getVertexByIDVertex(endId),
-                                                        MethodName.Type.COMPLETE);
-                        int[] solution = Solver.pathIndex(maze,
-                                                        maze.getVertexByIDVertex(endId),
-                                                        parents);
-                        ArrayList<Edge> path_edge = Solver.pathEdge(maze,
-                                                                    maze.getVertexByIDVertex(endId),
-                                                                    parents);
-                        System.out.println("\nSolution found:");
-                        System.out.println(maze.solutionToString(solution));
-                        System.out.println("\nEdges of the path found:");
-                        System.out.println(path_edge);
+                    System.out.println("\nGenerated Maze:");
+                    System.out.println(maze);
+                    
+                    // Solve the maze from top-left to bottom-right
+                    Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+                    int startId = 0;  // Top-left corner
+                    int endId = (rows * columns) - 1;  // Bottom-right corner
+                    int[] parents = solver.solveAstar(maze,
+                                                    maze.getVertexByIDVertex(startId),
+                                                    maze.getVertexByIDVertex(endId),
+                                                    MethodName.Type.COMPLETE);
+                    int[] solution = Solver.pathIndex(maze,
+                                                    maze.getVertexByIDVertex(endId),
+                                                    parents);
+                    ArrayList<Edge> path_edge = Solver.pathEdge(maze,
+                                                                maze.getVertexByIDVertex(endId),
+                                                                parents);
 
+                    System.out.println("\nSolution found:");
+                    System.out.println(maze.solutionToString(solution));
+                    System.out.println("\nEdges of the path found:");
+                    System.out.println(path_edge);
 
                     break;
+
                     default:
+                    // If the command is invalid
                         System.out.println("Unvalid command");
                         break;
 
