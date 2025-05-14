@@ -14,23 +14,28 @@ public class Solver {
     private MethodName.SolveMethodName method;
     // time step used in the solving process, must be >= 0
     private float timeStep;
+    private FXController fxController;
+
 
     /**
      * constructor of Solver object
      * @param m: method's name
      * @param t: time step
+     * @param fxController : FXController
      */
-    public Solver(MethodName.SolveMethodName m, float t) {
+    public Solver(MethodName.SolveMethodName m, float t,FXController fxController) {
         method = m;
         timeStep = (t >= 0) ? t : 0f;
+        this.fxController = fxController;
     }
 
     /**
      * constructor of Solver object
      * @param m: Solving method name
+     * @param fxController : FXController
      */
-    public Solver(MethodName.SolveMethodName m) {
-        this(m, 0f);
+    public Solver(MethodName.SolveMethodName m,FXController fxController) {
+        this(m, 0f,fxController);
     }
 
     /**

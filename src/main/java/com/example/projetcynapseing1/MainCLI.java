@@ -42,6 +42,8 @@ public class MainCLI {
 
         // Maze controller to manage maze creation and solving
         MazeController mazeController = new MazeController();
+        FXController fxController = new FXController();
+
 
         // Check if command-line arguments are provided
         if (args.length > 0) {
@@ -120,7 +122,7 @@ public class MainCLI {
                     System.out.println(maze);
                     
                     // Solve the maze from top-left to bottom-right
-                    Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+                    Solver solver = new Solver(MethodName.SolveMethodName.ASTAR,fxController);
                     int startId = 0;  // Top-left corner
                     int endId = (rows * columns) - 1;  // Bottom-right corner
                     int[] parents = solver.solveAstar(maze,
