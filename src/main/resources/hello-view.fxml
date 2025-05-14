@@ -3,6 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -10,6 +13,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.canvas.Canvas?>
+
 
 <StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml">
     
@@ -44,8 +48,34 @@
                     <Insets bottom="20.0" left="20.0" right="20.0" top="10.0"/>
                 </padding>
                 <HBox spacing="10.0" alignment="CENTER">
-                    <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick"/>
+
+                    <ComboBox fx:id="generationMethodBox" promptText="méthode de génération">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Kruskal"/>
+                                <String fx:value="Prim"/>
+                                <String fx:value="DFS"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    
+                    <ComboBox fx:id="solutionMethodBox" promptText="méthode de résolution">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="A*"/>
+                                <String fx:value="right-hand"/>
+                                <String fx:value="Tremau"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+
+                </HBox>
+
+
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick" disable="true"/>
                     <Button fx:id="resolutionLabyrinth" text="Resolve" onAction="#onStartResolutionClick" disable="true"/>
+
                 </HBox>
             </VBox>
         </bottom>

@@ -4,12 +4,19 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
 public class FXController {
+
+    
+    @FXML
+    private ComboBox<String> generationMethodBox;
+    @FXML
+    private ComboBox<String> solutionMethodBox;
 
     @FXML
     private ImageView backgroundImage;
@@ -19,6 +26,9 @@ public class FXController {
     private void initialize(){
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+
+        generationLabyrinth.disableProperty().bind(generationMethodBox.valueProperty().isNull());
+        resolutionLabyrinth.disableProperty().bind(solutionMethodBox.valueProperty().isNull());
     }
 
     @FXML
@@ -27,8 +37,12 @@ public class FXController {
     @FXML
     private Button generationLabyrinth;
 
+
     private MazeController mazeController;
+    
+    private boolean labyrinthMethodChoosen = false;
     private boolean labyrinthIsGenerated = false;
+
 
     @FXML
     private Canvas mazeCanvas;
@@ -58,13 +72,16 @@ public class FXController {
     // Called when the resolution button is clicked
     @FXML
     protected void onStartResolutionClick() {
-    }
+    String selectedMethod = solutionMethodBox.getValue();
+}
 
     // Called when the generation button is clicked
     @FXML
     protected void onStartGenerationClick() {
         labyrinthIsGenerated = true;
         resolutionLabyrinth.setDisable(false);
+
+        String selectedMethod = generationMethodBox.getValue();
     }
 
     // Method to display the maze
