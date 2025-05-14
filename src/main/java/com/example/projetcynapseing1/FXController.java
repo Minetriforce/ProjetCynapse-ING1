@@ -34,9 +34,10 @@ public class FXController {
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows = 42;
-    private static int cols = 42;
-    private int blockSize = (rows > 40 || cols > 40) ? 12 :
+    private static int rows = 30;
+    private static int cols = 30;
+    private int blockSize = (rows > 90 || cols > 90) ? 5 :
+                            (rows > 40 || cols > 40) ? 12 :
                             (rows > 30 || cols > 30) ? 15 :
                             (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
@@ -66,7 +67,7 @@ public class FXController {
     @FXML
     protected void onStartGenerationClick() {
         labyrinthIsGenerated = true;
-        resolutionLabyrinth.setDisable(false);  // Enable the resolution button
+        resolutionLabyrinth.setDisable(false);
         // Start maze generation on a new thread to avoid blocking the UI
         new Thread(() -> generateMaze()).start();
     }
@@ -82,25 +83,27 @@ public class FXController {
         }
     }
 
+
     /**
      * Generates the maze using the specified algorithm.
      */
     private void generateMaze() {
         try {
             mazeController.createMaze(MethodName.GenMethodName.PRIM, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
-            Graph generatedGraph = mazeController.getCurrentMaze();
+            Maze generatedMaze = mazeController.getCurrentMaze();
             maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
 
-            // Add edges to the maze
-            for (Edge e : generatedGraph.getEdges()) {
+            for (Edge e : generatedMaze.getEdges()) {
                 int fromID = e.getVertexA().getID();
                 int toID = e.getVertexB().getID();
                 Vertex from = maze.getVertexByIDVertex(fromID);
                 Vertex to = maze.getVertexByIDVertex(toID);
                 maze.addEdge(new Edge(from, to));
 
+
+
                 Platform.runLater(() -> displayMaze(maze));
-                Thread.sleep(10); // Add delay to simulate the process of maze generation
+                Thread.sleep(10);
             }
 
             Platform.runLater(() -> System.out.println("Maze generated successfully"));
@@ -114,7 +117,7 @@ public class FXController {
      */
 
     private void solveMaze() {
-        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR,this);
+        Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND,this);
 
         try {
             antecedents = solver.solve(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
