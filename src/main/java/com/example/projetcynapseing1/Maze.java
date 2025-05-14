@@ -14,11 +14,6 @@ public class Maze extends Graph implements Serializable {
     private final int columns;
     private final MethodName.GenMethodName genMethodName;
 
-    // ANSI escape codes for colors
-    final String RESET = "\u001B[0m";
-    final String GREEN = "\u001b[38;5;46m";
-    final String GRAY = "\u001b[38;5;244m";
-
     /**
      * constructor: create c*l vertices without any edge
      * @param l: number of lines
@@ -128,29 +123,29 @@ public class Maze extends Graph implements Serializable {
         String spaceHorizontalBorder = " ".repeat(padding + 1);
 
         // vertical wall
-        String wallVertical = GRAY + " │ " + RESET;
+        String wallVertical = MainCLI.GRAY + " │ " + MainCLI.RESET;
         // horizontal wall
-        String wallHorizontal = GRAY + "─".repeat(padding + 2) + RESET;
+        String wallHorizontal = MainCLI.GRAY + "─".repeat(padding + 2) + MainCLI.RESET;
         // horizontal wall next to border
-        String wallHorizontalBorder = GRAY + "─".repeat(padding + 1) + RESET;
+        String wallHorizontalBorder = MainCLI.GRAY + "─".repeat(padding + 1) + MainCLI.RESET;
 
         // corners
         String cornerEmpty = " ";
-        String cornerRight = GRAY + "─" + RESET;
-        String cornerDown = GRAY + "│" + RESET;
-        String cornerLeft = GRAY + "─" + RESET;
-        String cornerUp = GRAY + "│" + RESET;
-        String cornerRightDown = GRAY + "┌" + RESET;
-        String cornerRightLeft = GRAY + "─" + RESET;
-        String cornerRightUp = GRAY + "└" + RESET;
-        String cornerDownLeft = GRAY + "┐" + RESET;
-        String cornerDownUp = GRAY + "│" + RESET;
-        String cornerLeftUp = GRAY + "┘" + RESET;
-        String cornerRightDownLeft = GRAY + "┬" + RESET;
-        String cornerRightDownUp = GRAY + "├" + RESET;
-        String cornerRightLeftUp = GRAY + "┴" + RESET;
-        String cornerDownLeftUp = GRAY + "┤" + RESET;
-        String cornerAll = GRAY + "┼" + RESET;
+        String cornerRight = MainCLI.GRAY + "─" + MainCLI.RESET;
+        String cornerDown = MainCLI.GRAY + "│" + MainCLI.RESET;
+        String cornerLeft = MainCLI.GRAY + "─" + MainCLI.RESET;
+        String cornerUp = MainCLI.GRAY + "│" + MainCLI.RESET;
+        String cornerRightDown = MainCLI.GRAY + "┌" + MainCLI.RESET;
+        String cornerRightLeft = MainCLI.GRAY + "─" + MainCLI.RESET;
+        String cornerRightUp = MainCLI.GRAY + "└" + MainCLI.RESET;
+        String cornerDownLeft = MainCLI.GRAY + "┐" + MainCLI.RESET;
+        String cornerDownUp = MainCLI.GRAY + "│" + MainCLI.RESET;
+        String cornerLeftUp = MainCLI.GRAY + "┘" + MainCLI.RESET;
+        String cornerRightDownLeft = MainCLI.GRAY + "┬" + MainCLI.RESET;
+        String cornerRightDownUp = MainCLI.GRAY + "├" + MainCLI.RESET;
+        String cornerRightLeftUp = MainCLI.GRAY + "┴" + MainCLI.RESET;
+        String cornerDownLeftUp = MainCLI.GRAY + "┤" + MainCLI.RESET;
+        String cornerAll = MainCLI.GRAY + "┼" + MainCLI.RESET;
         Map<Integer, String> corners = new HashMap<>();
         corners.put(1 , cornerEmpty);
         corners.put(2 , cornerRight);
@@ -170,23 +165,23 @@ public class Maze extends Graph implements Serializable {
         corners.put(210 , cornerAll);
 
         // vertical path
-        String pathVertical = GREEN + " ".repeat(pad) + "│" + " ".repeat(pad) + RESET;
+        String pathVertical = MainCLI.GREEN + " ".repeat(pad) + "│" + " ".repeat(pad) + MainCLI.RESET;
         // vertical path next to left border
         String pathVerticalBorderLeft = pathVertical + " ";
         // vertical path next to right border
         String pathVerticalBorderRight = " " + pathVertical;
         pathVertical = pathVerticalBorderRight + " ";
         // horizontal path
-        String pathHorizontal = GREEN + "─".repeat(3) + RESET;
+        String pathHorizontal = MainCLI.GREEN + "─".repeat(3) + MainCLI.RESET;
 
         // vertical border
-        String borderVertical = GRAY + " ║ " + RESET;
+        String borderVertical = MainCLI.GRAY + " ║ " + MainCLI.RESET;
         // border horizontal
         String borderHorizontal = "═".repeat(padding * columns + 3 * (columns - 1) + 2);
         // border up
-        String borderUp = GRAY + " ╔" + borderHorizontal + "╗ " + RESET;
+        String borderUp = MainCLI.GRAY + " ╔" + borderHorizontal + "╗ " + MainCLI.RESET;
         // border down
-        String borderDown = GRAY + " ╚" + borderHorizontal + "╝ " + RESET;
+        String borderDown = MainCLI.GRAY + " ╚" + borderHorizontal + "╝ " + MainCLI.RESET;
 
         // id of vertex
         int i = 0;
