@@ -27,9 +27,13 @@ public class Vertex implements Serializable {
 
     /**
      * The position of the vertex on the graph, starting from (0,0) to (n,m).
-     * X is horizontal, Y is vertical
+     * X is horizontal
      */
     private Integer x;
+
+    /**
+     * Y vertical position of the vertex
+     */
     private Integer y;
 
     /**
@@ -38,8 +42,15 @@ public class Vertex implements Serializable {
      */
     private ArrayList<Vertex> neighbors;
 
+    /**
+     * unique id of the vertex. used as a name
+     */
     private Integer id;
 
+    /**
+     * State of the vertex in the final solution, can be sets to default, visited or
+     * in solution
+     */
     private VertexState state = VertexState.DEFAULT;
 
     /**

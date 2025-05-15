@@ -26,7 +26,23 @@ public class MethodName {
      * enumerated type of generation methods
      */
     public enum GenMethodName {
-        KRUSKAL("Kruskal"), PRIM("Prim"), DFS("DFS");
+        /**
+         * Kruskal generation algorithm (use weighted edges)
+         */
+        KRUSKAL("Kruskal"),
+        /**
+         * Prim generation method (use weighted edges)
+         */
+        PRIM("Prim"),
+        /**
+         * Random Depth first Search Method
+         */
+        DFS("DFS"),
+        /**
+         * this type of generation is completly random and don't ensure the maze to be
+         * perfect
+         */
+        UNPERFECT("Unperfect");
 
         // name of the method
         private final String name;
@@ -70,7 +86,21 @@ public class MethodName {
      * enumerated type of solving methods
      */
     public enum SolveMethodName {
-        ASTAR("A*"), RIGHTHAND("Right hand"), TREMAUX("Tremaux");
+
+        /**
+         * A star resolution method algorithm
+         */
+        ASTAR("A*"),
+
+        /**
+         * Right hand resolution algorithm
+         */
+        RIGHTHAND("Right hand"),
+
+        /**
+         * Trémaux resolution algorithm
+         */
+        TREMAUX("Tremaux");
 
         // name of the method
         private final String name;
@@ -129,8 +159,19 @@ public class MethodName {
      * is returned.
      */
     public enum Type {
+        /**
+         * Step-by-step generation/solution.
+         * Used to display step generation / solution step-by-step, it incldues the fact
+         * the time Step is not null
+         */
+        STEPPER("stepper"),
 
-        STEPPER("stepper"), COMPLETE("complete");
+        /**
+         * Complete generation/solution.
+         * Used to display directly the generation/solution or hide it behind a progress
+         * bar
+         */
+        COMPLETE("complete");
 
         // name of the method
         private final String name;

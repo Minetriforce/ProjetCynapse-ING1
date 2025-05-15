@@ -10,14 +10,30 @@ import java.util.Map;
  * Class for mazes, it must be a rectangular
  */
 public class Maze extends Graph implements Serializable {
+
+    /**
+     * number of rows from top to bottom
+     */
     private final int rows;
+
+    /**
+     * number if columns from left to right
+     */
     private final int columns;
+
+    /**
+     * Method used to generate this maze.
+     * This variable can stay null and is never used except for saving maze (used as
+     * meta data information)
+     */
     private final MethodName.GenMethodName genMethodName;
 
     /**
      * constructor: create c*l vertices without any edge
-     * @param l: number of lines
-     * @param c: number of columns
+     * 
+     * @param l:             number of lines
+     * @param c:             number of columns
+     * @param genMethodName: method used to generate maze
      */
     public Maze(int l, int c, MethodName.GenMethodName genMethodName) {
         super();
@@ -41,6 +57,7 @@ public class Maze extends Graph implements Serializable {
 
     /**
      * getter of rows
+     * 
      * @return rows
      */
     public int getRows() {
@@ -49,6 +66,7 @@ public class Maze extends Graph implements Serializable {
 
     /**
      * getter of columns
+     * 
      * @return columns
      */
     public int getColumns() {
@@ -57,6 +75,7 @@ public class Maze extends Graph implements Serializable {
 
     /**
      * getter of genMethodName
+     * 
      * @return genMethoName
      */
     public MethodName.GenMethodName getGenMethod() {
@@ -64,22 +83,25 @@ public class Maze extends Graph implements Serializable {
     }
 
     /**
-     * @param n: number to convert
+     * padding Int
+     * 
+     * @param n:       number to convert
      * @param padding: total length of the string
      * @return number to string with padding
      */
-    public static String paddingInt(int n, int padding){
+    public static String paddingInt(int n, int padding) {
         // number of spaces to add
         padding = (padding > 0) ? padding : 1;
-        int pad = padding - (int)(Math.log10((n > 1) ? n : 2) + 1);
+        int pad = padding - (int) (Math.log10((n > 1) ? n : 2) + 1);
         int padRight = pad / 2;
         int padLeft = pad - padRight;
-        
+
         return " ".repeat(padLeft) + n + " ".repeat(padRight);
     }
 
     /**
      * convert a solution to a string
+     * 
      * @param solution: parent of each vertex in the solution
      * @return the maze with the solution in a string format
      */
@@ -88,17 +110,18 @@ public class Maze extends Graph implements Serializable {
         int n = rows * columns;
 
         // verification
-        if (solution.equals(null)){
+        if (solution.equals(null)) {
             System.out.println("Param null !");
             return this.toString();
         }
-        if (n != solution.length){
+        if (n != solution.length) {
             System.out.println("Inappropriate length of solution: " + solution.length + " (insted of " + n + ") !");
             return this.toString();
         }
-        for (int i = 0; i < n; i++){
-            if (solution[i] < 0 || solution[i] > n){
-                System.out.println("Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
+        for (int i = 0; i < n; i++) {
+            if (solution[i] < 0 || solution[i] > n) {
+                System.out.println(
+                        "Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
                 return this.toString();
             }
         }
@@ -107,7 +130,7 @@ public class Maze extends Graph implements Serializable {
         String s = "";
         ArrayList<Vertex> vertices = this.getVertices();
         // number of characters to print an int
-        int padding = (int)(Math.log10(n - 1) + 1);
+        int padding = (int) (Math.log10(n - 1) + 1);
         // padding must be odd
         padding += (padding % 2 == 0) ? 1 : 0;
         // padding must > 2
@@ -147,22 +170,22 @@ public class Maze extends Graph implements Serializable {
         String cornerDownLeftUp = MainCLI.GRAY + "┤" + MainCLI.RESET;
         String cornerAll = MainCLI.GRAY + "┼" + MainCLI.RESET;
         Map<Integer, String> corners = new HashMap<>();
-        corners.put(1 , cornerEmpty);
-        corners.put(2 , cornerRight);
-        corners.put(3 , cornerDown);
-        corners.put(5 , cornerLeft);
-        corners.put(7 , cornerUp);
-        corners.put(6 , cornerRightDown);
-        corners.put(10 , cornerRightLeft);
-        corners.put(14 , cornerRightUp);
-        corners.put(15 , cornerDownLeft);
-        corners.put(21 , cornerDownUp);
-        corners.put(35 , cornerLeftUp);
-        corners.put(30 , cornerRightDownLeft);
-        corners.put(42 , cornerRightDownUp);
-        corners.put(70 , cornerRightLeftUp);
-        corners.put(105 , cornerDownLeftUp);
-        corners.put(210 , cornerAll);
+        corners.put(1, cornerEmpty);
+        corners.put(2, cornerRight);
+        corners.put(3, cornerDown);
+        corners.put(5, cornerLeft);
+        corners.put(7, cornerUp);
+        corners.put(6, cornerRightDown);
+        corners.put(10, cornerRightLeft);
+        corners.put(14, cornerRightUp);
+        corners.put(15, cornerDownLeft);
+        corners.put(21, cornerDownUp);
+        corners.put(35, cornerLeftUp);
+        corners.put(30, cornerRightDownLeft);
+        corners.put(42, cornerRightDownUp);
+        corners.put(70, cornerRightLeftUp);
+        corners.put(105, cornerDownLeftUp);
+        corners.put(210, cornerAll);
 
         // vertical path
         String pathVertical = MainCLI.GREEN + " ".repeat(pad) + "│" + " ".repeat(pad) + MainCLI.RESET;
@@ -188,7 +211,7 @@ public class Maze extends Graph implements Serializable {
         // counter for borders
         int c;
 
-        //border
+        // border
         s += borderUp + "\n";
 
         // the maze
@@ -232,7 +255,8 @@ public class Maze extends Graph implements Serializable {
                     if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
                         // if path
                         if (solution[i] == i + columns || solution[i + columns] == i) {
-                            s += (x == 0) ? pathVerticalBorderLeft : ((x == columns - 1) ? pathVerticalBorderRight : pathVertical);
+                            s += (x == 0) ? pathVerticalBorderLeft
+                                    : ((x == columns - 1) ? pathVerticalBorderRight : pathVertical);
                         }
                         // if not path
                         else {
@@ -249,16 +273,16 @@ public class Maze extends Graph implements Serializable {
                         c = 1;
 
                         // tests to chose the corner
-                        if (! ((vertices.get(i + 1)).getNeighbors()).contains(vertices.get(i + 1 + columns))){
+                        if (!((vertices.get(i + 1)).getNeighbors()).contains(vertices.get(i + 1 + columns))) {
                             c *= 2;
                         }
-                        if (! ((vertices.get(i + columns)).getNeighbors()).contains(vertices.get(i + 1 + columns))){
+                        if (!((vertices.get(i + columns)).getNeighbors()).contains(vertices.get(i + 1 + columns))) {
                             c *= 3;
                         }
-                        if (! ((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))){
+                        if (!((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
                             c *= 5;
                         }
-                        if (! ((vertices.get(i)).getNeighbors()).contains(vertices.get(i + 1))){
+                        if (!((vertices.get(i)).getNeighbors()).contains(vertices.get(i + 1))) {
                             c *= 7;
                         }
 
@@ -271,7 +295,7 @@ public class Maze extends Graph implements Serializable {
             }
         }
 
-        //border
+        // border
         s += borderDown + "\n";
 
         return s;
@@ -288,7 +312,7 @@ public class Maze extends Graph implements Serializable {
         // number vertices
         int n = rows * columns;
         // number of characters to print an int
-        int padding = (int)(Math.log10(n - 1) + 1);
+        int padding = (int) (Math.log10(n - 1) + 1);
         // padding must be odd
         padding += (padding % 2 == 0) ? 1 : 0;
         // padding must > 2
@@ -304,7 +328,7 @@ public class Maze extends Graph implements Serializable {
         // corner
         String corner = " · ";
 
-        //border
+        // border
         s += " ╔" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╗ " + "\n";
 
         // id of vertex
@@ -318,11 +342,11 @@ public class Maze extends Graph implements Serializable {
                 // if not the last column
                 if (x < columns - 1) {
                     // if there's not a wall
-                    if (((vertices.get(i)).isNeighbor(vertices.get(i + 1)))){
+                    if (((vertices.get(i)).isNeighbor(vertices.get(i + 1)))) {
                         s += spaceVertical;
                     }
                     // if there's a wall
-                    else{
+                    else {
                         s += wallVertical;
                     }
                 }
@@ -335,11 +359,11 @@ public class Maze extends Graph implements Serializable {
                 for (int x = 0; x < columns; x++) {
                     i = y * columns + x;
                     // if there's not a wall
-                    if (((vertices.get(i)).isNeighbor(vertices.get(i + columns)))){
+                    if (((vertices.get(i)).isNeighbor(vertices.get(i + columns)))) {
                         s += spaceHorizontal;
                     }
                     // if there's a wall
-                    else{
+                    else {
                         s += wallHorizontal;
                     }
                     // if not the last column
@@ -352,7 +376,7 @@ public class Maze extends Graph implements Serializable {
             }
         }
 
-        //border
+        // border
         s += " ╚" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╝ " + "\n";
 
         return s;
