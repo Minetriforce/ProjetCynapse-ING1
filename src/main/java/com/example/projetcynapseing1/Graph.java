@@ -30,7 +30,6 @@ import java.util.Set;
  * </pre>
  * 
  * @author Bari-joris
- * @version 1.0
  */
 public class Graph {
     /**
@@ -132,6 +131,15 @@ public class Graph {
      */
     public boolean addEdge(Edge e) {
         return this.edges.add(e);
+    }
+
+    /**
+     * remove an edge from the list of current Edges
+     * @param e edge to remove
+     * @return deleting was succesfull or not
+     */
+    public boolean removeEdge(Edge e){
+        return this.edges.remove(e);
     }
 
     @Override

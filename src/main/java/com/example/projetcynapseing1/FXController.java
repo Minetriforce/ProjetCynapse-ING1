@@ -42,8 +42,8 @@ public class FXController {
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows = 15;
-    private static int cols = 15;
+    private static int rows = 20;
+    private static int cols = 20;
     private int blockSize = (rows > 90 || cols > 90) ? 5
             : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
@@ -95,7 +95,7 @@ public class FXController {
      */
     private void generateMaze() {
         try {
-            mazeController.createMaze(MethodName.GenMethodName.PRIM, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
+            mazeController.createMaze(MethodName.GenMethodName.KRUSKAL, MethodName.Type.COMPLETE, rows, cols, 0.0, 10);
             Maze generatedMaze = mazeController.getCurrentMaze();
 
             maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
@@ -108,7 +108,7 @@ public class FXController {
                 maze.addEdge(new Edge(from, to));
 
                 Platform.runLater(() -> displayMaze(maze));
-                Thread.sleep(10);
+                Thread.sleep(50);
             }
 
             Platform.runLater(() -> System.out.println("Maze generated successfully"));

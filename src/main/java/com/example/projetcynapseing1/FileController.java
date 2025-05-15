@@ -28,12 +28,15 @@ public class FileController {
      */
     public static Boolean SaveData(Maze maze) throws Exception {
         if (maze == null) {
-            throw new Exception("--- File Controller ---\nEXCEPTION : maze is null, saving aborted");
+            throw new Exception("--- File Controller ---\nEXCEPTION : maze is null, saving aborted"); // prevent from
+                                                                                                      // saving empty
+                                                                                                      // files
         }
         try {
 
-            FileDialog dialog = new FileDialog((Frame) null, "Save As Maze", FileDialog.SAVE);
-            dialog.setFile("maze.ser"); // default file name
+            FileDialog dialog = new FileDialog((Frame) null, "Save As Maze", FileDialog.SAVE); // open system "save as"
+                                                                                               // dialog
+            dialog.setFile(String.valueOf(maze.hashCode())); // default file name
             dialog.setVisible(true);
 
             String directory = dialog.getDirectory();
@@ -46,7 +49,7 @@ public class FileController {
                 out.writeObject(maze);
                 out.close();
                 fileOut.close();
-                System.out.println("Maze saved with name :");
+                System.out.println("Maze saved with name : " + file + ".ser");
                 return true;
             } else {
                 System.out.println("Saving aborted");
@@ -102,8 +105,7 @@ public class FileController {
             c.printStackTrace();
             return null;
         }
-        System.out.println("Loaded Maze");
-        System.out.println(emp);
+        System.out.println("Maze Loaded");
         return emp;
     }
 }
