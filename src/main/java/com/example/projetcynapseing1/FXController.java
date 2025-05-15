@@ -144,8 +144,7 @@ public class FXController {
      * @param antecedents: the array of antecedents for each vertex
      */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
-        Vertex visited = maze.getVertices().get(destination);
-        visited.setState(VertexState.VISITED);
+
         
         for (int i = 0; i < orders.length; i++) {
             if (orders[i] == -1){
