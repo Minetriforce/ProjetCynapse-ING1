@@ -42,8 +42,8 @@ public class FXController {
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows = 10;
-    private static int cols = 20;
+    private static int rows = 15;
+    private static int cols = 15;
     private int blockSize = (rows > 90 || cols > 90) ? 5
             : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
@@ -95,7 +95,7 @@ public class FXController {
      */
     private void generateMaze() {
         try {
-            mazeController.createMaze(MethodName.GenMethodName.DFS, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
+            mazeController.createMaze(MethodName.GenMethodName.UNPERFECT, MethodName.Type.COMPLETE, rows, cols, 0.0, 998);
             Maze generatedMaze = mazeController.getCurrentMaze();
 
             maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
@@ -123,7 +123,7 @@ public class FXController {
      */
 
     private void solveMaze() {
-        Solver solver = new Solver(MethodName.SolveMethodName.LEFTHAND);
+        Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND);
 
         int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
         int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
