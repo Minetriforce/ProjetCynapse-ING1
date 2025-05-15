@@ -75,12 +75,14 @@ public class Solver {
 
     /**
      * solve the maze with the corresponding method
-     * 
-     * @param m:     maze graph
+     * the returning value depends of t
+     * antecedents: array of antecedents of each vertex in the path
+     * orders: the index of vertices visited in order
+     * @param m: maze graph
      * @param start: starting vertex
-     * @param end:   ending vertex
-     * @param t:     type of printing
-     * @return antecedents: array of antecedents of each vertex in the path
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return result
      */
     public int[] solve(Maze m, Vertex start, Vertex end, MethodName.Type t) {
         // verification
