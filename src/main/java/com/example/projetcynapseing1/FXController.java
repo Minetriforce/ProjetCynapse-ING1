@@ -259,6 +259,6 @@ public class FXController {
         Vertex neighbor = maze.getVertexByID(r * cols + c);
         if (neighbor == null)
             return false;
-        return visibleEdges.contains(new Edge(v, neighbor));
+        return visibleEdges.contains(new Edge(v, neighbor, true));
     }
 }
