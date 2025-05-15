@@ -9,6 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import java.util.Set;
+import java.util.HashSet;
 
 import java.util.ArrayList;
 
@@ -48,6 +50,8 @@ public class FXController {
             : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
     private static int destination = rows * cols - 1;
+    private Set<Edge> visibleEdges = new HashSet<>();
+
 
     /**
      * Sets the maze controller.
@@ -97,22 +101,14 @@ public class FXController {
         try {
             mazeController.createMaze(MethodName.GenMethodName.DFS, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
             Maze generatedMaze = mazeController.getCurrentMaze();
-
-            maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
+            visibleEdges.clear();
 
             for (Edge e : generatedMaze.getEdges()) {
-                int fromID = e.getVertexA().getID();
-                int toID = e.getVertexB().getID();
-                Vertex from = maze.getVertexByID(fromID);
-                Vertex to = maze.getVertexByID(toID);
-                maze.addEdge(new Edge(from, to));
-
-                Platform.runLater(() -> displayMaze(maze));
-                Thread.sleep(10);
-            }
-
-            Platform.runLater(() -> System.out.println("Maze generated successfully"));
-        } catch (Exception e) {
+                visibleEdges.add(e);
+                Platform.runLater(() -> displayMaze(generatedMaze));
+                Thread.sleep(50);
+            }}
+            catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -261,6 +257,8 @@ public class FXController {
         if (r < 0 || r >= rows || c < 0 || c >= cols)
             return false;
         Vertex neighbor = maze.getVertexByID(r * cols + c);
-        return v.isNeighbor(neighbor);
+        if (neighbor == null)
+            return false;
+        return visibleEdges.contains(new Edge(v, neighbor));
     }
 }

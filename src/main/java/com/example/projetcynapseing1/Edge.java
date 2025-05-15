@@ -131,6 +131,12 @@ public class Edge implements Comparable<Edge>, Serializable {
     }
 
     @Override
+    public int hashCode() {
+        return vertexA.hashCode() + vertexB.hashCode();
+    }
+
+
+    @Override
     public int compareTo(Edge e) {
         return Integer.compare(this.weight, e.getWeight());
     }
