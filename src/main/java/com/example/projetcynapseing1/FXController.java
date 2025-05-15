@@ -123,16 +123,14 @@ public class FXController {
      */
 
     private void solveMaze() {
-        Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND, this);
+        Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND);
+
+        int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
+        int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
 
         try {
-            antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination),
-                    MethodName.Type.COMPLETE);
-
             // Start visualizing the solution, marking visited vertices and solution path
-            ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(destination), antecedents);
-
-            markVisitedAndSolutionPath(solutionVertices, antecedents);
+            markVisitedAndSolutionPath(orders, antecedents);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,12 +140,28 @@ public class FXController {
      * Marks the visited vertices and solution path, displaying the solution
      * incrementally.
      *
-     * @param solutionVertices the list of vertices in the solution path
-     * @param antecedents      the array of antecedents for each vertex
+     * @param orders: array of vertices' index in the visited order
+     * @param antecedents: the array of antecedents for each vertex
      */
-    private void markVisitedAndSolutionPath(ArrayList<Vertex> solutionVertices, int[] antecedents) {
-        Vertex visited = maze.getVertices().get(destination);
-        visited.setState(VertexState.VISITED);
+    private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
+
+        
+        for (int i = 0; i < orders.length; i++) {
+            if (orders[i] == -1){
+                break;
+            }
+
+            Vertex v = maze.getVertexByID(orders[i]);
+            v.setState(VertexState.VISITED);
+            Platform.runLater(() -> displayMaze(maze));
+            try {
+                Thread.sleep(50); // Sleep between each update to show the solution path
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(destination), antecedents);
         for (Vertex v : solutionVertices) {
             v.setState(VertexState.SOLUTION);
             Platform.runLater(() -> displayMaze(maze));

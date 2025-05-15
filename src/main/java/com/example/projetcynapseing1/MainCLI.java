@@ -136,7 +136,7 @@ public class MainCLI {
                     System.out.println(maze);
 
                     // Solve the maze from top-left to bottom-right
-                    Solver solver = new Solver(MethodName.SolveMethodName.ASTAR, fxController);
+                    Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
                     int startId = 0; // Top-left corner
                     int endId = (rows * columns) - 1; // Bottom-right corner
                     int[] parents = solver.solveAstar(maze,

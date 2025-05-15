@@ -15,8 +15,6 @@ public class Solver {
     private MethodName.SolveMethodName method;
     // time step used in the solving process, must be >= 0
     private float timeStep;
-    private FXController fxController;
-
 
     /**
      * constructor of Solver object
@@ -25,10 +23,9 @@ public class Solver {
      * @param t: time step
      *
      */
-    public Solver(MethodName.SolveMethodName m, float t,FXController fxController) {
+    public Solver(MethodName.SolveMethodName m, float t) {
         method = m;
         timeStep = (t >= 0) ? t : 0f;
-        this.fxController = fxController;
     }
 
     /**
@@ -36,8 +33,8 @@ public class Solver {
      * 
      * @param m: Solving method name
      */
-    public Solver(MethodName.SolveMethodName m,FXController fxController) {
-        this(m, 0f,fxController);
+    public Solver(MethodName.SolveMethodName m) {
+        this(m, 0f);
     }
 
     /**
@@ -78,12 +75,14 @@ public class Solver {
 
     /**
      * solve the maze with the corresponding method
-     * 
-     * @param m:     maze graph
+     * the returning value depends of t
+     * antecedents: array of antecedents of each vertex in the path
+     * orders: the index of vertices visited in order
+     * @param m: maze graph
      * @param start: starting vertex
-     * @param end:   ending vertex
-     * @param t:     type of printing
-     * @return antecedents: array of antecedents of each vertex in the path
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return result
      */
     public int[] solve(Maze m, Vertex start, Vertex end, MethodName.Type t) {
         // verification
@@ -96,7 +95,9 @@ public class Solver {
             case ASTAR:
                 return this.solveAstar(m, start, end, t);
             case RIGHTHAND:
-                return this.solveRightHand(m, start, end, t);
+                return this.solveHand(m, start, end, t);
+            case LEFTHAND:
+                return this.solveHand(m, start, end, t);
             default:
                 return null;
         }
@@ -104,12 +105,14 @@ public class Solver {
 
     /**
      * solve the maze with the A* algorithm
-     * 
-     * @param m:     maze graph
+     * the returning value depends of t
+     * antecedents: array of antecedents of each vertex in the path
+     * orders: the index of vertices visited in order
+     * @param m: maze graph
      * @param start: starting vertex
-     * @param end:   ending vertex
-     * @param t:     type of printing
-     * @return antecedents: array of antecedents of each vertex in the path
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return result
      */
     public int[] solveAstar(Maze m, Vertex start, Vertex end, MethodName.Type t) {
         // list of vertices
@@ -127,21 +130,26 @@ public class Solver {
         int[] antecedents = new int[n];
         // distances[i] indicates the length of the path between start and vertex i
         int[] distances = new int[n];
+        // orders[i] indicates the index of the i-th visited vertex
+        int[] orders = new int[n];
+        // result to return
+        int[] result = (t.equals(MethodName.Type.STEPPER)) ? orders : antecedents;
         // initialisation
         for (int i = 0; i < n; i++) {
             visited[i] = false;
             antecedents[i] = i;
             distances[i] = Integer.MAX_VALUE;
+            orders[i] = -1;
         }
 
         // verification
         if (!vertices.contains(start)) {
             System.out.println("Vertex start isn't in the maze given !");
-            return antecedents;
+            return result;
         }
         if (!vertices.contains(end)) {
             System.out.println("Vertex end isn't in the maze given !");
-            return antecedents;
+            return result;
         }
 
         // priority queue for the next vertex to visit, it compares the length of the
@@ -154,13 +162,14 @@ public class Solver {
         toVisit.add(si);
         int ui;
         int vi;
+        int cnt = 0;
 
         // while there's no path leading to end
-        while (antecedents[ei] == ei) {
+        while (! visited[ei]) {
             // if toVisit is empty, it means that there's no path from start to end in this
             // maze
             if (toVisit.isEmpty()) {
-                return antecedents;
+                return result;
             }
 
             // ui the index of the vertex visiting
@@ -187,30 +196,33 @@ public class Solver {
 
                 // vertex ui is now visited
                 visited[ui] = true;
-                vertices.get(ui).setState(VertexState.VISITED);
-                Platform.runLater(() -> fxController.displayMaze(m));
-                try {
-                    Thread.sleep(40); // Sleep between each update to show the visited vertices
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+                orders[cnt] = ui;
+                cnt++;
             }
         }
 
-        return antecedents;
+        // antecedents only shows the vertices that has been visited
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                antecedents[i] = i;
+            }
+        }
+
+        return result;
     }
 
     /**
-     * solve the maze with the right hand algorithm
-     * 
-     * @param m:     maze graph
+     * solve the maze with the right hand (left hand) algorithm
+     * the returning value depends of t
+     * antecedents: array of antecedents of each vertex in the path
+     * orders: the index of vertices visited in order
+     * @param m: maze graph
      * @param start: starting vertex
-     * @param end:   ending vertex
-     * @param t:     type of printing
-     * @return antecedents: array of antecedents of each vertex in the path
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return result
      */
-    public int[] solveRightHand(Maze m, Vertex start, Vertex end, MethodName.Type t) {
+    public int[] solveHand(Maze m, Vertex start, Vertex end, MethodName.Type t) {
         // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
@@ -221,26 +233,31 @@ public class Solver {
         int ei = end.getID();
         // right, down, left, up: it indicates the number to add to the id for a
         // direction
-        int[] directions = { 1, m.getColumns(), -1, -m.getColumns() };
+        int[] directions = {1, m.getColumns(), -1, -m.getColumns()};
 
         // visited[i] indicates if vertex i has been visited
         boolean[] visited = new boolean[n];
         // antecedents[i] indicates the vertex antecedent taken to access vertex i
         int[] antecedents = new int[n];
+        // orders[i] indicates the index of the i-th visited vertex
+        int[] orders = new int[n];
+        // result to return
+        int[] result = (t.equals(MethodName.Type.STEPPER)) ? orders : antecedents;
         // initialisation
         for (int i = 0; i < n; i++) {
             visited[i] = false;
             antecedents[i] = i;
+            orders[i] = -1;
         }
 
         // verification
         if (!vertices.contains(start)) {
             System.out.println("Vertex start isn't in the maze given !");
-            return antecedents;
+            return result;
         }
         if (!vertices.contains(end)) {
             System.out.println("Vertex end isn't in the maze given !");
-            return antecedents;
+            return result;
         }
 
         // LIFO
@@ -248,11 +265,14 @@ public class Solver {
         int ui;
         int vi;
         int di = 0;
+        int cnt = 1;
+        int addDirection = (method.equals(MethodName.SolveMethodName.LEFTHAND)) ? 3 : 1;
 
         // initialisation
         visited[si] = true;
-        for (int i = 0; i < 4; i++) {
-            for (Vertex v : vertices.get(si).getNeighbors()) {
+        orders[0] = si;
+        for (int i = 0; i < 4; i++){
+            for (Vertex v: vertices.get(si).getNeighbors()){
                 vi = v.getID();
                 if (si + directions[i] == vi) {
                     antecedents[vi] = si;
@@ -262,19 +282,15 @@ public class Solver {
         }
 
         // while end has not been visited
-        while (!visited[ei]) {
-            // if toVisit is empty, it means that there's no path from start to end in this
-            // maze
-            if (toVisit.isEmpty()) {
-                return antecedents;
+        while (! visited[ei]){
+            // if toVisit is empty, it means that there's no path from start to end in this maze
+            if (toVisit.isEmpty()){
+                return result;
             }
 
             // ui the index of the vertex visiting
             ui = toVisit.pop();
-            // if u has been visited, it means that the algorithme fell into a loop
-            if (visited[ui]) {
-                return antecedents;
-            }
+            
             // the difference of id between vertex u and vertex antecedent to u
             di = ui - antecedents[ui];
             for (int i = 0; i < 4; i++) {
@@ -289,7 +305,7 @@ public class Solver {
             // for each direction that is not the coming direction
             for (int i = 1; i < 4; i++) {
                 // next direction
-                di = (di + 1) % 4;
+                di = (di + addDirection) % 4;
                 // for each neighbors
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
                     // index of vertex v
@@ -305,13 +321,8 @@ public class Solver {
             }
 
             visited[ui] = true;
-            vertices.get(ui).setState(VertexState.VISITED);
-            Platform.runLater(() -> fxController.displayMaze(m));
-            try {
-                Thread.sleep(40); // Sleep between each update to show the visited vertices
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            orders[cnt] = ui;
+            cnt++;
         }
 
         // antecedents only shows the vertices that has been visited
@@ -321,12 +332,11 @@ public class Solver {
             }
         }
 
-        return antecedents;
+        return result;
     }
 
     /**
-     * Distance ?
-     * 
+     * Manhattan distance
      * @param a: First vertex
      * @param b: Second vertex
      * @return Manhattan distance between 2 vertices
@@ -335,8 +345,7 @@ public class Solver {
         // |a.x - b.x| + |a.y - b.y|
         return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
         // Euclidean distance
-        // return Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() -
-        // b.getY()) * (a.getY() - b.getY()));
+        // return Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()));
     }
 
     /**
