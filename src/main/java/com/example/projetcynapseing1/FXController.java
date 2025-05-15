@@ -123,7 +123,7 @@ public class FXController {
      */
 
     private void solveMaze() {
-        Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND);
+        Solver solver = new Solver(MethodName.SolveMethodName.LEFTHAND);
 
         int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
         int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
