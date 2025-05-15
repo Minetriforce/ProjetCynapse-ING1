@@ -100,7 +100,7 @@ public class MethodName {
         /**
          * Trémaux resolution algorithm
          */
-        TREMAUX("Tremaux");
+        LEFTHAND("Left hand");
 
         // name of the method
         private final String name;

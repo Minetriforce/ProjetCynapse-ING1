@@ -95,7 +95,9 @@ public class Solver {
             case ASTAR:
                 return this.solveAstar(m, start, end, t);
             case RIGHTHAND:
-                return this.solveRightHand(m, start, end, t);
+                return this.solveHand(m, start, end, t);
+            case LEFTHAND:
+                return this.solveHand(m, start, end, t);
             default:
                 return null;
         }
@@ -210,7 +212,7 @@ public class Solver {
     }
 
     /**
-     * solve the maze with the right hand algorithm
+     * solve the maze with the right hand (left hand) algorithm
      * the returning value depends of t
      * antecedents: array of antecedents of each vertex in the path
      * orders: the index of vertices visited in order
@@ -220,7 +222,7 @@ public class Solver {
      * @param t: type of printing
      * @return result
      */
-    public int[] solveRightHand(Maze m, Vertex start, Vertex end, MethodName.Type t) {
+    public int[] solveHand(Maze m, Vertex start, Vertex end, MethodName.Type t) {
         // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
@@ -231,7 +233,7 @@ public class Solver {
         int ei = end.getID();
         // right, down, left, up: it indicates the number to add to the id for a
         // direction
-        int[] directions = { 1, m.getColumns(), -1, -m.getColumns() };
+        int[] directions = {1, m.getColumns(), -1, -m.getColumns()};
 
         // visited[i] indicates if vertex i has been visited
         boolean[] visited = new boolean[n];
@@ -264,6 +266,7 @@ public class Solver {
         int vi;
         int di = 0;
         int cnt = 1;
+        int addDirection = (method.equals(MethodName.SolveMethodName.LEFTHAND)) ? 3 : 1;
 
         // initialisation
         visited[si] = true;
@@ -305,7 +308,7 @@ public class Solver {
             // for each direction that is not the coming direction
             for (int i = 1; i < 4; i++) {
                 // next direction
-                di = (di + 1) % 4;
+                di = (di + addDirection) % 4;
                 // for each neighbors
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
                     // index of vertex v
