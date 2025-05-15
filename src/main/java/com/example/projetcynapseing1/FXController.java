@@ -106,7 +106,7 @@ public class FXController {
             for (Edge e : generatedMaze.getEdges()) {
                 visibleEdges.add(e);
                 Platform.runLater(() -> displayMaze(generatedMaze));
-                Thread.sleep(50);
+                Thread.sleep(10);
             }}
             catch (Exception e) {
             e.printStackTrace();
@@ -172,6 +172,7 @@ public class FXController {
 
     /**
      * Displays the maze on the canvas.
+     * @param maze the maze to display
      */
     public void displayMaze(Maze maze) {
         this.maze = maze;
@@ -179,7 +180,10 @@ public class FXController {
     }
 
     /**
-     * Draws the maze with walls and visited states on the canvas.
+     * If there is an edge connecting the two cells, it means passage is possible
+     * between them, so no wall is drawn.
+     * If there is no edge between the two cells (i.e., they are not neighbors),
+     * a wall is drawn to block the passage.
      */
     private void drawMazeWithWalls() {
         if (mazeCanvas == null) {
