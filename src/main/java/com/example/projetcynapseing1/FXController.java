@@ -108,7 +108,7 @@ public class FXController {
                 maze.addEdge(new Edge(from, to));
 
                 Platform.runLater(() -> displayMaze(maze));
-                Thread.sleep(10);
+                Thread.sleep(50);
             }
 
             Platform.runLater(() -> System.out.println("Maze generated successfully"));
