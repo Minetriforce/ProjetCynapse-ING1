@@ -13,7 +13,8 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 
 /**
- * JavaFX Controller for handling maze display, button actions, and maze generation/solving.
+ * JavaFX Controller for handling maze display, button actions, and maze
+ * generation/solving.
  *
  * @author Florianne
  */
@@ -23,6 +24,13 @@ public class FXController {
     private ImageView backgroundImage;
     @FXML
     private StackPane stackpane;
+
+    @FXML
+    private void initialize() {
+        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
+        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+    }
+
     @FXML
     private Button resolutionLabyrinth;
     @FXML
@@ -34,23 +42,12 @@ public class FXController {
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows = 30;
-    private static int cols = 30;
-    private int blockSize = (rows > 90 || cols > 90) ? 5 :
-                            (rows > 40 || cols > 40) ? 12 :
-                            (rows > 30 || cols > 30) ? 15 :
-                            (rows > 20 || cols > 20) ? 20 : 40;
+    private static int rows = 10;
+    private static int cols = 20;
+    private int blockSize = (rows > 90 || cols > 90) ? 5
+            : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
     private static int destination = rows * cols - 1;
-
-    /**
-     * Initializes the background image and binds it to the StackPane.
-     */
-    @FXML
-    private void initialize() {
-        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
-        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
-    }
 
     /**
      * Sets the maze controller.
@@ -61,9 +58,19 @@ public class FXController {
         this.mazeController = mazeController;
     }
 
-    /**
-     * Called when the "Generate" button is clicked. Starts maze generation.
-     */
+    // Method to set maze size
+    public void setMazeSize(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+
+        if (rows > 20 || cols > 20) {
+            blockSize = 20;
+        } else {
+            blockSize = 40;
+        }
+    }
+
+    // Called when the generation button is clicked
     @FXML
     protected void onStartGenerationClick() {
         labyrinthIsGenerated = true;
@@ -83,24 +90,22 @@ public class FXController {
         }
     }
 
-
     /**
      * Generates the maze using the specified algorithm.
      */
     private void generateMaze() {
         try {
-            mazeController.createMaze(MethodName.GenMethodName.PRIM, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
+            mazeController.createMaze(MethodName.GenMethodName.DFS, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
             Maze generatedMaze = mazeController.getCurrentMaze();
+
             maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
 
             for (Edge e : generatedMaze.getEdges()) {
                 int fromID = e.getVertexA().getID();
                 int toID = e.getVertexB().getID();
-                Vertex from = maze.getVertexByIDVertex(fromID);
-                Vertex to = maze.getVertexByIDVertex(toID);
+                Vertex from = maze.getVertexByID(fromID);
+                Vertex to = maze.getVertexByID(toID);
                 maze.addEdge(new Edge(from, to));
-
-
 
                 Platform.runLater(() -> displayMaze(maze));
                 Thread.sleep(10);
@@ -113,33 +118,50 @@ public class FXController {
     }
 
     /**
-     * Solves the maze using the specified algorithm, visualizing the steps one by one.
+     * Solves the maze using the specified algorithm, visualizing the steps one by
+     * one.
      */
 
     private void solveMaze() {
-        Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND,this);
+        Solver solver = new Solver(MethodName.SolveMethodName.LEFTHAND);
+
+        int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
+        int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
 
         try {
-            antecedents = solver.solve(maze, maze.getVertexByIDVertex(0), maze.getVertexByIDVertex(destination), MethodName.Type.COMPLETE);
-
             // Start visualizing the solution, marking visited vertices and solution path
-            ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByIDVertex(destination), antecedents);
-
-           markVisitedAndSolutionPath(solutionVertices, antecedents);
+            markVisitedAndSolutionPath(orders, antecedents);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Marks the visited vertices and solution path, displaying the solution incrementally.
+     * Marks the visited vertices and solution path, displaying the solution
+     * incrementally.
      *
-     * @param solutionVertices the list of vertices in the solution path
-     * @param antecedents the array of antecedents for each vertex
+     * @param orders: array of vertices' index in the visited order
+     * @param antecedents: the array of antecedents for each vertex
      */
-    private void markVisitedAndSolutionPath(ArrayList<Vertex> solutionVertices, int[] antecedents) {
-            Vertex visited = maze.getVertices().get(destination);
-            visited.setState(VertexState.VISITED);
+    private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
+
+        
+        for (int i = 0; i < orders.length; i++) {
+            if (orders[i] == -1){
+                break;
+            }
+
+            Vertex v = maze.getVertexByID(orders[i]);
+            v.setState(VertexState.VISITED);
+            Platform.runLater(() -> displayMaze(maze));
+            try {
+                Thread.sleep(50); // Sleep between each update to show the solution path
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(destination), antecedents);
         for (Vertex v : solutionVertices) {
             v.setState(VertexState.SOLUTION);
             Platform.runLater(() -> displayMaze(maze));
@@ -232,12 +254,13 @@ public class FXController {
      * @param v the vertex to check
      * @param r the row of the neighbor
      * @param c the column of the neighbor
-     * @return true if the vertex has a neighbor at the given position, false otherwise
+     * @return true if the vertex has a neighbor at the given position, false
+     *         otherwise
      */
     private boolean hasNeighbor(Vertex v, int r, int c) {
         if (r < 0 || r >= rows || c < 0 || c >= cols)
             return false;
-        Vertex neighbor = maze.getVertexByIDVertex(r * cols + c);
+        Vertex neighbor = maze.getVertexByID(r * cols + c);
         return v.isNeighbor(neighbor);
     }
 }

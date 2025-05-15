@@ -7,13 +7,14 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 
 /**
- * Main class of the application responsible for launching the JavaFX application.
+ * Main class of the application responsible for launching the JavaFX
+ * application.
  */
 public class Main extends Application {
 
-
     private final FXController fxController = new FXController();
     private final MazeController mazeController = new MazeController();
+
     /**
      * Initializes the necessary controllers before the start of the application.
      *
@@ -24,6 +25,7 @@ public class Main extends Application {
         super.init();
         fxController.setMazeController(mazeController);
     }
+
     /**
      * Start the JavaFX application window.
      *
@@ -50,6 +52,6 @@ public class Main extends Application {
      * @param args command-line arguments when launching the application
      */
     public static void main(String[] args) {
-        launch(args);  // Launch the JavaFX application
+        launch(args); // Launch the JavaFX application
     }
 }
