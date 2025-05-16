@@ -11,10 +11,11 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
 
 
 <StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml">
-
+    
     <!-- Background image -->
     <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
         <image>
@@ -51,6 +52,13 @@
                     <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick"/>
                     <Button fx:id="resolutionLabyrinth" text="Resolve" onAction="#onStartResolutionClick" disable="true"/>
                 </HBox>
+
+                <HBox spacing="10.0" alignment="CENTER">
+                    <TextField fx:id="rowsField" promptText="rows" prefWidth="50"/>
+                    <TextField fx:id="colsField" promptText="cols" prefWidth="50"/>
+                    <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
+                </HBox>
+
             </VBox>
         </bottom>
     </BorderPane>

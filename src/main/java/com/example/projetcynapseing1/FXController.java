@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -13,6 +14,7 @@ import java.util.Set;
 import java.util.HashSet;
 import javafx.scene.control.ComboBox;
 
+import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
 
@@ -40,7 +42,6 @@ public class FXController {
         solutionMethodComboBox.getSelectionModel().selectFirst();
     }
 
-
     @FXML
     private Button resolutionLabyrinth;
     @FXML
@@ -55,12 +56,22 @@ public class FXController {
     private ComboBox<MethodName.SolveMethodName> solutionMethodComboBox;
 
 
+    @FXML
+    private TextField rowsField;
+    @FXML
+    private TextField colsField;
+    @FXML
+    private TextField seedField;
+
+
+
     private MazeController mazeController;
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows = 10;
-    private static int cols = 20;
+    private static int rows ;
+    private static int cols;
+    private static int seed;
     private int blockSize = (rows > 90 || cols > 90) ? 5
             : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
@@ -93,12 +104,26 @@ public class FXController {
     // Called when the generation button is clicked
     @FXML
     protected void onStartGenerationClick() {
+        try {
+
+            int inputRows = Integer.parseInt(rowsField.getText());;
+        int inputCols = Integer.parseInt(colsField.getText());
+        int inputSeed = Integer.parseInt(seedField.getText());
+        this.rows = inputRows;
+        this.cols = inputCols;
+        this.seed = inputSeed;
+
+
         labyrinthIsGenerated = true;
         resolutionLabyrinth.setDisable(false);
         MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
         System.out.println("Méthode génération choisie : " + selectedGenMethod);
-        new Thread(() -> generateMaze(selectedGenMethod)).start();
+        new Thread(() -> generateMaze(selectedGenMethod, inputSeed, rows, cols)).start();
+    } catch (NumberFormatException e) {
+        System.out.println("Rentre des valeurs de taille du labyrinthe. Les valeurs entrées doivent être des nombres entiers valides.");
     }
+}
+
 
     /**
      * Called when the "Solve" button is clicked. Starts solving the maze.
@@ -117,9 +142,9 @@ public class FXController {
     /**
      * Generates the maze using the specified algorithm.
      */
-    private void generateMaze(MethodName.GenMethodName generationMethod) {
+    private void generateMaze(MethodName.GenMethodName generationMethod, int seed, int rows, int cols) {
         try {
-            mazeController.createMaze(generationMethod, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
+            mazeController.createMaze(generationMethod, MethodName.Type.COMPLETE, rows, cols, 0.0, seed);
             Maze generatedMaze = mazeController.getCurrentMaze();
             visibleEdges.clear();
 
