@@ -55,10 +55,6 @@ public class MainCLI {
         int startId = 0; // Top-left corner
         int endId = (rows * columns) - 1; // Bottom-right corner
 
-<<<<<<< HEAD
-
-=======
->>>>>>> temp
         // Check if command-line arguments are provided
         if (args.length > 0) {
             String command = args[0];
