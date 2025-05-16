@@ -22,7 +22,6 @@ import java.io.Serializable;
  * </pre>
  * 
  * @author Bari-joris
- * @version 1.0
  */
 public class Edge implements Comparable<Edge>, Serializable {
     /**
@@ -59,6 +58,11 @@ public class Edge implements Comparable<Edge>, Serializable {
             System.out.println("Vertex A :" + vA + ", Vertex B :" + vB);
         }
     }
+
+
+    public Edge(Vertex vA, Vertex vB, boolean skipAddNeighbors) {
+        this.vertexA = vA;
+        this.vertexB = vB;}
 
     /**
      * Return vertex A in edge
@@ -129,6 +133,12 @@ public class Edge implements Comparable<Edge>, Serializable {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return vertexA.hashCode() + vertexB.hashCode();
+    }
+
 
     @Override
     public int compareTo(Edge e) {

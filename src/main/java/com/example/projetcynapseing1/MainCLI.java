@@ -12,6 +12,11 @@ import java.util.Scanner;
  * @author Jonathan
  */
 public class MainCLI {
+    // TODO : add an encapsulation (public, private...)
+    // mazeController / FXController Instantiated
+    private static final MazeController mazeController = new MazeController();
+    private static final FXController fxController = new FXController();
+
     // ANSI escape codes for colors
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
@@ -25,9 +30,6 @@ public class MainCLI {
     public static final String UNDERLINE = "\u001B[4m";
     public static final String GRAY = "\u001b[38;5;244m";
 
-    // Maze controller to manage maze creation and solving
-    private static final MazeController mazeController = new MazeController();
-    private static final FXController fxController = new FXController();
     /**
      * Main entry point of the application.
      * It prompts the user to choose options from a menu, define maze dimensions,
@@ -53,7 +55,10 @@ public class MainCLI {
         int startId = 0; // Top-left corner
         int endId = (rows * columns) - 1; // Bottom-right corner
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> temp
         // Check if command-line arguments are provided
         if (args.length > 0) {
             String command = args[0];
@@ -108,7 +113,7 @@ public class MainCLI {
                         System.out.println(BOLD + " 1 " + RESET + "- Prim");
                         System.out.println(BOLD + " 2 " + RESET + "- Kruskal" + RESET);
                         System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
-                        System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.UNPERFECT + RESET);
+                        System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.IMPERFECT + RESET);
 
                         sc.nextLine(); // Consume the newline after nextInt()
 
@@ -146,7 +151,7 @@ public class MainCLI {
                         case "4":
                         case "unperfect":
                             // Create the maze using Unperfect's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.UNPERFECT,
+                            mazeController.createMaze(MethodName.GenMethodName.IMPERFECT,
                                     MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                     }
 
