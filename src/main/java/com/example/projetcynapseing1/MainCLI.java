@@ -43,6 +43,12 @@ public class MainCLI {
         // Variables to store user menu choices
         String menuChoice = null;
         String generationChoice = null;
+        String solveChoice = null;
+        String saveChoice = null;
+
+        // Variables to store the starting and ending point
+        int startId = 0; // Top-left corner
+        int endId = (rows * columns) - 1; // Bottom-right corner
 
         // Maze controller to manage maze creation and solving
         MazeController mazeController = new MazeController();
@@ -71,14 +77,14 @@ public class MainCLI {
 
                     // Display the menu
                     System.out.println(BOLD + UNDERLINE + "MENU" + RESET);
-                    System.out.println(BOLD + " 1 " + RESET + "- Generate a labyrinth");
-                    System.out.println(BOLD + " 2 " + RESET + "- Load a labyrinth" + RESET);
+                    System.out.println(BOLD + " 1 " + RESET + "- Generate a maze");
+                    System.out.println(BOLD + " 2 " + RESET + "- Load a maze from a file" + RESET);
 
                     // Read the user's choice for the menu
                     menuChoice = sc.nextLine().toLowerCase().trim();
 
-                    // If the user chooses to generate a labyrinth
-                    if (menuChoice.equalsIgnoreCase("1") || menuChoice.equalsIgnoreCase("generate a labyrinth")) {
+                    // If the user chooses to generate a maze
+                    if (menuChoice.equalsIgnoreCase("1") || menuChoice.equalsIgnoreCase("generate a maze")) {
                         // Ask the user for maze dimensions and seed value
                         System.out.println(ITALIC + "Enter the number of rows:" + RESET);
                         rows = sc.nextInt();
@@ -97,6 +103,10 @@ public class MainCLI {
                         sc.nextLine(); // Consume the newline after nextInt()
 
                         generationChoice = sc.nextLine().toLowerCase().trim();
+                    }
+
+                    else if(menuChoice.equals("2") || menuChoice.equalsIgnoreCase("load a maze from a file")){
+                        mazeController.loadMaze();
                     }
 
                     // Based on the user's choice, create the maze
@@ -135,21 +145,39 @@ public class MainCLI {
                     System.out.println("\nGenerated Maze:");
                     System.out.println(maze);
 
-                    // Solve the maze from top-left to bottom-right
-                    Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-                    int startId = 0; // Top-left corner
-                    int endId = (rows * columns) - 1; // Bottom-right corner
-                    int[] parents = solver.solveAstar(maze,
-                            maze.getVertexByID(startId),
-                            maze.getVertexByID(endId),
-                            MethodName.Type.COMPLETE);
-                    int[] solution = Solver.pathIndex(maze,
-                            maze.getVertexByID(endId),
-                            parents);
+                    System.out.println("Starting point : ");
+                    startId = sc.nextInt();
 
-                    System.out.println("\nSolution found:");
-                    System.out.println(maze.solutionToString(solution));
+                    System.out.println("Ending point : ");
+                    endId = sc.nextInt();
 
+                    sc.nextLine();
+
+                    System.out.println("Solve the maze? [Y/N]");
+                    solveChoice = sc.nextLine().toLowerCase().trim();
+
+                    if(solveChoice.equals("y")){
+                        // Solve the maze
+                        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+    
+                        int[] parents = solver.solveAstar(maze,
+                                maze.getVertexByID(startId),
+                                maze.getVertexByID(endId),
+                                MethodName.Type.COMPLETE);
+                        int[] solution = Solver.pathIndex(maze,
+                                maze.getVertexByID(endId),
+                                parents);
+    
+                        System.out.println("\nSolution found:");
+                        System.out.println(maze.solutionToString(solution));
+                    }
+
+                    System.out.println("Save the maze? [Y/N]");
+                    saveChoice = sc.nextLine().toLowerCase().trim();
+
+                    if(saveChoice.equals("y")){
+                        mazeController.saveMaze();
+                    }
                     break;
 
                 default:
@@ -157,14 +185,6 @@ public class MainCLI {
                     System.out.println("Unvalid command");
                     break;
 
-                /*
-                 * case "save":
-                 * saveLabyrinthe();
-                 * break;
-                 * case "load":
-                 * loadLabyrinthe();
-                 * break;
-                 */
 
             }
         }
