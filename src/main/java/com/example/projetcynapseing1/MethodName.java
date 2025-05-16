@@ -42,7 +42,7 @@ public class MethodName {
          * this type of generation is completly random and don't ensure the maze to be
          * perfect
          */
-        IMPERFECT("imperfect");
+        IMPERFECT("Imperfect");
 
         // name of the method
         private final String name;

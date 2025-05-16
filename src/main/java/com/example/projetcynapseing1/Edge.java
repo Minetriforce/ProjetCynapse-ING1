@@ -22,7 +22,6 @@ import java.io.Serializable;
  * </pre>
  * 
  * @author Bari-joris
- * @version 1.0
  */
 public class Edge implements Comparable<Edge>, Serializable {
     /**
