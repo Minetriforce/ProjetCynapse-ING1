@@ -79,7 +79,7 @@
 
 
                 <HBox spacing="10" alignment="CENTER">
-                    <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick" disable="true"/>
+                    <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick"/>
                     <Button fx:id="resolutionLabyrinth" text="Resolve" onAction="#onStartResolutionClick" disable="true"/>
 
                 </HBox>

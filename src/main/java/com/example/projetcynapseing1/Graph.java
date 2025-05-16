@@ -78,7 +78,7 @@ public class Graph {
      * @param ID integer between 0 and n to identify vertex in graph
      * @return Vertex
      */
-    public Vertex getVertexByIDVertex(Integer ID) {
+    public Vertex getVertexByID(Integer ID) {
         return vertices.get(ID);
     }
 

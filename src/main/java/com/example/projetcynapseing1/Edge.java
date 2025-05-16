@@ -29,10 +29,15 @@ public class Edge implements Comparable<Edge>, Serializable {
      * weight is used in generation methods. Keeps value 0 while not beeing used.
      */
     private Integer weight = 0;
+
     /**
-     * Vertices linked by the Edge
+     * Left vertex of the Edge
      */
     private Vertex vertexA;
+
+    /**
+     * Right vertex of the Edge
+     */
     private Vertex vertexB;
 
     /**
@@ -117,7 +122,7 @@ public class Edge implements Comparable<Edge>, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Edge){
+        if (obj instanceof Edge) {
             Edge e = (Edge) obj;
             return (this.vertexA.equals(e.getVertexA()) && this.vertexB.equals(e.getVertexB())
                     || this.vertexA.equals(e.getVertexB()) && this.vertexB.equals(e.getVertexA()));
