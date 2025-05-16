@@ -99,7 +99,7 @@ public class FXController {
      */
     private void generateMaze() {
         try {
-            mazeController.createMaze(MethodName.GenMethodName.KRUSKAL, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
+            mazeController.createMaze(MethodName.GenMethodName.PRIM, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
             Maze generatedMaze = mazeController.getCurrentMaze();
             visibleEdges.clear();
 
