@@ -13,28 +13,21 @@ import java.util.Stack;
 public class Solver {
     // name of the method used to solve the maze
     private MethodName.SolveMethodName method;
-    // time step used in the solving process, must be >= 0
-    private float timeStep;
 
     /**
      * constructor of Solver object
      * 
      * @param m: method's name
-     * @param t: time step
-     *
      */
-    public Solver(MethodName.SolveMethodName m, float t) {
+    public Solver(MethodName.SolveMethodName m) {
         method = m;
-        timeStep = (t >= 0) ? t : 0f;
     }
 
     /**
      * constructor of Solver object
-     * 
-     * @param m: Solving method name
      */
-    public Solver(MethodName.SolveMethodName m) {
-        this(m, 0f);
+    public Solver() {
+        this(MethodName.SolveMethodName.ASTAR);
     }
 
     /**
@@ -47,30 +40,12 @@ public class Solver {
     }
 
     /**
-     * getter of timeStep
-     * 
-     * @return timeStep
-     */
-    public float getTimeStep() {
-        return timeStep;
-    }
-
-    /**
      * setter of method
      * 
      * @param m: new method
      */
     public void setMethod(MethodName.SolveMethodName m) {
         method = m;
-    }
-
-    /**
-     * setter of timeStep
-     * 
-     * @param t: new timeStep
-     */
-    public void setTimeStep(float t) {
-        timeStep = (t >= 0) ? t : 0f;
     }
 
     /**
@@ -503,6 +478,6 @@ public class Solver {
      */
     @Override
     public String toString() {
-        return "Solver: " + method.toString() + "\ntime step: " + String.valueOf(timeStep) + "s";
+        return "Solver: " + method.toString();
     }
 }
