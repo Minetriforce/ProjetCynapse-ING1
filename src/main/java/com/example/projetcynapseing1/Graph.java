@@ -2,7 +2,6 @@ package com.example.projetcynapseing1;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -135,10 +134,11 @@ public class Graph {
 
     /**
      * remove an edge from the list of current Edges
+     * 
      * @param e edge to remove
      * @return deleting was succesfull or not
      */
-    public boolean removeEdge(Edge e){
+    public boolean removeEdge(Edge e) {
         return this.edges.remove(e);
     }
 
@@ -169,33 +169,5 @@ public class Graph {
                     .append("\n");
         }
         return sb.toString();
-    }
-
-    public String asMaze(Integer nbLines, Integer nbColumns) {
-        String s = "";
-        List<Vertex> vertices = this.getVertices();
-
-        for (int y = 0; y < nbLines; y++) {
-            for (int x = 0; x < nbColumns; x++) {
-                int n = y * nbColumns + x;
-                s += String.format("%-2d", n);
-                if (x < nbColumns - 1) {
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) ? "  " : "||";
-                }
-            }
-            s += "\n";
-            if (y < nbLines - 1) {
-                for (int x = 0; x < nbColumns; x++) {
-                    int n = y * nbColumns + x;
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))) ? "  " : "--";
-                    if (x < nbColumns - 1) {
-                        s += "  ";
-                    }
-                }
-                s += "\n";
-            }
-        }
-
-        return s;
     }
 }

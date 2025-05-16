@@ -12,6 +12,11 @@ import java.util.Scanner;
  * @author Jonathan
  */
 public class MainCLI {
+    // TODO : add an encapsulation (public, private...)
+    // mazeController / FXController Instantiated
+    private static final MazeController mazeController = new MazeController();
+    private static final FXController fxController = new FXController();
+
     // ANSI escape codes for colors
     static final String RESET = "\u001B[0m";
     static final String RED = "\u001B[31m";
@@ -43,10 +48,6 @@ public class MainCLI {
         // Variables to store user menu choices
         String menuChoice = null;
         String generationChoice = null;
-
-        // Maze controller to manage maze creation and solving
-        MazeController mazeController = new MazeController();
-        FXController fxController = new FXController();
 
         // Check if command-line arguments are provided
         if (args.length > 0) {
@@ -92,7 +93,7 @@ public class MainCLI {
                         System.out.println(BOLD + " 1 " + RESET + "- Prim");
                         System.out.println(BOLD + " 2 " + RESET + "- Kruskal" + RESET);
                         System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
-                        System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.UNPERFECT + RESET);
+                        System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.IMPERFECT + RESET);
 
                         sc.nextLine(); // Consume the newline after nextInt()
 
@@ -126,7 +127,7 @@ public class MainCLI {
                         case "4":
                         case "unperfect":
                             // Create the maze using Unperfect's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.UNPERFECT,
+                            mazeController.createMaze(MethodName.GenMethodName.IMPERFECT,
                                     MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                     }
 

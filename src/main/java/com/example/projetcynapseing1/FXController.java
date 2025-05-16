@@ -50,7 +50,7 @@ public class FXController {
     private static int destination = rows * cols - 1;
 
     /**
-     * Sets the maze controller.
+     * Set the maze controller.
      *
      * @param mazeController the MazeController instance to be set
      */
@@ -190,6 +190,7 @@ public class FXController {
 
         for (Vertex v : maze.getVertices()) {
             int id = v.getID();
+            // TODO : remplacer par les fonctions v.getX() et v.getY()
             int row = id / cols;
             int col = id % cols;
 

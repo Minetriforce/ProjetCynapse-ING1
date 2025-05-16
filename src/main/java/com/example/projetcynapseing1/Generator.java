@@ -61,6 +61,52 @@ public class Generator {
         this.seed = seed;
     }
 
+    /* SETTERS */
+    /**
+     * Set number of rows of the maze
+     * 
+     * @param rows number of rows
+     */
+    public void setRows(Integer rows) {
+        this.rows = rows;
+    }
+
+    /**
+     * Set number of columns
+     * 
+     * @param columns number of columns
+     */
+    public void setColumns(Integer columns) {
+        if (columns <= 0)
+            this.columns = columns;
+    }
+
+    /**
+     * Set generation method
+     * 
+     * @param genMethod KRUSKAL / PRIM / DFS / UNPERFECT
+     */
+    public void setGenMethod(MethodName.GenMethodName genMethod) {
+        this.genMethod = genMethod;
+    }
+
+    /**
+     * Set seed of the randomn number generator
+     * 
+     * @param seed null to or 0 to have a random seed, else put a strictly positive
+     *             integer
+     */
+    public void setSeed(Integer seed) {
+        // In case seed is null, generate a random seed
+        if (this.seed == null) {
+            System.out.println("Warning : seed is null, generating random seed");
+            this.seed = new Random().nextInt(100000);
+            System.out.println("Seed generated : " + this.seed);
+        } else {
+            this.seed = seed;
+        }
+    }
+
     /**
      * <p>
      * This method is used to create a grid graph of size rows * columns.
@@ -113,7 +159,7 @@ public class Generator {
      */
     private int find(Integer i, int[] parent) {
         if (parent[i] != i) {
-            parent[i] = find(parent[i], parent); //path compression to reduce access time
+            parent[i] = find(parent[i], parent); // path compression to reduce access time
         }
         return parent[i];
     }
@@ -253,7 +299,7 @@ public class Generator {
      * @param randomGen     random number generator, it ensures us to keep the same
      *                      maze if we send the same seed
      */
-    private void randomDFS(Graph baseGraph, Graph maze, Stack<Vertex> visitedStack, Vertex currentVertex,
+    private void randomDFS(Maze baseGraph, Maze maze, Stack<Vertex> visitedStack, Vertex currentVertex,
             ArrayList<Boolean> mark, Random randomGen) {
         mark.set(currentVertex.getID(), true);
         ArrayList<Vertex> availableNeighbors = new ArrayList<Vertex>();
@@ -290,7 +336,7 @@ public class Generator {
      * @param baseGraph grid base of possible edges
      * @param maze      output maze
      */
-    private void unperfect(Maze baseGraph, Maze maze) {
+    private void imperfect(Maze baseGraph, Maze maze) {
         // get minimum 1/4 of the edge of grid graph and maximum all the edges
         Random rng = new Random(this.seed);
         Integer numberEdges = rng.nextInt(baseGraph.getEdges().size() * (3 / 2)) + baseGraph.getEdges().size() / 4;
@@ -318,14 +364,6 @@ public class Generator {
      * @see Maze
      */
     public Maze makeMaze() {
-
-        // In case seed is null, generate a random seed
-        if (this.seed == null) {
-            System.out.println("Warning : seed is null, generating random seed");
-            this.seed = new Random().nextInt(100000);
-            System.out.println("Seed generated : " + this.seed);
-        }
-
         // Used to display generation time
         long time = System.currentTimeMillis();
 
@@ -362,8 +400,8 @@ public class Generator {
                 randomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
 
                 break;
-            case UNPERFECT:
-                unperfect(base, maze);
+            case IMPERFECT:
+                imperfect(base, maze);
                 System.out.println("End of Unperfect geenration.");
         }
 
