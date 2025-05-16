@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 /**
  * Main class of the application responsible for launching the JavaFX
  * application.
+ * @author Bari, Lorelle, Florianne, Jonathan, Junjie
  */
 public class Main extends Application {
 
@@ -43,6 +44,8 @@ public class Main extends Application {
         stage.setTitle("Cynapse");
         stage.setScene(scene);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/smiley.png")));
+        String args[] = {"cli"};
+        MainCLI.main(args);
         stage.show();
     }
 

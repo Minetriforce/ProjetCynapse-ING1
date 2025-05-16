@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * Class for mazes, it must be a rectangular
+ * @author Junjie
  */
 public class Maze extends Graph implements Serializable {
 

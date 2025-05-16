@@ -115,9 +115,7 @@ public class Generator {
         if (parent[i] != i) {
             parent[i] = find(parent[i], parent); //path compression to reduce access time
         }
-        int r = find(parent[i], parent);
-        parent[i] = r;
-        return r;
+        return parent[i];
     }
 
     /**
