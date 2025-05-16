@@ -146,10 +146,36 @@ public class MainCLI {
                     System.out.println(maze);
 
                     System.out.println("Starting point : ");
-                    startId = sc.nextInt();
-
+                    while (true) {
+                        if (sc.hasNextInt()) {
+                            startId = sc.nextInt();
+                            // Check if the input is within the valid range
+                            if (startId >= 0 && startId < rows * columns) {
+                                break; // valid value, exit loop
+                            } else {
+                                System.out.println("Please enter an integer between 0 and " + ((rows * columns) - 1) + ": ");
+                            }
+                        } else {
+                            System.out.println("Invalid input. Please enter an integer: ");
+                            sc.next(); // consume the invalid input
+                        }
+                    }
+                    
                     System.out.println("Ending point : ");
-                    endId = sc.nextInt();
+                    while (true) {
+                        if (sc.hasNextInt()) {
+                            endId = sc.nextInt();
+                            // Check if the input is within the valid range
+                            if (endId >= 0 && endId < rows * columns) {
+                                break; // valid value, exit loop
+                            } else {
+                                System.out.println("Please enter an integer between 0 and " + ((rows * columns) - 1) + ": ");
+                            }
+                        } else {
+                            System.out.println("Invalid input. Please enter an integer: ");
+                            sc.next(); // consume the invalid input
+                        }
+                    }
 
                     sc.nextLine();
 
@@ -160,16 +186,16 @@ public class MainCLI {
                         // Solve the maze
                         Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
     
-                        int[] parents = solver.solveAstar(maze,
+                        int[] antecedents = solver.solveAstar(maze,
                                 maze.getVertexByID(startId),
                                 maze.getVertexByID(endId),
                                 MethodName.Type.COMPLETE);
                         int[] solution = Solver.pathIndex(maze,
                                 maze.getVertexByID(endId),
-                                parents);
+                                antecedents);
     
                         System.out.println("\nSolution found:");
-                        System.out.println(maze.solutionToString(solution));
+                        System.out.println(maze.solutionToString(antecedents,solution));
                     }
 
                     System.out.println("Save the maze? [Y/N]");
@@ -182,7 +208,7 @@ public class MainCLI {
 
                 default:
                     // If the command is invalid
-                    System.out.println("Unvalid command");
+                    System.out.println("Invalid command");
                     break;
 
 
