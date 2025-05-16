@@ -347,17 +347,24 @@ public class Generator {
         ArrayList<Edge> edgesGridMaze = baseGraph.getEdges();
 
         for (int m = 0; m < numberEdges; m++) {
+            if (edgesGridMaze.size() == 0){
+                break;
+            }
+
             Edge e = edgesGridMaze.get(rng.nextInt(edgesGridMaze.size())); // pick a random Edge in the grid Graph
             edgesGridMaze.remove(e); // removes it from the grid Graph : it makes sure to not pick the same Edge in
+            
+            System.out.println(e);
             // the following iterations
 
-            maze.addEdge(
-                    new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
+            maze.addEdge(new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
             // this
             // picked
             // edge
             // to
             // maze
+            
+            System.out.println(e);
         }
     }
 
