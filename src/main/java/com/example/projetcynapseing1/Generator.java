@@ -175,6 +175,10 @@ public class Generator {
                         maze.getVertexByID(edge.getVertexB().getID()))); // Add adge to maze
                 union(edge.getVertexA().getID(), edge.getVertexB().getID(), parents); // merge trees in the list of
                 // trees (parents)
+
+                if (maze.getEdges().size() == maze.getVertices().size() - 1){
+                    break;
+                }
             }
         }
     }
@@ -364,7 +368,10 @@ public class Generator {
                 break;
             case IMPERFECT:
                 imperfect(base, maze);
-                System.out.println("End of Imperfect geenration.");
+                base = null;
+                System.gc();
+                time = System.currentTimeMillis() - time;
+                System.out.println("End of Imperfect generation.");
         }
 
         System.out.println("Timestamp : " + time + "ms");
