@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * JavaFX Controller for handling maze display, button actions, and maze
  * generation/solving.
  *
- * @author Florianne
+ * @author Florianne, Lorelle
  */
 public class FXController {
 
