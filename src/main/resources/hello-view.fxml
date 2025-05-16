@@ -13,6 +13,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.TextField?>
 
 
 <StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml">
@@ -49,7 +50,7 @@
                 </padding>
                 <HBox spacing="10.0" alignment="CENTER">
 
-                    <ComboBox fx:id="generationMethodBox" promptText="méthode de génération">
+                    <ComboBox fx:id="generationMethodBox" promptText="generation method">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="Kruskal"/>
@@ -59,16 +60,21 @@
                         </items>
                     </ComboBox>
                     
-                    <ComboBox fx:id="solutionMethodBox" promptText="méthode de résolution">
+                    <ComboBox fx:id="solutionMethodBox" promptText="solution method">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="A*"/>
                                 <String fx:value="right-hand"/>
-                                <String fx:value="Tremau"/>
+                                <String fx:value="Tremaux"/>
                             </FXCollections>
                         </items>
                     </ComboBox>
+                </HBox>
 
+                <HBox spacing="10.0" alignment="CENTER">
+                    <TextField fx:id="textLength" promptText="length" prefWidth="50"/>
+                    <TextField fx:id="textWidth" promptText="width" prefWidth="50"/>
+                    <TextField fx:id="seed" promptText="seed" prefWidth="50"/>
                 </HBox>
 
 

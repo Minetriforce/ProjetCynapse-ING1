@@ -5,10 +5,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.control.TextField;
 
 public class FXController {
 
@@ -36,6 +38,28 @@ public class FXController {
 
     @FXML
     private Button generationLabyrinth;
+
+    @FXML
+    private TextField textLength;
+    @FXML
+    private TextField textWidth;
+    @FXML
+    private TextField seed;
+
+    //not used but will be useful
+    private int getLength() throws NumberFormatException{
+        String input = textLength.getText();
+        int value = Integer.parseInt(input);
+
+        if (value <= 0 ){
+            throw new NumberFormatException("Value must be above 0");
+        }
+
+        if (value%10 != 0){
+            throw new NumberFormatException("Value must be natural");
+        }
+        return value;
+    }
 
 
     private MazeController mazeController;
@@ -72,7 +96,7 @@ public class FXController {
     // Called when the resolution button is clicked
     @FXML
     protected void onStartResolutionClick() {
-    String selectedMethod = solutionMethodBox.getValue();
+        String selectedMethod = solutionMethodBox.getValue();
 }
 
     // Called when the generation button is clicked
