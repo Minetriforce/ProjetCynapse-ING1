@@ -128,6 +128,8 @@ public class FXController {
         int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
         int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
 
+        System.out.println(maze.solutionToString(antecedents, Solver.pathIndex(maze, maze.getVertexByID(destination), antecedents)));
+
         try {
             // Start visualizing the solution, marking visited vertices and solution path
             markVisitedAndSolutionPath(orders, antecedents);
