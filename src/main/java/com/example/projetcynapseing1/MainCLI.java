@@ -80,8 +80,18 @@ public class MainCLI {
                     System.out.println(BOLD + " 1 " + RESET + "- Generate a maze");
                     System.out.println(BOLD + " 2 " + RESET + "- Load a maze from a file" + RESET);
 
+                    
                     // Read the user's choice for the menu
-                    menuChoice = sc.nextLine().toLowerCase().trim();
+                    while (true) {
+                        System.out.print("Choose an option: ");
+                        menuChoice = sc.nextLine().toLowerCase().trim();
+                        if (menuChoice.equals("1") || menuChoice.equals("generate a maze") ||
+                            menuChoice.equals("2") || menuChoice.equals("load a maze from a file")) {
+                            break; // valid input
+                        } else {
+                            System.out.println("Invalid choice. Please enter '1' or '2'.");
+                        }
+                    }
 
                     // If the user chooses to generate a maze
                     if (menuChoice.equalsIgnoreCase("1") || menuChoice.equalsIgnoreCase("generate a maze")) {
@@ -181,6 +191,8 @@ public class MainCLI {
 
                     System.out.println(ITALIC + "Solve the maze? " + RESET + BOLD + "[Y/N]" + RESET);
                     solveChoice = sc.nextLine().toLowerCase().trim();
+
+                    
 
                     if(solveChoice.equals("y")){
                         // Solve the maze
