@@ -10,7 +10,7 @@ import java.util.Stack;
  * parameters.
  * This class use the Graph class (see
  * {@link com.example.projetcynapseing1.Graph})
- * 
+ *
  * @author Bari-joris
  */
 public class Generator {
@@ -38,7 +38,7 @@ public class Generator {
     /**
      * Constructor of class generator.
      * Rows and columns are used to set the size of a rectangle maze
-     * 
+     *
      * @param rows      follows y axis from bottom to top
      * @param colums    follows x axis from elft to right
      * @param genMethod generation method used for the maze
@@ -114,7 +114,7 @@ public class Generator {
      * Class references :
      * Graph : {@link com.example.projetcynapseing1.Graph}
      * </p>
-     * 
+     *
      * @return a grid graph of size rows * columns
      */
     private Maze makeGridGraph() {
@@ -135,7 +135,7 @@ public class Generator {
 
     /**
      * add a random weight to every Edge in graph using a random number generator
-     * 
+     *
      * @param G
      */
     private void addRandomWeight(Maze G) {
@@ -152,7 +152,7 @@ public class Generator {
 
     /**
      * get the representative Vertex ID of the group of vertex i
-     * 
+     *
      * @param i      ID of the Vertex
      * @param parent list of groups (trees)
      * @return representative ID of the tree OR recusive call
@@ -166,7 +166,7 @@ public class Generator {
 
     /**
      * Create a union between two tree (groups)
-     * 
+     *
      * @param i      Representative ID of the first tree
      * @param j      Representative ID of the second tree
      * @param parent list of groups (trees)
@@ -182,7 +182,7 @@ public class Generator {
      * Complete union find method.
      * It is used to detect cylce in a graph : If two vertices are in the same tree
      * (i.e. have the same representive vertex ID), then return true
-     * 
+     *
      * @param a      First Vertex to check
      * @param b      Second Vertex to check
      * @param parent List of groups (trees)
@@ -199,7 +199,7 @@ public class Generator {
     /**
      * Use the Kruskal's algorithm to generate the maze.
      * After this fuction, maze will be the minimum spanning tree (MST)
-     * 
+     *
      * @param baseGraph Grid, weighted graph used as a base to generate maze
      * @param maze      generated maze
      */
@@ -208,7 +208,7 @@ public class Generator {
         int[] parents = new int[maze.getVertices().size()];
         for (int m = 0; m < maze.getVertices().size(); m++) {
             parents[m] = m; // each Vertex have itself as a representative ID, each vertex have it's unique
-                            // own tree
+            // own tree
         }
 
         // Uses merge sort algorithm O(n*log(n)), to sort edges in ascending order
@@ -216,11 +216,11 @@ public class Generator {
 
         for (Edge edge : baseGraph.getEdges()) { // look at each edges in ascending order
             if (unionFind(edge.getVertexA(), edge.getVertexB(), parents) == false) { // add edge to maze only if it does
-                                                                                     // not create a cycle
+                // not create a cycle
                 maze.addEdge(new Edge(maze.getVertexByID(edge.getVertexA().getID()),
                         maze.getVertexByID(edge.getVertexB().getID()))); // Add adge to maze
                 union(edge.getVertexA().getID(), edge.getVertexB().getID(), parents); // merge trees in the list of
-                                                                                      // trees (parents)
+                // trees (parents)
             }
         }
     }
@@ -228,7 +228,7 @@ public class Generator {
     /**
      * Create a maze according to Prim's algorithm
      * After this fuction, maze will be the minimum spanning tree (MST)
-     * 
+     *
      * @param baseGraph
      * @param maze
      * @param s
@@ -289,7 +289,7 @@ public class Generator {
 
     /**
      * Use the randomized DFS method to create a graph, it's a recursive function
-     * 
+     *
      * @param baseGraph     grid graph explored
      * @param maze          maze result
      * @param visitedStack  stack of vertex already visited, in case the algorithm
@@ -326,16 +326,17 @@ public class Generator {
     }
 
     /**
-     * generate an unperfect Maze.
+     * generate an imperfect Maze.
      * First step : pick a number between 1/4 numbers of edges and all the edges
      * name numberEdges
      * Second step : make a loop of numberEdges iteration and pick a Edge from
      * gridGraph
      * Third Step : add this Edge to maze
-     * 
+     *
      * @param baseGraph grid base of possible edges
      * @param maze      output maze
      */
+    private void imperfect(Maze baseGraph, Maze maze) {
     private void imperfect(Maze baseGraph, Maze maze) {
         // get minimum 1/4 of the edge of grid graph and maximum all the edges
         Random rng = new Random(this.seed);
@@ -345,21 +346,21 @@ public class Generator {
         for (int m = 0; m < numberEdges; m++) {
             Edge e = edgesGridMaze.get(rng.nextInt(edgesGridMaze.size())); // pick a random Edge in the grid Graph
             edgesGridMaze.remove(e); // removes it from the grid Graph : it makes sure to not pick the same Edge in
-                                     // the following iterations
+            // the following iterations
 
             maze.addEdge(
                     new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
-                                                                                                                       // this
-                                                                                                                       // picked
-                                                                                                                       // edge
-                                                                                                                       // to
-                                                                                                                       // maze
+            // this
+            // picked
+            // edge
+            // to
+            // maze
         }
     }
 
     /**
      * Create a maze according to a specific method.
-     * 
+     *
      * @return maze : Maze
      * @see Maze
      */
@@ -402,7 +403,7 @@ public class Generator {
                 break;
             case IMPERFECT:
                 imperfect(base, maze);
-                System.out.println("End of Unperfect geenration.");
+                System.out.println("End of Imperfect geenration.");
         }
 
         System.out.println("Timestamp : " + time + "ms");

@@ -140,16 +140,16 @@ public class MainCLI {
                     Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
                     int startId = 0; // Top-left corner
                     int endId = (rows * columns) - 1; // Bottom-right corner
-                    int[] parents = solver.solveAstar(maze,
+                    int[] antecedents = solver.solveAstar(maze,
                             maze.getVertexByID(startId),
                             maze.getVertexByID(endId),
                             MethodName.Type.COMPLETE);
                     int[] solution = Solver.pathIndex(maze,
                             maze.getVertexByID(endId),
-                            parents);
+                            antecedents);
 
                     System.out.println("\nSolution found:");
-                    System.out.println(maze.solutionToString(solution));
+                    System.out.println(maze.solutionToString(antecedents, solution));
 
                     break;
 

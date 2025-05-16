@@ -59,6 +59,11 @@ public class Edge implements Comparable<Edge>, Serializable {
         }
     }
 
+
+    public Edge(Vertex vA, Vertex vB, boolean skipAddNeighbors) {
+        this.vertexA = vA;
+        this.vertexB = vB;}
+
     /**
      * Return vertex A in edge
      * 
@@ -128,6 +133,12 @@ public class Edge implements Comparable<Edge>, Serializable {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return vertexA.hashCode() + vertexB.hashCode();
+    }
+
 
     @Override
     public int compareTo(Edge e) {

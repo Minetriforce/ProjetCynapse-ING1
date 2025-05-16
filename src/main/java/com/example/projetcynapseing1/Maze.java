@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * Class for mazes, it must be a rectangular
+ * @author Junjie
  */
 public class Maze extends Graph implements Serializable {
 
@@ -101,27 +102,30 @@ public class Maze extends Graph implements Serializable {
 
     /**
      * convert a solution to a string
-     * 
-     * @param solution: parent of each vertex in the solution
+     * @param antecedents: parent of each vertex
+     * @param solution: parent of each vertex in the solution path
      * @return the maze with the solution in a string format
      */
-    public String solutionToString(int[] solution) {
+    public String solutionToString(int[] antecedents, int[] solution) {
         // number of vertices
         int n = rows * columns;
 
         // verification
-        if (solution.equals(null)) {
+        if (antecedents.equals(null) || solution.equals(null)) {
             System.out.println("Param null !");
             return this.toString();
         }
-        if (n != solution.length) {
-            System.out.println("Inappropriate length of solution: " + solution.length + " (insted of " + n + ") !");
+        if (n != antecedents.length || n != solution.length) {
+            System.out.println("Inappropriate length of solution !");
             return this.toString();
         }
         for (int i = 0; i < n; i++) {
+            if (antecedents[i] < 0 || antecedents[i] > n) {
+                System.out.println("Table antecedents is inappropriately indexed: antecedents[" + i + "] = " + antecedents[i] + " !");
+                return this.toString();
+            }
             if (solution[i] < 0 || solution[i] > n) {
-                System.out.println(
-                        "Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
+                System.out.println("Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
                 return this.toString();
             }
         }
@@ -197,6 +201,16 @@ public class Maze extends Graph implements Serializable {
         // horizontal path
         String pathHorizontal = MainCLI.GREEN + "─".repeat(3) + MainCLI.RESET;
 
+        // wrong vertical path
+        String pathWrongVertical = MainCLI.RED + " ".repeat(pad) + "│" + " ".repeat(pad) + MainCLI.RESET;
+        // wrong vertical path next to left border
+        String pathWrongVerticalBorderLeft = pathWrongVertical + " ";
+        // wrong vertical path next to right border
+        String pathWrongVerticalBorderRight = " " + pathWrongVertical;
+        pathWrongVertical = pathWrongVerticalBorderRight + " ";
+        // wrong horizontal path
+        String pathWrongHorizontal = MainCLI.RED + "─".repeat(3) + MainCLI.RESET;
+
         // vertical border
         String borderVertical = MainCLI.GRAY + " ║ " + MainCLI.RESET;
         // border horizontal
@@ -226,9 +240,13 @@ public class Maze extends Graph implements Serializable {
                 if (x < columns - 1) {
                     // if vertex n + 1 neighboring
                     if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + 1))) {
-                        // if path
+                        // if path solution
                         if (solution[i] == i + 1 || solution[i + 1] == i) {
                             s += pathHorizontal;
+                        }
+                        // if path
+                        else if (antecedents[i] == i + 1 || antecedents[i + 1] == i) {
+                            s += pathWrongHorizontal;
                         }
                         // if not path
                         else {
@@ -253,10 +271,13 @@ public class Maze extends Graph implements Serializable {
 
                     // if vertex n + columns neighboring
                     if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
-                        // if path
+                        // if path solution
                         if (solution[i] == i + columns || solution[i + columns] == i) {
-                            s += (x == 0) ? pathVerticalBorderLeft
-                                    : ((x == columns - 1) ? pathVerticalBorderRight : pathVertical);
+                            s += (x == 0) ? pathVerticalBorderLeft : ((x == columns - 1) ? pathVerticalBorderRight : pathVertical);
+                        }
+                        // if path
+                        else if (antecedents[i] == i + columns || antecedents[i + columns] == i) {
+                            s += (x == 0) ? pathWrongVerticalBorderLeft : ((x == columns - 1) ? pathWrongVerticalBorderRight : pathWrongVertical);
                         }
                         // if not path
                         else {
@@ -299,6 +320,14 @@ public class Maze extends Graph implements Serializable {
         s += borderDown + "\n";
 
         return s;
+    }
+    /**
+     * convert a solution to a string
+     * @param solution: parent of each vertex in the solution path
+     * @return the maze with the solution in a string format
+     */
+    public String solutionToString(int[] solution) {
+        return this.solutionToString(solution, solution);
     }
 
     /**
