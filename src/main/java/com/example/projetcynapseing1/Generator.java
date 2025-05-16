@@ -70,8 +70,6 @@ public class Generator {
      * </p>
      * 
      * @return a grid graph of size rows * columns
-     * @see
-     * @since 1.0
      */
     private Maze makeGridGraph() {
         Maze G = new Maze(this.rows, this.columns, null);
@@ -94,7 +92,7 @@ public class Generator {
      * 
      * @param G
      */
-    private void addRandomWeight(Graph G) {
+    private void addRandomWeight(Maze G) {
         Random rng = new Random(this.seed);
         for (Edge edge : G.getEdges()) {
             try {
@@ -113,11 +111,11 @@ public class Generator {
      * @param parent list of groups (trees)
      * @return representative ID of the tree OR recusive call
      */
-    private Integer find(Integer i, int[] parent) {
-        if (parent[i] == i) {
-            return i;
+    private int find(Integer i, int[] parent) {
+        if (parent[i] != i) {
+            parent[i] = find(parent[i], parent); //path compression to reduce access time
         }
-        return find(parent[i], parent);
+        return parent[i];
     }
 
     /**
@@ -131,7 +129,7 @@ public class Generator {
         Integer irep = find(i, parent);
         Integer jrep = find(j, parent);
 
-        parent[irep] = jrep;
+        parent[jrep] = irep;
     }
 
     /**
@@ -146,8 +144,8 @@ public class Generator {
      *         Vertices are NOT in the same tree
      */
     private Boolean unionFind(Vertex a, Vertex b, int[] parent) {
-        Integer arep = find(a.getID(), parent);
-        Integer brep = find(b.getID(), parent);
+        int arep = find(a.getID(), parent);
+        int brep = find(b.getID(), parent);
 
         return arep == brep;
     }
