@@ -93,11 +93,7 @@ public class FXController {
         this.rows = rows;
         this.cols = cols;
 
-        if (rows > 20 || cols > 20) {
-            blockSize = 20;
-        } else {
-            blockSize = 40;
-        }
+        blockSize = (rows > 90 || cols > 90) ? 5 : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
     }
 
 
@@ -171,12 +167,8 @@ public class FXController {
         int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
         int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
 
-        try {
-            // Start visualizing the solution, marking visited vertices and solution path
-            markVisitedAndSolutionPath(orders, antecedents);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Start visualizing the solution, marking visited vertices and solution path
+        markVisitedAndSolutionPath(orders, antecedents);
     }
 
     /**
@@ -187,8 +179,6 @@ public class FXController {
      * @param antecedents: the array of antecedents for each vertex
      */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
-
-
         for (int i = 0; i < orders.length; i++) {
             if (orders[i] == -1){
                 break;

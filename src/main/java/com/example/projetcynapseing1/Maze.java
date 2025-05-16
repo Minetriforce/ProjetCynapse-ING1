@@ -23,25 +23,16 @@ public class Maze extends Graph implements Serializable {
     private final int columns;
 
     /**
-     * Method used to generate this maze.
-     * This variable can stay null and is never used except for saving maze (used as
-     * meta data information)
-     */
-    private final MethodName.GenMethodName genMethodName;
-
-    /**
      * constructor: create c*l vertices without any edge
      * 
      * @param l:             number of lines
      * @param c:             number of columns
      * @param genMethodName: method used to generate maze
      */
-    public Maze(int l, int c, MethodName.GenMethodName genMethodName) {
+    public Maze(int l, int c) {
         super();
         this.rows = (l > 0) ? l : 1;
         this.columns = (c > 0) ? c : 1;
-
-        this.genMethodName = genMethodName;
 
         for (int y = 0; y < l; y++) {
             for (int x = 0; x < c; x++) {
@@ -72,15 +63,6 @@ public class Maze extends Graph implements Serializable {
      */
     public int getColumns() {
         return columns;
-    }
-
-    /**
-     * getter of genMethodName
-     * 
-     * @return genMethoName
-     */
-    public MethodName.GenMethodName getGenMethod() {
-        return this.genMethodName;
     }
 
     /**
@@ -273,11 +255,11 @@ public class Maze extends Graph implements Serializable {
                     if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
                         // if path solution
                         if (solution[i] == i + columns || solution[i + columns] == i) {
-                            s += (x == 0) ? pathVerticalBorderLeft : ((x == columns - 1) ? pathVerticalBorderRight : pathVertical);
+                            s += (x == 0) ? pathVerticalBorderLeft : (x == columns - 1) ? pathVerticalBorderRight : pathVertical;
                         }
                         // if path
                         else if (antecedents[i] == i + columns || antecedents[i + columns] == i) {
-                            s += (x == 0) ? pathWrongVerticalBorderLeft : ((x == columns - 1) ? pathWrongVerticalBorderRight : pathWrongVertical);
+                            s += (x == 0) ? pathWrongVerticalBorderLeft : (x == columns - 1) ? pathWrongVerticalBorderRight : pathWrongVertical;
                         }
                         // if not path
                         else {

@@ -93,12 +93,22 @@ public class MethodName {
         ASTAR("A*"),
 
         /**
+         * DFS resolution method algorithm
+         */
+        DFS("DFS"),
+
+        /**
+         * BFS resolution algorithm
+         */
+        BFS("BFS"),
+
+        /**
          * Right hand resolution algorithm
          */
         RIGHTHAND("Right hand"),
 
         /**
-         * Trémaux resolution algorithm
+         * Left hand resolution algorithm
          */
         LEFTHAND("Left hand");
 
