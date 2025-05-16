@@ -11,6 +11,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import java.util.Set;
 import java.util.HashSet;
+import javafx.scene.control.ComboBox;
+
 
 import java.util.ArrayList;
 
@@ -31,7 +33,13 @@ public class FXController {
     private void initialize() {
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
+        generationMethodComboBox.getSelectionModel().selectFirst();
+
+        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
+        solutionMethodComboBox.getSelectionModel().selectFirst();
     }
+
 
     @FXML
     private Button resolutionLabyrinth;
@@ -39,6 +47,13 @@ public class FXController {
     private Button generationLabyrinth;
     @FXML
     private Canvas mazeCanvas;
+
+    @FXML
+    private ComboBox<MethodName.GenMethodName> generationMethodComboBox;
+
+    @FXML
+    private ComboBox<MethodName.SolveMethodName> solutionMethodComboBox;
+
 
     private MazeController mazeController;
     private boolean labyrinthIsGenerated = false;
@@ -74,13 +89,15 @@ public class FXController {
         }
     }
 
+
     // Called when the generation button is clicked
     @FXML
     protected void onStartGenerationClick() {
         labyrinthIsGenerated = true;
         resolutionLabyrinth.setDisable(false);
-        // Start maze generation on a new thread to avoid blocking the UI
-        new Thread(() -> generateMaze()).start();
+        MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
+        System.out.println("Méthode génération choisie : " + selectedGenMethod);
+        new Thread(() -> generateMaze(selectedGenMethod)).start();
     }
 
     /**
@@ -88,18 +105,21 @@ public class FXController {
      */
     @FXML
     protected void onStartResolutionClick() {
+
+        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
+        System.out.println("Méthode résolution choisie : " + selectedSolveMethod);
         if (maze != null) {
-            // Start maze solving on a new thread to avoid blocking the UI
-            new Thread(() -> solveMaze()).start();
+
+            new Thread(() -> solveMaze(selectedSolveMethod)).start();
         }
     }
 
     /**
      * Generates the maze using the specified algorithm.
      */
-    private void generateMaze() {
+    private void generateMaze(MethodName.GenMethodName generationMethod) {
         try {
-            mazeController.createMaze(MethodName.GenMethodName.PRIM, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
+            mazeController.createMaze(generationMethod, MethodName.Type.COMPLETE, rows, cols, 0.0, 9);
             Maze generatedMaze = mazeController.getCurrentMaze();
             visibleEdges.clear();
 
@@ -108,7 +128,7 @@ public class FXController {
                 Platform.runLater(() -> displayMaze(generatedMaze));
                 Thread.sleep(10);
             }}
-            catch (Exception e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -118,8 +138,8 @@ public class FXController {
      * one.
      */
 
-    private void solveMaze() {
-        Solver solver = new Solver(MethodName.SolveMethodName.LEFTHAND);
+    private void solveMaze(MethodName.SolveMethodName solveMethod) {
+        Solver solver = new Solver(solveMethod);
 
         int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
         int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
@@ -141,7 +161,7 @@ public class FXController {
      */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
 
-        
+
         for (int i = 0; i < orders.length; i++) {
             if (orders[i] == -1){
                 break;

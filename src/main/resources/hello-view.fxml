@@ -10,9 +10,11 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ComboBox?>
+
 
 <StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml">
-    
+
     <!-- Background image -->
     <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
         <image>
@@ -44,6 +46,8 @@
                     <Insets bottom="20.0" left="20.0" right="20.0" top="10.0"/>
                 </padding>
                 <HBox spacing="10.0" alignment="CENTER">
+                    <ComboBox fx:id="generationMethodComboBox" prefWidth="200" />
+                    <ComboBox fx:id="solutionMethodComboBox" prefWidth="200" />
                     <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick"/>
                     <Button fx:id="resolutionLabyrinth" text="Resolve" onAction="#onStartResolutionClick" disable="true"/>
                 </HBox>
