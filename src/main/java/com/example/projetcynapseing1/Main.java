@@ -44,8 +44,6 @@ public class Main extends Application {
         stage.setTitle("Cynapse");
         stage.setScene(scene);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/smiley.png")));
-        String args[] = {"cli"};
-        MainCLI.main(args);
         stage.show();
     }
 
