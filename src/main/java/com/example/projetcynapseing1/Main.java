@@ -9,7 +9,6 @@ import javafx.scene.image.Image;
 /**
  * Main class of the application responsible for launching the JavaFX
  * application.
- * @author Bari, Lorelle, Florianne, Jonathan, Junjie
  */
 public class Main extends Application {
 
