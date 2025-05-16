@@ -5,10 +5,16 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import java.util.Set;
+import java.util.HashSet;
+import javafx.scene.control.ComboBox;
+
+import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
 
@@ -16,7 +22,7 @@ import java.util.ArrayList;
  * JavaFX Controller for handling maze display, button actions, and maze
  * generation/solving.
  *
- * @author Florianne
+ * @author Florianne, Lorelle
  */
 public class FXController {
 
@@ -29,6 +35,11 @@ public class FXController {
     private void initialize() {
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
+        generationMethodComboBox.getSelectionModel().selectFirst();
+
+        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
+        solutionMethodComboBox.getSelectionModel().selectFirst();
     }
 
     @FXML
@@ -38,16 +49,35 @@ public class FXController {
     @FXML
     private Canvas mazeCanvas;
 
+    @FXML
+    private ComboBox<MethodName.GenMethodName> generationMethodComboBox;
+
+    @FXML
+    private ComboBox<MethodName.SolveMethodName> solutionMethodComboBox;
+
+
+    @FXML
+    private TextField rowsField;
+    @FXML
+    private TextField colsField;
+    @FXML
+    private TextField seedField;
+
+
+
     private MazeController mazeController;
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows = 15;
-    private static int cols = 15;
+    private static int rows ;
+    private static int cols;
+    private static int seed;
     private int blockSize = (rows > 90 || cols > 90) ? 5
             : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
     private int[] antecedents; // Store the solution path antecedents
     private static int destination = rows * cols - 1;
+    private Set<Edge> visibleEdges = new HashSet<>();
+
 
     /**
      * Sets the maze controller.
@@ -70,49 +100,62 @@ public class FXController {
         }
     }
 
+
     // Called when the generation button is clicked
     @FXML
     protected void onStartGenerationClick() {
-        labyrinthIsGenerated = true;
+        try {
+
+            int inputRows = Integer.parseInt(rowsField.getText());;
+        int inputCols = Integer.parseInt(colsField.getText());
+        int inputSeed = Integer.parseInt(seedField.getText());
+        this.rows = inputRows;
+        this.cols = inputCols;
+        this.seed = inputSeed;
+        this.destination = rows * cols - 1;
+
+
+
+            labyrinthIsGenerated = true;
         resolutionLabyrinth.setDisable(false);
-        // Start maze generation on a new thread to avoid blocking the UI
-        new Thread(() -> generateMaze()).start();
+        MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
+        System.out.println("Méthode génération choisie : " + selectedGenMethod);
+        new Thread(() -> generateMaze(selectedGenMethod, inputSeed, rows, cols)).start();
+    } catch (NumberFormatException e) {
+        System.out.println("Rentre des valeurs de taille du labyrinthe. Les valeurs entrées doivent être des nombres entiers valides.");
     }
+}
+
 
     /**
      * Called when the "Solve" button is clicked. Starts solving the maze.
      */
     @FXML
     protected void onStartResolutionClick() {
+
+        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
+        System.out.println("Méthode résolution choisie : " + selectedSolveMethod);
         if (maze != null) {
-            // Start maze solving on a new thread to avoid blocking the UI
-            new Thread(() -> solveMaze()).start();
+
+            new Thread(() -> solveMaze(selectedSolveMethod)).start();
         }
     }
 
     /**
      * Generates the maze using the specified algorithm.
      */
-    private void generateMaze() {
+    private void generateMaze(MethodName.GenMethodName generationMethod, int seed, int rows, int cols) {
         try {
-            mazeController.createMaze(MethodName.GenMethodName.UNPERFECT, MethodName.Type.COMPLETE, rows, cols, 0.0, 0);
+            mazeController.createMaze(generationMethod, MethodName.Type.COMPLETE, rows, cols, 0.0, seed);
             Maze generatedMaze = mazeController.getCurrentMaze();
-
-            maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
+            visibleEdges.clear();
 
             for (Edge e : generatedMaze.getEdges()) {
-                int fromID = e.getVertexA().getID();
-                int toID = e.getVertexB().getID();
-                Vertex from = maze.getVertexByID(fromID);
-                Vertex to = maze.getVertexByID(toID);
-                maze.addEdge(new Edge(from, to));
-
-                Platform.runLater(() -> displayMaze(maze));
+                visibleEdges.add(e);
+                Platform.runLater(() -> displayMaze(generatedMaze));
                 Thread.sleep(10);
-            }
-
-            Platform.runLater(() -> System.out.println("Maze generated successfully"));
-        } catch (Exception e) {
+            }}
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -122,13 +165,11 @@ public class FXController {
      * one.
      */
 
-    private void solveMaze() {
-        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+    private void solveMaze(MethodName.SolveMethodName solveMethod) {
+        Solver solver = new Solver(solveMethod);
 
         int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
         int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
-
-        System.out.println(maze.solutionToString(antecedents, Solver.pathIndex(maze, maze.getVertexByID(destination), antecedents)));
 
         try {
             // Start visualizing the solution, marking visited vertices and solution path
@@ -147,7 +188,7 @@ public class FXController {
      */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
 
-        
+
         for (int i = 0; i < orders.length; i++) {
             if (orders[i] == -1){
                 break;
@@ -178,6 +219,7 @@ public class FXController {
 
     /**
      * Displays the maze on the canvas.
+     * @param maze the maze to display
      */
     public void displayMaze(Maze maze) {
         this.maze = maze;
@@ -185,7 +227,10 @@ public class FXController {
     }
 
     /**
-     * Draws the maze with walls and visited states on the canvas.
+     * If there is an edge connecting the two cells, it means passage is possible
+     * between them, so no wall is drawn.
+     * If there is no edge between the two cells (i.e., they are not neighbors),
+     * a wall is drawn to block the passage.
      */
     private void drawMazeWithWalls() {
         if (mazeCanvas == null) {
@@ -263,6 +308,8 @@ public class FXController {
         if (r < 0 || r >= rows || c < 0 || c >= cols)
             return false;
         Vertex neighbor = maze.getVertexByID(r * cols + c);
-        return v.isNeighbor(neighbor);
+        if (neighbor == null)
+            return false;
+        return visibleEdges.contains(new Edge(v, neighbor, true));
     }
 }
