@@ -290,10 +290,7 @@ public class Solver {
 
             // ui the index of the vertex visiting
             ui = toVisit.pop();
-            // if u has been visited, it means that the algorithme fell into a loop
-            if (visited[ui]){
-                return result;
-            }
+            
             // the difference of id between vertex u and vertex antecedent to u
             di = ui - antecedents[ui];
             for (int i = 0; i < 4; i++) {
