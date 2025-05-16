@@ -112,9 +112,11 @@ public class FXController {
         this.rows = inputRows;
         this.cols = inputCols;
         this.seed = inputSeed;
+        this.destination = rows * cols - 1;
 
 
-        labyrinthIsGenerated = true;
+
+            labyrinthIsGenerated = true;
         resolutionLabyrinth.setDisable(false);
         MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
         System.out.println("Méthode génération choisie : " + selectedGenMethod);
