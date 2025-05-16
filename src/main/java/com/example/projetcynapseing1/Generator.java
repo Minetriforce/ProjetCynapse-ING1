@@ -337,7 +337,6 @@ public class Generator {
      * @param maze      output maze
      */
     private void imperfect(Maze baseGraph, Maze maze) {
-    private void imperfect(Maze baseGraph, Maze maze) {
         // get minimum 1/4 of the edge of grid graph and maximum all the edges
         Random rng = new Random(this.seed);
         Integer numberEdges = rng.nextInt(baseGraph.getEdges().size() * (3 / 2)) + baseGraph.getEdges().size() / 4;
