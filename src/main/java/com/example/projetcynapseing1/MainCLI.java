@@ -13,18 +13,21 @@ import java.util.Scanner;
  */
 public class MainCLI {
     // ANSI escape codes for colors
-    static final String RESET = "\u001B[0m";
-    static final String RED = "\u001B[31m";
-    static final String GREEN = "\u001b[38;5;46m";
-    static final String YELLOW = "\u001B[33m";
-    static final String BLUE = "\u001B[34m";
-    static final String CYAN = "\u001B[36m";
-    static final String MAGENTA = "\u001B[35m";
-    static final String BOLD = "\u001B[1m";
-    static final String ITALIC = "\u001B[3m";
-    static final String UNDERLINE = "\u001B[4m";
-    static final String GRAY = "\u001b[38;5;244m";
+    public static final String RESET = "\u001B[0m";
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001b[38;5;46m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String MAGENTA = "\u001B[35m";
+    public static final String BOLD = "\u001B[1m";
+    public static final String ITALIC = "\u001B[3m";
+    public static final String UNDERLINE = "\u001B[4m";
+    public static final String GRAY = "\u001b[38;5;244m";
 
+    // Maze controller to manage maze creation and solving
+    private static final MazeController mazeController = new MazeController();
+    private static final FXController fxController = new FXController();
     /**
      * Main entry point of the application.
      * It prompts the user to choose options from a menu, define maze dimensions,
@@ -50,9 +53,6 @@ public class MainCLI {
         int startId = 0; // Top-left corner
         int endId = (rows * columns) - 1; // Bottom-right corner
 
-        // Maze controller to manage maze creation and solving
-        MazeController mazeController = new MazeController();
-        FXController fxController = new FXController();
 
         // Check if command-line arguments are provided
         if (args.length > 0) {
@@ -142,7 +142,7 @@ public class MainCLI {
 
                     // Retrieve the generated maze
                     Maze maze = mazeController.getCurrentMaze();
-                    System.out.println("\nGenerated Maze:");
+                    System.out.println(UNDERLINE + BOLD + "\nGenerated Maze:" + RESET);
                     System.out.println(maze);
 
                     System.out.println("Starting point : ");
@@ -179,7 +179,7 @@ public class MainCLI {
 
                     sc.nextLine();
 
-                    System.out.println("Solve the maze? [Y/N]");
+                    System.out.println(ITALIC + "Solve the maze? " + RESET + BOLD + "[Y/N]" + RESET);
                     solveChoice = sc.nextLine().toLowerCase().trim();
 
                     if(solveChoice.equals("y")){
@@ -194,11 +194,11 @@ public class MainCLI {
                                 maze.getVertexByID(endId),
                                 antecedents);
     
-                        System.out.println("\nSolution found:");
+                        System.out.println(UNDERLINE + BOLD + "\nSolution found:" + RESET);
                         System.out.println(maze.solutionToString(antecedents,solution));
                     }
 
-                    System.out.println("Save the maze? [Y/N]");
+                    System.out.println(ITALIC + "Save the maze? " + RESET + BOLD + "[Y/N]" + RESET);
                     saveChoice = sc.nextLine().toLowerCase().trim();
 
                     if(saveChoice.equals("y")){
