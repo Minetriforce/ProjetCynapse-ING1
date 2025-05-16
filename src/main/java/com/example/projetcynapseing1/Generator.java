@@ -280,7 +280,7 @@ public class Generator {
     }
 
     /**
-     * generate an unperfect Maze.
+     * generate an imperfect Maze.
      * First step : pick a number between 1/4 numbers of edges and all the edges
      * name numberEdges
      * Second step : make a loop of numberEdges iteration and pick a Edge from
@@ -290,7 +290,7 @@ public class Generator {
      * @param baseGraph grid base of possible edges
      * @param maze      output maze
      */
-    private void unperfect(Maze baseGraph, Maze maze) {
+    private void imperfect(Maze baseGraph, Maze maze) {
         // get minimum 1/4 of the edge of grid graph and maximum all the edges
         Random rng = new Random(this.seed);
         Integer numberEdges = rng.nextInt(baseGraph.getEdges().size() * (3 / 2)) + baseGraph.getEdges().size() / 4;
@@ -362,9 +362,9 @@ public class Generator {
                 randomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
 
                 break;
-            case UNPERFECT:
-                unperfect(base, maze);
-                System.out.println("End of Unperfect geenration.");
+            case IMPERFECT:
+                imperfect(base, maze);
+                System.out.println("End of Imperfect geenration.");
         }
 
         System.out.println("Timestamp : " + time + "ms");
