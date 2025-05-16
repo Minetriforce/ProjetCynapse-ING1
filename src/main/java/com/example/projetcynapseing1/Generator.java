@@ -117,7 +117,9 @@ public class Generator {
         if (parent[i] == i) {
             return i;
         }
-        return find(parent[i], parent);
+        int r = find(parent[i], parent);
+        parent[i] = r;
+        return r;
     }
 
     /**
@@ -170,6 +172,8 @@ public class Generator {
         // Uses merge sort algorithm O(n*log(n)), to sort edges in ascending order
         Collections.sort(baseGraph.getEdges());
 
+        // counter so we don't have to visit every edges
+        int cnt = maze.getRows() * maze.getColumns() - 1;
         for (Edge edge : baseGraph.getEdges()) { // look at each edges in ascending order
             if (unionFind(edge.getVertexA(), edge.getVertexB(), parents) == false) { // add edge to maze only if it does
                                                                                      // not create a cycle
@@ -177,6 +181,11 @@ public class Generator {
                         maze.getVertexByID(edge.getVertexB().getID()))); // Add adge to maze
                 union(edge.getVertexA().getID(), edge.getVertexB().getID(), parents); // merge trees in the list of
                                                                                       // trees (parents)
+                
+                cnt--;
+                if (cnt == 1){
+                    return;
+                }
             }
         }
     }

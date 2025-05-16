@@ -95,7 +95,7 @@ public class FXController {
      */
     private void generateMaze() {
         try {
-            mazeController.createMaze(MethodName.GenMethodName.UNPERFECT, MethodName.Type.COMPLETE, rows, cols, 0.0, 998);
+            mazeController.createMaze(MethodName.GenMethodName.UNPERFECT, MethodName.Type.COMPLETE, rows, cols, 0.0, 0);
             Maze generatedMaze = mazeController.getCurrentMaze();
 
             maze = new Maze(rows, cols, MethodName.GenMethodName.PRIM);
@@ -123,7 +123,7 @@ public class FXController {
      */
 
     private void solveMaze() {
-        Solver solver = new Solver(MethodName.SolveMethodName.RIGHTHAND);
+        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
 
         int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
         int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
