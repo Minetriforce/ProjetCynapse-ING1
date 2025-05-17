@@ -65,6 +65,8 @@
                     <TextField fx:id="startField" promptText="start ID" prefWidth="70" disable="true"/>
                     <TextField fx:id="endField" promptText="end ID" prefWidth="70" disable="true"/>
                     <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
+                    <ToggleButton fx:id="editEdgeButton" text="Add or Remove Edge"/>
+
                 </HBox>
             </VBox>
         </bottom>

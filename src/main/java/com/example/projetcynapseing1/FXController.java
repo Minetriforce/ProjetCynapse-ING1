@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.text.Text;
 import javafx.scene.image.Image;
+import javafx.scene.control.Alert;
 
 
 /**
@@ -65,6 +66,11 @@ public class FXController {
 
     @FXML
     private CheckBox stepByStepCheckBox;
+    @FXML
+    private ToggleButton editEdgeButton;
+
+    private boolean isEditingEdges = false;
+
 
     private MazeController mazeController;
     private boolean labyrinthIsGenerated = false;
@@ -206,6 +212,41 @@ public class FXController {
 
         startIcon = new Image(getClass().getResourceAsStream("/images/start.png"));
         endIcon = new Image(getClass().getResourceAsStream("/images/end.png"));
+
+
+
+        editEdgeButton.setOnAction(e -> {
+            isEditingEdges = editEdgeButton.isSelected();
+            if (isEditingEdges) {
+                editEdgeButton.setText("Confirm Changes");
+                firstSelectedVertex = null; // reset selection
+                showAlert("Edit Mode Enabled",
+                        "Select two cells such that an edge appears or disappears between them.");
+            } else {
+                editEdgeButton.setText("Add or Remove Edge");
+                firstSelectedVertex = null; // reset selection when done
+            }
+        });
+
+        mazeCanvas.setOnMouseClicked(event -> {
+            if (!isEditingEdges) return; // do nothing if not in edge edit mode
+
+            int col = (int) (event.getX() / blockSize);
+            int row = (int) (event.getY() / blockSize);
+
+            if (col < 0 || col >= cols || row < 0 || row >= rows) return;
+
+            Vertex clickedVertex = maze.getVertexByID(row * cols + col);
+            if (clickedVertex == null) return;
+
+            if (firstSelectedVertex == null) {
+                firstSelectedVertex = clickedVertex;
+                System.out.println("First cell selected: " + firstSelectedVertex.getID());
+            } else {
+                toggleWallBetween(firstSelectedVertex, clickedVertex);
+                firstSelectedVertex = null;
+            }
+        });
     }
 
     public void setMazeController(MazeController mazeController) {
@@ -252,6 +293,7 @@ public class FXController {
             new Thread(() -> generateMaze(selectedGenMethod, seed, rows, cols)).start();
         } catch (NumberFormatException e) {
             System.out.println("Please enter valid integers for all input fields.");
+            showAlert("Error", "Please enter valids integers for rows,cols and seed to generate a maze! You can choose the generation and solving methods. For the generation, you can also enable step-by-step mode and specify the time step you want.");
         }
     }
 
@@ -443,4 +485,16 @@ public class FXController {
         }
         Platform.runLater(() -> displayMaze(maze));
     }
+
+
+    private void showAlert(String title, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
+    }
+
 }
