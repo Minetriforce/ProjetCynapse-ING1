@@ -1,19 +1,18 @@
 package com.example.projetcynapseing1;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 public class FXController {
 
@@ -108,6 +107,8 @@ public class FXController {
     @FXML
     private void onStartGenerationClick() {
         try {
+            resetSolution();
+
             int inputRows = Integer.parseInt(rowsField.getText());
             int inputCols = Integer.parseInt(colsField.getText());
             int inputSeed = Integer.parseInt(seedField.getText());
@@ -131,6 +132,7 @@ public class FXController {
 
     @FXML
     private void onStartResolutionClick() {
+        resetSolution();
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
         System.out.println("Méthode résolution choisie : " + selectedSolveMethod);
         if (maze != null) {
@@ -291,9 +293,19 @@ public class FXController {
             System.out.println("Wall removed between " + v1.getID() + " and " + v2.getID());
         }
 
+
         Platform.runLater(() -> displayMaze(maze));
     }
 
-
+    private void resetSolution() {
+        if (maze == null) {
+            System.out.println("maze is null");
+            return;
+        }
+        for (Vertex v : maze.getVertices()) {
+            v.setState(VertexState.DEFAULT);
+        }
+        Platform.runLater(() -> displayMaze(maze));
+    }
 
 }
