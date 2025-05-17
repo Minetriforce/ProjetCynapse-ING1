@@ -15,7 +15,6 @@ public class MainCLI {
     // TODO : add an encapsulation (public, private...)
     // mazeController / FXController Instantiated
     private static final MazeController mazeController = new MazeController();
-    private static final FXController fxController = new FXController();
 
     // ANSI escape codes for colors
     public static final String RESET = "\u001B[0m";
