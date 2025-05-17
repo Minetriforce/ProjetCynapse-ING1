@@ -1,46 +1,25 @@
 package com.example.projetcynapseing1;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import javafx.scene.image.Image;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import java.util.Set;
-import java.util.HashSet;
-import javafx.scene.control.ComboBox;
 
-import javafx.scene.control.TextField;
-
-import java.util.ArrayList;
-
-/**
- * JavaFX Controller for handling maze display, button actions, and maze
- * generation/solving.
- *
- * @author Florianne, Lorelle
- */
 public class FXController {
 
     @FXML
     private ImageView backgroundImage;
     @FXML
     private StackPane stackpane;
-
-    @FXML
-    private void initialize() {
-        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
-        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
-        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
-        generationMethodComboBox.getSelectionModel().selectFirst();
-
-        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
-        solutionMethodComboBox.getSelectionModel().selectFirst();
-    }
 
     @FXML
     private Button resolutionLabyrinth;
@@ -51,10 +30,8 @@ public class FXController {
 
     @FXML
     private ComboBox<MethodName.GenMethodName> generationMethodComboBox;
-
     @FXML
     private ComboBox<MethodName.SolveMethodName> solutionMethodComboBox;
-
 
     @FXML
     private TextField rowsField;
@@ -62,84 +39,108 @@ public class FXController {
     private TextField colsField;
     @FXML
     private TextField seedField;
-
-
+    @FXML
+    private TextField timeStepField;
 
     private MazeController mazeController;
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows ;
+    private static int rows;
     private static int cols;
     private static int seed;
+    private static int timeStep = 0;
+
+
     private int blockSize = (rows > 90 || cols > 90) ? 5
             : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
-    private int[] antecedents; // Store the solution path antecedents
+
     private static int destination = rows * cols - 1;
     private Set<Edge> visibleEdges = new HashSet<>();
+    private MethodName.SolveMethodName currentSolveMethod;
+
+    private Vertex firstSelectedVertex = null;  // First click
+
+    @FXML
+    private void initialize() {
+        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
+        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
+        generationMethodComboBox.getSelectionModel().selectFirst();
+
+        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
+        solutionMethodComboBox.getSelectionModel().selectFirst();
+
+        mazeCanvas.setOnMouseClicked(event -> {
+            int col = (int) (event.getX() / blockSize);
+            int row = (int) (event.getY() / blockSize);
+
+            if (col < 0 || col >= cols || row < 0 || row >= rows) return;
+
+            Vertex clickedVertex = maze.getVertexByID(row * cols + col);
+            if (clickedVertex == null) return;
+
+            if (firstSelectedVertex == null) {
+                firstSelectedVertex = clickedVertex;
+                System.out.println("First cell selected: " + firstSelectedVertex.getID());
+            } else {
+                toggleWallBetween(firstSelectedVertex, clickedVertex);
+                firstSelectedVertex = null;  // reset after second click
+            }
+        });
 
 
-    /**
-     * Set the maze controller.
-     *
-     * @param mazeController the MazeController instance to be set
-     */
+    }
+
     public void setMazeController(MazeController mazeController) {
         this.mazeController = mazeController;
     }
 
-    // Method to set maze size
     public void setMazeSize(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
 
-        blockSize = (rows > 90 || cols > 90) ? 5 : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
+        blockSize = (rows > 90 || cols > 90) ? 5
+                : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
     }
 
-
-    // Called when the generation button is clicked
     @FXML
-    protected void onStartGenerationClick() {
+    private void onStartGenerationClick() {
         try {
+            resetSolution();
 
-            int inputRows = Integer.parseInt(rowsField.getText());;
-        int inputCols = Integer.parseInt(colsField.getText());
-        int inputSeed = Integer.parseInt(seedField.getText());
-        this.rows = inputRows;
-        this.cols = inputCols;
-        this.seed = inputSeed;
-        this.destination = rows * cols - 1;
+            int inputRows = Integer.parseInt(rowsField.getText());
+            int inputCols = Integer.parseInt(colsField.getText());
+            int inputSeed = Integer.parseInt(seedField.getText());
+            int inputTimeStep = Integer.parseInt(timeStepField.getText()) < 0 ? 0 : Integer.parseInt(timeStepField.getText());
 
-
+            this.rows = inputRows;
+            this.cols = inputCols;
+            this.seed = inputSeed;
+            this.destination = rows * cols - 1;
+            this.timeStep = inputTimeStep;
 
             labyrinthIsGenerated = true;
-        resolutionLabyrinth.setDisable(false);
-        MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
-        System.out.println("Méthode génération choisie : " + selectedGenMethod);
-        new Thread(() -> generateMaze(selectedGenMethod, inputSeed, rows, cols)).start();
-    } catch (NumberFormatException e) {
-        System.out.println("Rentre des valeurs de taille du labyrinthe. Les valeurs entrées doivent être des nombres entiers valides.");
+            resolutionLabyrinth.setDisable(false);
+            MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
+            System.out.println("Méthode génération choisie : " + selectedGenMethod);
+            new Thread(() -> generateMaze(selectedGenMethod, inputSeed, rows, cols)).start();
+        } catch (NumberFormatException e) {
+            System.out.println("Rentre des valeurs de taille du labyrinthe. Les valeurs entrées doivent être des nombres entiers valides.");
+        }
     }
-}
 
-
-    /**
-     * Called when the "Solve" button is clicked. Starts solving the maze.
-     */
     @FXML
-    protected void onStartResolutionClick() {
-
+    private void onStartResolutionClick() {
+        resetSolution();
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
         System.out.println("Méthode résolution choisie : " + selectedSolveMethod);
         if (maze != null) {
-
+            currentSolveMethod = selectedSolveMethod;
             new Thread(() -> solveMaze(selectedSolveMethod)).start();
         }
     }
 
-    /**
-     * Generates the maze using the specified algorithm.
-     */
     private void generateMaze(MethodName.GenMethodName generationMethod, int seed, int rows, int cols) {
         try {
             mazeController.createMaze(generationMethod, MethodName.Type.COMPLETE, rows, cols, 0.0, seed);
@@ -149,17 +150,12 @@ public class FXController {
             for (Edge e : generatedMaze.getEdges()) {
                 visibleEdges.add(e);
                 Platform.runLater(() -> displayMaze(generatedMaze));
-                Thread.sleep(10);
-            }}
-        catch (Exception e) {
+                Thread.sleep(timeStep);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Solves the maze using the specified algorithm, visualizing the steps one by
-     * one.
-     */
 
     private void solveMaze(MethodName.SolveMethodName solveMethod) {
         Solver solver = new Solver(solveMethod);
@@ -167,20 +163,12 @@ public class FXController {
         int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
         int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
 
-        // Start visualizing the solution, marking visited vertices and solution path
         markVisitedAndSolutionPath(orders, antecedents);
     }
 
-    /**
-     * Marks the visited vertices and solution path, displaying the solution
-     * incrementally.
-     *
-     * @param orders: array of vertices' index in the visited order
-     * @param antecedents: the array of antecedents for each vertex
-     */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
         for (int i = 0; i < orders.length; i++) {
-            if (orders[i] == -1){
+            if (orders[i] == -1) {
                 break;
             }
 
@@ -188,7 +176,7 @@ public class FXController {
             v.setState(VertexState.VISITED);
             Platform.runLater(() -> displayMaze(maze));
             try {
-                Thread.sleep(50); // Sleep between each update to show the solution path
+                Thread.sleep(timeStep);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -199,36 +187,24 @@ public class FXController {
             v.setState(VertexState.SOLUTION);
             Platform.runLater(() -> displayMaze(maze));
             try {
-                Thread.sleep(50); // Sleep between each update to show the solution path
+                Thread.sleep(timeStep);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
-    /**
-     * Displays the maze on the canvas.
-     * @param maze the maze to display
-     */
     public void displayMaze(Maze maze) {
         this.maze = maze;
         drawMazeWithWalls();
     }
 
-    /**
-     * If there is an edge connecting the two cells, it means passage is possible
-     * between them, so no wall is drawn.
-     * If there is no edge between the two cells (i.e., they are not neighbors),
-     * a wall is drawn to block the passage.
-     */
     private void drawMazeWithWalls() {
         if (mazeCanvas == null) {
             System.out.println("Canvas is not initialized!");
             return;
         }
 
-        // Check for zero or negative rows/cols to avoid division by zero
         if (rows <= 0 || cols <= 0) {
             System.out.println("Invalid maze dimensions: rows = " + rows + ", cols = " + cols);
             return;
@@ -241,7 +217,6 @@ public class FXController {
 
         for (Vertex v : maze.getVertices()) {
             int id = v.getID();
-            // TODO : remplacer par les fonctions v.getX() et v.getY()
             int row = id / cols;
             int col = id % cols;
 
@@ -253,29 +228,28 @@ public class FXController {
             g.setFill(fillColor);
             g.fillRect(x, y, blockSize, blockSize);
 
-            // Draw walls between cells if they're not neighbors
             if (!hasNeighbor(v, row - 1, col)) {
-                g.strokeLine(x, y, x + blockSize, y); // top
+                g.strokeLine(x, y, x + blockSize, y);
             }
             if (!hasNeighbor(v, row, col + 1)) {
-                g.strokeLine(x + blockSize, y, x + blockSize, y + blockSize); // right
+                g.strokeLine(x + blockSize, y, x + blockSize, y + blockSize);
             }
             if (!hasNeighbor(v, row + 1, col)) {
-                g.strokeLine(x, y + blockSize, x + blockSize, y + blockSize); // bottom
+                g.strokeLine(x, y + blockSize, x + blockSize, y + blockSize);
             }
             if (!hasNeighbor(v, row, col - 1)) {
-                g.strokeLine(x, y, x, y + blockSize); // left
+                g.strokeLine(x, y, x, y + blockSize);
             }
         }
     }
 
-    /**
-     * Returns the color for a vertex based on its state.
-     *
-     * @param v the vertex to get the color for
-     * @return the color to fill the vertex
-     */
     private Color getColorForVertex(Vertex v) {
+        if (v.getID() == 0) {
+            return Color.RED;
+        }
+        if (v.getID() == destination) {
+            return Color.GREEN;
+        }
         switch (v.getState()) {
             case VISITED:
                 return Color.rgb(169, 169, 169);
@@ -283,18 +257,10 @@ public class FXController {
                 return Color.rgb(173, 216, 230);
             default:
                 return Color.WHITE;
+
         }
     }
 
-    /**
-     * Checks if a vertex has a neighbor at the specified position.
-     *
-     * @param v the vertex to check
-     * @param r the row of the neighbor
-     * @param c the column of the neighbor
-     * @return true if the vertex has a neighbor at the given position, false
-     *         otherwise
-     */
     private boolean hasNeighbor(Vertex v, int r, int c) {
         if (r < 0 || r >= rows || c < 0 || c >= cols)
             return false;
@@ -303,4 +269,43 @@ public class FXController {
             return false;
         return visibleEdges.contains(new Edge(v, neighbor, true));
     }
+
+    private void toggleWallBetween(Vertex v1, Vertex v2) {
+        // Optional: enforce adjacency to keep maze valid
+        int r1 = v1.getID() / cols;
+        int c1 = v1.getID() % cols;
+        int r2 = v2.getID() / cols;
+        int c2 = v2.getID() % cols;
+        if (Math.abs(r1 - r2) + Math.abs(c1 - c2) != 1) {
+            System.out.println("Vertices are not adjacent. Can't toggle wall.");
+            return;
+        }
+
+        Edge edge = new Edge(v1, v2, true);
+
+        if (visibleEdges.contains(edge)) {
+            visibleEdges.remove(edge);
+            maze.removeEdge(edge);
+            System.out.println("Wall added between " + v1.getID() + " and " + v2.getID());
+        } else {
+            visibleEdges.add(edge);
+            maze.addEdge(edge);
+            System.out.println("Wall removed between " + v1.getID() + " and " + v2.getID());
+        }
+
+
+        Platform.runLater(() -> displayMaze(maze));
+    }
+
+    private void resetSolution() {
+        if (maze == null) {
+            System.out.println("maze is null");
+            return;
+        }
+        for (Vertex v : maze.getVertices()) {
+            v.setState(VertexState.DEFAULT);
+        }
+        Platform.runLater(() -> displayMaze(maze));
+    }
+
 }

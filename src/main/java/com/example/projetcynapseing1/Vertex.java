@@ -144,7 +144,6 @@ public class Vertex implements Serializable {
             System.out.println("can't add self a s a neigbor");
             return false;
         } else if (this.neighbors.contains(a)) {
-            System.out.println("Vertex already in list");
             return false;
         }
         return this.neighbors.add(a);

@@ -65,6 +65,8 @@ public class Maze extends Graph implements Serializable {
         return columns;
     }
 
+
+
     /**
      * padding Int
      * 
@@ -110,6 +112,8 @@ public class Maze extends Graph implements Serializable {
                 System.out.println("Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
                 return this.toString();
             }
+
+
         }
 
         // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;├;┤;┬;┴;+;=;-;|;*
