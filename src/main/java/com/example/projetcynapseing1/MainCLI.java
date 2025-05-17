@@ -113,7 +113,18 @@ public class MainCLI {
 
                         sc.nextLine(); // Consume the newline after nextInt()
 
-                        generationChoice = sc.nextLine().toLowerCase().trim();
+                        while(true){
+                            generationChoice = sc.nextLine().toLowerCase().trim();
+                            if(generationChoice.equals("1") || generationChoice.equals("prim")
+                            || generationChoice.equals("2") || generationChoice.equals("kruskal")
+                            || generationChoice.equals("3") || generationChoice.equals("rng_dfs")
+                            || generationChoice.equals("4") || generationChoice.equals("imperfect")){
+                                break;
+                            }
+                            else{
+                                System.out.println("Invalid choice. Please enter the name or the corresponding number.");
+                            }
+                        }
                     }
 
                     else if(menuChoice.equals("2") || menuChoice.equalsIgnoreCase("load a maze from a file")){
@@ -145,8 +156,8 @@ public class MainCLI {
                                     MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                             break;
                         case "4":
-                        case "unperfect":
-                            // Create the maze using Unperfect's algorithm
+                        case "imperfect":
+                            // Create the maze using Imperfect's algorithm
                             mazeController.createMaze(MethodName.GenMethodName.IMPERFECT,
                                     MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                     }
