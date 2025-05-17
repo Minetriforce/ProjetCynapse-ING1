@@ -68,6 +68,14 @@ public class Solver {
             System.out.println("Param null !");
             return null;
         }
+        if (!m.getVertices().contains(start)) {
+            System.out.println("Vertex start isn't in the maze given !");
+            return null;
+        }
+        if (!m.getVertices().contains(end)) {
+            System.out.println("Vertex end isn't in the maze given !");
+            return null;
+        }
 
         switch (method) {
             case ASTAR: return this.solveAstar(m, start, end, t);
@@ -115,16 +123,6 @@ public class Solver {
             antecedents[i] = i;
             distances[i] = Integer.MAX_VALUE;
             orders[i] = -1;
-        }
-
-        // verification
-        if (!vertices.contains(start)) {
-            System.out.println("Vertex start isn't in the maze given !");
-            return result;
-        }
-        if (!vertices.contains(end)) {
-            System.out.println("Vertex end isn't in the maze given !");
-            return result;
         }
 
         // priority queue for the next vertex to visit, it compares the length of the
@@ -222,16 +220,6 @@ public class Solver {
             visited[i] = false;
             antecedents[i] = i;
             orders[i] = -1;
-        }
-
-        // verification
-        if (!vertices.contains(start)) {
-            System.out.println("Vertex start isn't in the maze given !");
-            return result;
-        }
-        if (!vertices.contains(end)) {
-            System.out.println("Vertex end isn't in the maze given !");
-            return result;
         }
 
         // LIFO
@@ -344,16 +332,6 @@ public class Solver {
             orders[i] = -1;
         }
 
-        // verification
-        if (!vertices.contains(start)) {
-            System.out.println("Vertex start isn't in the maze given !");
-            return result;
-        }
-        if (!vertices.contains(end)) {
-            System.out.println("Vertex end isn't in the maze given !");
-            return result;
-        }
-
         Stack<Integer> toVisit = new Stack<>();
 
         // initialisation
@@ -437,16 +415,6 @@ public class Solver {
             visited[i] = false;
             antecedents[i] = i;
             orders[i] = -1;
-        }
-
-        // verification
-        if (!vertices.contains(start)) {
-            System.out.println("Vertex start isn't in the maze given !");
-            return result;
-        }
-        if (!vertices.contains(end)) {
-            System.out.println("Vertex end isn't in the maze given !");
-            return result;
         }
 
         Queue<Integer> toVisit = new ArrayDeque<>();
@@ -605,11 +573,14 @@ public class Solver {
         int cnt = 0;
         // from end to start
         int i = vertices.indexOf(end);
-        path.add(0, end);
         while (antecedents[i] != i && cnt <= n) {
             path.add(0, vertices.get(antecedents[i]));
             i = antecedents[i];
             cnt++;
+        }
+        // if path is solution
+        if (cnt != 0 || n == 1){
+            path.add(end);
         }
 
         return path;
