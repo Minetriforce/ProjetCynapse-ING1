@@ -6,8 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.canvas.*?>
 
-<StackPane fx:id="stackpane"
-           xmlns:fx="http://javafx.com/fxml">
+<StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- Background image -->
     <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
@@ -51,12 +50,10 @@
                     <ComboBox fx:id="solutionMethodComboBox" prefWidth="200"/>
                     <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
 
-                    <!-- CheckBox replacing ToggleGroup RadioButtons -->
                     <CheckBox fx:id="stepByStepCheckBox" text="Step-by-step"/>
 
                     <Button fx:id="resolutionLabyrinth" text="Solve" onAction="#onStartResolutionClick" disable="true"/>
                 </HBox>
-
 
                 <!-- Row 2: Parameters input -->
                 <HBox alignment="CENTER" spacing="10.0">
@@ -65,7 +62,6 @@
                     <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
                     <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="100" disable="true"/>
 
-                    <!-- Start / End selection -->
                     <TextField fx:id="startField" promptText="start ID" prefWidth="70" disable="true"/>
                     <TextField fx:id="endField" promptText="end ID" prefWidth="70" disable="true"/>
                     <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
