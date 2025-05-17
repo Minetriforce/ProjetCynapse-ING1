@@ -81,13 +81,12 @@ public class MainCLI {
                     System.out.println(BOLD + " 1 " + RESET + "- Generate a maze");
                     System.out.println(BOLD + " 2 " + RESET + "- Load a maze from a file" + RESET);
 
-                    
                     // Read the user's choice for the menu
                     while (true) {
                         System.out.print("Choose an option: ");
                         menuChoice = sc.nextLine().toLowerCase().trim();
                         if (menuChoice.equals("1") || menuChoice.equals("generate a maze") ||
-                            menuChoice.equals("2") || menuChoice.equals("load a maze from a file")) {
+                                menuChoice.equals("2") || menuChoice.equals("load a maze from a file")) {
                             break; // valid input
                         } else {
                             System.out.println("Invalid choice. Please enter '1' or '2'.");
@@ -116,7 +115,7 @@ public class MainCLI {
                         generationChoice = sc.nextLine().toLowerCase().trim();
                     }
 
-                    else if(menuChoice.equals("2") || menuChoice.equalsIgnoreCase("load a maze from a file")){
+                    else if (menuChoice.equals("2") || menuChoice.equalsIgnoreCase("load a maze from a file")) {
                         mazeController.loadMaze();
                     }
 
@@ -151,6 +150,7 @@ public class MainCLI {
                                     MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                     }
 
+                    mazeController.loadMaze();
                     // Retrieve the generated maze
                     Maze maze = mazeController.getCurrentMaze();
                     System.out.println(UNDERLINE + BOLD + "\nGenerated Maze:" + RESET);
@@ -164,14 +164,15 @@ public class MainCLI {
                             if (startId >= 0 && startId < rows * columns) {
                                 break; // valid value, exit loop
                             } else {
-                                System.out.println("Please enter an integer between 0 and " + ((rows * columns) - 1) + ": ");
+                                System.out.println(
+                                        "Please enter an integer between 0 and " + ((rows * columns) - 1) + ": ");
                             }
                         } else {
                             System.out.println("Invalid input. Please enter an integer: ");
                             sc.next(); // consume the invalid input
                         }
                     }
-                    
+
                     System.out.println("Ending point : ");
                     while (true) {
                         if (sc.hasNextInt()) {
@@ -180,7 +181,8 @@ public class MainCLI {
                             if (endId >= 0 && endId < rows * columns) {
                                 break; // valid value, exit loop
                             } else {
-                                System.out.println("Please enter an integer between 0 and " + ((rows * columns) - 1) + ": ");
+                                System.out.println(
+                                        "Please enter an integer between 0 and " + ((rows * columns) - 1) + ": ");
                             }
                         } else {
                             System.out.println("Invalid input. Please enter an integer: ");
@@ -193,12 +195,10 @@ public class MainCLI {
                     System.out.println(ITALIC + "Solve the maze? " + RESET + BOLD + "[Y/N]" + RESET);
                     solveChoice = sc.nextLine().toLowerCase().trim();
 
-                    
-
-                    if(solveChoice.equals("y")){
+                    if (solveChoice.equals("y")) {
                         // Solve the maze
                         Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-    
+
                         int[] antecedents = solver.solveAstar(maze,
                                 maze.getVertexByID(startId),
                                 maze.getVertexByID(endId),
@@ -206,15 +206,15 @@ public class MainCLI {
                         int[] solution = Solver.pathIndex(maze,
                                 maze.getVertexByID(endId),
                                 antecedents);
-    
+
                         System.out.println(UNDERLINE + BOLD + "\nSolution found:" + RESET);
-                        System.out.println(maze.solutionToString(antecedents,solution));
+                        System.out.println(maze.solutionToString(antecedents, solution));
                     }
 
                     System.out.println(ITALIC + "Save the maze? " + RESET + BOLD + "[Y/N]" + RESET);
                     saveChoice = sc.nextLine().toLowerCase().trim();
 
-                    if(saveChoice.equals("y")){
+                    if (saveChoice.equals("y")) {
                         mazeController.saveMaze();
                     }
                     break;
@@ -223,7 +223,6 @@ public class MainCLI {
                     // If the command is invalid
                     System.out.println("Invalid command");
                     break;
-
 
             }
         }

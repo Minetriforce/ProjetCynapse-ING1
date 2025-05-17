@@ -79,7 +79,7 @@ public class MazeController {
     public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end, MethodName.Type type,
             Double timeStamp) {
         mazeSolver = new Solver(solveMethod);
-        // solution = mazeSolver.solveAstar(maze, start, end, type);
+        // mazeSolver.solve(maze, start, end, type)
     }
 
     public Maze getCurrentMaze() {

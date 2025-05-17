@@ -1,5 +1,6 @@
 package com.example.projetcynapseing1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,7 @@ import java.util.Set;
  * 
  * @author Bari-joris
  */
-public class Graph {
+public class Graph implements Serializable {
     /**
      * List of unique vertices in graph
      */
@@ -139,6 +140,8 @@ public class Graph {
      * @return deleting was succesfull or not
      */
     public boolean removeEdge(Edge e) {
+        e.getVertexA().removeNeighbor(e.getVertexB());
+        e.getVertexB().removeNeighbor(e.getVertexA());
         return this.edges.remove(e);
     }
 
