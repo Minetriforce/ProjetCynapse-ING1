@@ -258,10 +258,13 @@ public class FXController {
         this.cols = cols;
 
         blockSize = (rows > 90 || cols > 90) ? 5
-                : (rows > 40 || cols > 40) ? 12
-                : (rows > 30 || cols > 30) ? 15
-                : (rows > 20 || cols > 20) ? 20
-                : 40;
+                : (rows > 40 || cols > 40) ? 15
+                : (rows > 30 || cols > 30) ? 20
+                : (rows > 20 || cols > 20) ? 30
+                : (rows > 15 || cols > 15) ? 40
+                : (rows > 10 || cols > 10) ? 70
+                : (rows > 5 || cols > 5) ? 80
+                : 100;
     }
 
     @FXML
