@@ -228,7 +228,10 @@ public class MainCLI {
                     if(saveChoice.equals("y")){
                         mazeController.saveMaze();
                     }
+                    sc.close();
+                    System.exit(0);
                     break;
+
 
                 default:
                     // If the command is invalid
