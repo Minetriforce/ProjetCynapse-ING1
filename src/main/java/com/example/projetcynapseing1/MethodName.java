@@ -93,11 +93,6 @@ public class MethodName {
         ASTAR("A*"),
 
         /**
-         * BFS resolution algorithm
-         */
-        BFS("BFS"),
-
-        /**
          * Right hand resolution algorithm
          */
         RIGHTHAND("Right hand"),
@@ -105,7 +100,15 @@ public class MethodName {
         /**
          * Left hand resolution algorithm
          */
-        LEFTHAND("Left hand");
+        LEFTHAND("Left hand"),
+        /**
+         * DFS resolution algorithm
+         */
+        DFS("DFS"),
+        /**
+         * BFS resolution algorithm
+         */
+        BFS("BFS");
 
         // name of the method
         private final String name;
