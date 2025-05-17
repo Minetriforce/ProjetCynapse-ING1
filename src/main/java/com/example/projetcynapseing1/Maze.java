@@ -65,6 +65,27 @@ public class Maze extends Graph implements Serializable {
         return columns;
     }
 
+    @Override
+    public boolean addEdge(Edge edge) {
+        boolean added = super.addEdge(edge);
+        if (added) {
+            edge.getVertexA().addNeighbor(edge.getVertexB());
+            edge.getVertexB().addNeighbor(edge.getVertexA());
+        }
+        return added;
+    }
+
+
+    @Override
+    public boolean removeEdge(Edge edge) {
+        boolean removed = super.removeEdge(edge);
+        if (removed) {
+            edge.getVertexA().removeNeighbor(edge.getVertexB());
+            edge.getVertexB().removeNeighbor(edge.getVertexA());
+        }
+        return removed;
+    }
+
     /**
      * padding Int
      * 
@@ -110,6 +131,8 @@ public class Maze extends Graph implements Serializable {
                 System.out.println("Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
                 return this.toString();
             }
+
+
         }
 
         // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;├;┤;┬;┴;+;=;-;|;*

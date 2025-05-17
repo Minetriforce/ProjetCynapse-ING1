@@ -57,6 +57,8 @@
                     <TextField fx:id="rowsField" promptText="rows" prefWidth="50"/>
                     <TextField fx:id="colsField" promptText="cols" prefWidth="50"/>
                     <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
+                    <TextField fx:id="timeStepField" promptText="timeStep ms" prefWidth="70"/>
+
                 </HBox>
 
             </VBox>

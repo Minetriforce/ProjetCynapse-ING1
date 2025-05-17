@@ -93,11 +93,6 @@ public class MethodName {
         ASTAR("A*"),
 
         /**
-         * DFS resolution method algorithm
-         */
-        DFS("DFS"),
-
-        /**
          * BFS resolution algorithm
          */
         BFS("BFS"),
