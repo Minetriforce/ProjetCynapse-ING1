@@ -50,6 +50,7 @@ public class Edge implements Comparable<Edge>, Serializable {
         this.vertexA = vA;
         this.vertexB = vB;
 
+
         // cross add of Vertices in their neighbors list
         // It can result as an error if user add multiple edges to the same two Vertices
         if (!vA.addNeighbor(vB) || !vB.addNeighbor(vA)) {
@@ -60,9 +61,19 @@ public class Edge implements Comparable<Edge>, Serializable {
     }
 
 
+    /**
+     * This constructor allows creating an edge without modifying the neighbor
+     * lists of the involved vertices.
+     *
+     * @param vA the first vertex of the edge
+     * @param vB the second vertex of the edge
+     * @param skipAddNeighbors if true, neighbor lists of the vertices will not be updated
+     */
     public Edge(Vertex vA, Vertex vB, boolean skipAddNeighbors) {
         this.vertexA = vA;
-        this.vertexB = vB;}
+        this.vertexB = vB;
+    }
+
 
     /**
      * Return vertex A in edge

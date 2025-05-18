@@ -14,6 +14,7 @@ module com.example.projetcynapseing1 {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires javafx.graphics;
 
     opens com.example.projetcynapseing1 to javafx.fxml;
 

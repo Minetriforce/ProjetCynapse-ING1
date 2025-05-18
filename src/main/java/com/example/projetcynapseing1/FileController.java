@@ -12,6 +12,7 @@ import java.awt.Frame;
 
 /**
  * Class used to manage Saving / loading of Mazes Files
+ * It should be acceseed in a static way
  * 
  * @author Bari-joris
  * @see Maze
@@ -22,8 +23,8 @@ public class FileController {
     /**
      * Method to save maze in a specific file
      * 
-     * @param maze     object to save
-     * @param fileName name of the file
+     * @param maze object to save
+     * @throws Exception throws when trying to save an empty maze
      * @return if saving was succesfull
      */
     public static Boolean SaveData(Maze maze) throws Exception {
@@ -38,7 +39,6 @@ public class FileController {
                                                                                                // dialog
             dialog.setFile(String.valueOf(maze.hashCode())); // default file name
             dialog.setVisible(true);
-
             String directory = dialog.getDirectory();
             String file = dialog.getFile();
 
@@ -71,8 +71,7 @@ public class FileController {
         Maze emp = null;
         try {
             // Open a system "Open File" dialog
-            Frame frame = new Frame();
-            FileDialog dialog = new FileDialog(frame, "Select File to Open", FileDialog.LOAD);
+            FileDialog dialog = new FileDialog((Frame) null, "Select File to Open", FileDialog.LOAD);
             dialog.setVisible(true);
 
             String directory = dialog.getDirectory(); // directory of the file
@@ -83,8 +82,6 @@ public class FileController {
                 File selectedFile = new File(directory, file); // Create a new File Instance with it's directory and
                                                                // name
                 System.out.println("Selected file : " + selectedFile.getAbsolutePath());
-
-                frame.dispose(); // close "Open File" dialog
 
                 /* Deserialization process */
                 FileInputStream fileIn = new FileInputStream(selectedFile);

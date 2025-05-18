@@ -1,5 +1,4 @@
 package com.example.projetcynapseing1;
-import javafx.application.Platform;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.Stack;
 
 /**
  * Class Solver is used to solve mazes with a specific method and a timestep.
- * 
+ *
  * @author Junjie
  */
 public class Solver {
@@ -19,7 +18,7 @@ public class Solver {
 
     /**
      * constructor of Solver object
-     * 
+     *
      * @param m: method's name
      */
     public Solver(MethodName.SolveMethodName m) {
@@ -35,7 +34,7 @@ public class Solver {
 
     /**
      * getter of method
-     * 
+     *
      * @return method
      */
     public MethodName.SolveMethodName getMethod() {
@@ -44,7 +43,7 @@ public class Solver {
 
     /**
      * setter of method
-     * 
+     *
      * @param m: new method
      */
     public void setMethod(MethodName.SolveMethodName m) {
@@ -68,21 +67,24 @@ public class Solver {
             System.out.println("Param null !");
             return null;
         }
+        if (!m.getVertices().contains(start)) {
+            System.out.println("Vertex start isn't in the maze given !");
+            return null;
+        }
+        if (!m.getVertices().contains(end)) {
+            System.out.println("Vertex end isn't in the maze given !");
+            return null;
+        }
 
         switch (method) {
-            case ASTAR:
-                return this.solveAstar(m, start, end, t);
-            case BFS:
-                return this.solveBFS(m, start, end, t);
-            case RIGHTHAND:
-                return this.solveHand(m, start, end, t);
-            case LEFTHAND:
-                return this.solveHand(m, start, end, t);
-            default:
-                return null;
+            case ASTAR: return this.solveAstar(m, start, end, t);
+            case RIGHTHAND: return this.solveHand(m, start, end, t);
+            case LEFTHAND: return this.solveHand(m, start, end, t);
+            case BFS: return this.solveBFS(m, start, end, t);
+            case DFS: return this.solveDFS(m, start, end, t);
+            default: return null;
         }
     }
-
     /**
      * solve the maze with the A* algorithm
      * the returning value depends of t
@@ -120,16 +122,6 @@ public class Solver {
             antecedents[i] = i;
             distances[i] = Integer.MAX_VALUE;
             orders[i] = -1;
-        }
-
-        // verification
-        if (!vertices.contains(start)) {
-            System.out.println("Vertex start isn't in the maze given !");
-            return result;
-        }
-        if (!vertices.contains(end)) {
-            System.out.println("Vertex end isn't in the maze given !");
-            return result;
         }
 
         // priority queue for the next vertex to visit, it compares the length of the
@@ -191,7 +183,205 @@ public class Solver {
         return result;
     }
     /**
-     * solve the maze with the Dijkstra algorithm
+     * solve the maze with the right hand (left hand) algorithm
+     * the returning value depends of t
+     * antecedents: array of antecedents of each vertex in the path
+     * orders: the index of vertices visited in order
+     * @param m: maze graph
+     * @param start: starting vertex
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return result
+     */
+    private int[] solveHand(Maze m, Vertex start, Vertex end, MethodName.Type t) {
+        // list of vertices
+        ArrayList<Vertex> vertices = m.getVertices();
+        // number of vertices
+        int n = m.getRows() * m.getColumns();
+        // index of the starting vertex
+        int si = start.getID();
+        // index of the ending vertex
+        int ei = end.getID();
+        // right, down, left, up: it indicates the number to add to the id for a
+        // direction
+        int[] directions = {1, m.getColumns(), -1, -m.getColumns()};
+
+        // visited[i] indicates if vertex i has been visited
+        boolean[] visited = new boolean[n];
+        // antecedents[i] indicates the vertex antecedent taken to access vertex i
+        int[] antecedents = new int[n];
+        // orders[i] indicates the index of the i-th visited vertex
+        int[] orders = new int[n];
+        // result to return
+        int[] result = (t.equals(MethodName.Type.STEPPER)) ? orders : antecedents;
+        // initialisation
+        for (int i = 0; i < n; i++) {
+            visited[i] = false;
+            antecedents[i] = i;
+            orders[i] = -1;
+        }
+
+        // LIFO
+        Stack<Integer> toVisit = new Stack<>();
+        int ui;
+        int vi;
+        int di = 0;
+        int cnt = 1;
+        int addDirection = (method.equals(MethodName.SolveMethodName.LEFTHAND)) ? 3 : 1;
+
+        // initialisation
+        visited[si] = true;
+        orders[0] = si;
+        for (int i = 0; i < 4; i++){
+            for (Vertex v: vertices.get(si).getNeighbors()){
+                vi = v.getID();
+                if (si + directions[i] == vi) {
+                    antecedents[vi] = si;
+                    toVisit.push(vi);
+                }
+            }
+        }
+
+        // while end has not been visited
+        while (! visited[ei]){
+            // if toVisit is empty, it means that there's no path from start to end in this maze
+            if (toVisit.isEmpty()){
+                return result;
+            }
+
+            // ui the index of the vertex visiting
+            ui = toVisit.pop();
+
+            // the difference of id between vertex u and vertex antecedent to u
+            di = ui - antecedents[ui];
+            for (int i = 0; i < 4; i++) {
+                // if i is the direction from vertex antecedent to vertex u
+                if (di == directions[i]) {
+                    // the coming direction to vertex u
+                    di = (i + 2) % 4;
+                    break;
+                }
+            }
+
+            // for each direction that is not the coming direction
+            for (int i = 1; i < 4; i++) {
+                // next direction
+                di = (di + addDirection) % 4;
+                // for each neighbors
+                for (Vertex v : vertices.get(ui).getNeighbors()) {
+                    // index of vertex v
+                    vi = v.getID();
+                    // if vertex v not visited and vertex v in the direction di
+                    if ((ui + directions[di] == vi) && (!visited[vi])) {
+                        // update the antecedent
+                        antecedents[vi] = ui;
+                        // add vertex v into the vertices to visit
+                        toVisit.push(vi);
+                    }
+                }
+            }
+
+            visited[ui] = true;
+            orders[cnt] = ui;
+            cnt++;
+        }
+
+        // antecedents only shows the vertices that has been visited
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                antecedents[i] = i;
+            }
+        }
+
+        return result;
+    }
+    /**
+     * solve the maze with the DFS algorithm
+     * the returning value depends of t
+     * antecedents: array of antecedents of each vertex in the path
+     * orders: the index of vertices visited in order
+     * @param m: maze graph
+     * @param start: starting vertex
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return result
+     */
+    private int[] solveDFS(Maze m, Vertex start, Vertex end, MethodName.Type t) {
+        // list of vertices
+        ArrayList<Vertex> vertices = m.getVertices();
+        // number of vertices
+        int n = m.getRows() * m.getColumns();
+        // index of the starting vertex
+        int si = start.getID();
+        // index of the ending vertex
+        int ei = end.getID();
+
+        // visited[i] indicates if vertex i has been visited
+        boolean[] visited = new boolean[n];
+        // antecedents[i] indicates the vertex antecedent taken to access vertex i
+        int[] antecedents = new int[n];
+        // orders[i] indicates the index of the i-th visited vertex
+        int[] orders = new int[n];
+        // result to return
+        int[] result = (t.equals(MethodName.Type.STEPPER)) ? orders : antecedents;
+        // initialisation
+        for (int i = 0; i < n; i++) {
+            visited[i] = false;
+            antecedents[i] = i;
+            orders[i] = -1;
+        }
+
+        Stack<Integer> toVisit = new Stack<>();
+
+        // initialisation
+        toVisit.add(si);
+        int ui;
+        int vi;
+        int cnt = 0;
+
+        // while there's no path leading to end
+        while (! visited[ei]) {
+            // if toVisit is empty, it means that there's no path from start to end in this
+            // maze
+            if (toVisit.isEmpty()) {
+                return result;
+            }
+
+            // ui the index of the vertex visiting
+            ui = toVisit.pop();
+
+            // if vertex uihas not been visited
+            if (!visited[ui]) {
+                for (Vertex v : vertices.get(ui).getNeighbors()) {
+                    // vi the index of the vertex neighboring vertex ui
+                    vi = vertices.indexOf(v);
+                    // if vertex vi has not been visited
+                    if (!visited[vi]) {
+                        // change the antecedent of vi
+                        antecedents[vi] = ui;
+                        // add vi in to the vertex that we have to visit
+                        toVisit.add(vi);
+                    }
+                }
+
+                // vertex ui is now visited
+                visited[ui] = true;
+                orders[cnt] = ui;
+                cnt++;
+            }
+        }
+
+        // antecedents only shows the vertices that has been visited
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                antecedents[i] = i;
+            }
+        }
+
+        return result;
+    }
+    /**
+     * solve the maze with the BFS algorithm
      * the returning value depends of t
      * antecedents: array of antecedents of each vertex in the path
      * orders: the index of vertices visited in order
@@ -224,16 +414,6 @@ public class Solver {
             visited[i] = false;
             antecedents[i] = i;
             orders[i] = -1;
-        }
-
-        // verification
-        if (!vertices.contains(start)) {
-            System.out.println("Vertex start isn't in the maze given !");
-            return result;
-        }
-        if (!vertices.contains(end)) {
-            System.out.println("Vertex end isn't in the maze given !");
-            return result;
         }
 
         Queue<Integer> toVisit = new ArrayDeque<>();
@@ -285,129 +465,6 @@ public class Solver {
 
         return result;
     }
-    /**
-     * solve the maze with the right hand (left hand) algorithm
-     * the returning value depends of t
-     * antecedents: array of antecedents of each vertex in the path
-     * orders: the index of vertices visited in order
-     * @param m: maze graph
-     * @param start: starting vertex
-     * @param end: ending vertex
-     * @param t: type of printing
-     * @return result
-     */
-    private int[] solveHand(Maze m, Vertex start, Vertex end, MethodName.Type t) {
-        // list of vertices
-        ArrayList<Vertex> vertices = m.getVertices();
-        // number of vertices
-        int n = m.getRows() * m.getColumns();
-        // index of the starting vertex
-        int si = start.getID();
-        // index of the ending vertex
-        int ei = end.getID();
-        // right, down, left, up: it indicates the number to add to the id for a
-        // direction
-        int[] directions = {1, m.getColumns(), -1, -m.getColumns()};
-
-        // visited[i] indicates if vertex i has been visited
-        boolean[] visited = new boolean[n];
-        // antecedents[i] indicates the vertex antecedent taken to access vertex i
-        int[] antecedents = new int[n];
-        // orders[i] indicates the index of the i-th visited vertex
-        int[] orders = new int[n];
-        // result to return
-        int[] result = (t.equals(MethodName.Type.STEPPER)) ? orders : antecedents;
-        // initialisation
-        for (int i = 0; i < n; i++) {
-            visited[i] = false;
-            antecedents[i] = i;
-            orders[i] = -1;
-        }
-
-        // verification
-        if (!vertices.contains(start)) {
-            System.out.println("Vertex start isn't in the maze given !");
-            return result;
-        }
-        if (!vertices.contains(end)) {
-            System.out.println("Vertex end isn't in the maze given !");
-            return result;
-        }
-
-        // LIFO
-        Stack<Integer> toVisit = new Stack<>();
-        int ui;
-        int vi;
-        int di = 0;
-        int cnt = 1;
-        int addDirection = (method.equals(MethodName.SolveMethodName.LEFTHAND)) ? 3 : 1;
-
-        // initialisation
-        visited[si] = true;
-        orders[0] = si;
-        for (int i = 0; i < 4; i++){
-            for (Vertex v: vertices.get(si).getNeighbors()){
-                vi = v.getID();
-                if (si + directions[i] == vi) {
-                    antecedents[vi] = si;
-                    toVisit.push(vi);
-                }
-            }
-        }
-
-        // while end has not been visited
-        while (! visited[ei]){
-            // if toVisit is empty, it means that there's no path from start to end in this maze
-            if (toVisit.isEmpty()){
-                return result;
-            }
-
-            // ui the index of the vertex visiting
-            ui = toVisit.pop();
-            
-            // the difference of id between vertex u and vertex antecedent to u
-            di = ui - antecedents[ui];
-            for (int i = 0; i < 4; i++) {
-                // if i is the direction from vertex antecedent to vertex u
-                if (di == directions[i]) {
-                    // the coming direction to vertex u
-                    di = (i + 2) % 4;
-                    break;
-                }
-            }
-
-            // for each direction that is not the coming direction
-            for (int i = 1; i < 4; i++) {
-                // next direction
-                di = (di + addDirection) % 4;
-                // for each neighbors
-                for (Vertex v : vertices.get(ui).getNeighbors()) {
-                    // index of vertex v
-                    vi = v.getID();
-                    // if vertex v not visited and vertex v in the direction di
-                    if ((ui + directions[di] == vi) && (!visited[vi])) {
-                        // update the antecedent
-                        antecedents[vi] = ui;
-                        // add vertex v into the vertices to visit
-                        toVisit.push(vi);
-                    }
-                }
-            }
-
-            visited[ui] = true;
-            orders[cnt] = ui;
-            cnt++;
-        }
-
-        // antecedents only shows the vertices that has been visited
-        for (int i = 0; i < n; i++) {
-            if (!visited[i]) {
-                antecedents[i] = i;
-            }
-        }
-
-        return result;
-    }
 
     /**
      * Manhattan distance
@@ -424,7 +481,7 @@ public class Solver {
 
     /**
      * index of the path without other information
-     * 
+     *
      * @param m:           maze graph
      * @param end:         ending vertex
      * @param antecedents: array of antecedents of each vertex in the path
@@ -479,7 +536,7 @@ public class Solver {
 
     /**
      * get the path from start to end
-     * 
+     *
      * @param m:           maze graph
      * @param end:         ending vertex
      * @param antecedents: array of antecedents of each vertex in the path
@@ -515,11 +572,14 @@ public class Solver {
         int cnt = 0;
         // from end to start
         int i = vertices.indexOf(end);
-        path.add(0, end);
         while (antecedents[i] != i && cnt <= n) {
             path.add(0, vertices.get(antecedents[i]));
             i = antecedents[i];
             cnt++;
+        }
+        // if path is solution
+        if (cnt != 0 || n == 1){
+            path.add(end);
         }
 
         return path;
@@ -527,7 +587,7 @@ public class Solver {
 
     /**
      * get the path from start to end
-     * 
+     *
      * @param m:           maze graph
      * @param end:         ending vertex
      * @param antecedents: array of antecedents of each vertex in the path

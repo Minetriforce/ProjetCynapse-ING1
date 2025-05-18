@@ -1,6 +1,5 @@
 package com.example.projetcynapseing1;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,9 +7,10 @@ import java.util.Map;
 
 /**
  * Class for mazes, it must be a rectangular
+ * 
  * @author Junjie
  */
-public class Maze extends Graph implements Serializable {
+public class Maze extends Graph {
 
     /**
      * number of rows from top to bottom
@@ -25,9 +25,8 @@ public class Maze extends Graph implements Serializable {
     /**
      * constructor: create c*l vertices without any edge
      * 
-     * @param l:             number of lines
-     * @param c:             number of columns
-     * @param genMethodName: method used to generate maze
+     * @param l: number of lines
+     * @param c: number of columns
      */
     public Maze(int l, int c) {
         super();
@@ -84,8 +83,9 @@ public class Maze extends Graph implements Serializable {
 
     /**
      * convert a solution to a string
+     * 
      * @param antecedents: parent of each vertex
-     * @param solution: parent of each vertex in the solution path
+     * @param solution:    parent of each vertex in the solution path
      * @return the maze with the solution in a string format
      */
     public String solutionToString(int[] antecedents, int[] solution) {
@@ -103,13 +103,17 @@ public class Maze extends Graph implements Serializable {
         }
         for (int i = 0; i < n; i++) {
             if (antecedents[i] < 0 || antecedents[i] > n) {
-                System.out.println("Table antecedents is inappropriately indexed: antecedents[" + i + "] = " + antecedents[i] + " !");
+                System.out.println("Table antecedents is inappropriately indexed: antecedents[" + i + "] = "
+                        + antecedents[i] + " !");
                 return this.toString();
             }
             if (solution[i] < 0 || solution[i] > n) {
-                System.out.println("Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
+                System.out.println(
+                        "Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
                 return this.toString();
             }
+
+
         }
 
         // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;├;┤;┬;┴;+;=;-;|;*
@@ -303,8 +307,10 @@ public class Maze extends Graph implements Serializable {
 
         return s;
     }
+
     /**
      * convert a solution to a string
+     * 
      * @param solution: parent of each vertex in the solution path
      * @return the maze with the solution in a string format
      */

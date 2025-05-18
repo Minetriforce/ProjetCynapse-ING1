@@ -1,5 +1,6 @@
 package com.example.projetcynapseing1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,7 @@ import java.util.Set;
  * 
  * @author Bari-joris
  */
-public class Graph {
+public class Graph implements Serializable {
     /**
      * List of unique vertices in graph
      */
@@ -98,8 +99,10 @@ public class Graph {
     }
 
     /**
-     * @param u: vertex
-     * @param v: vertex
+     * get an Edge instance by it's two vertices
+     * 
+     * @param u vertex
+     * @param v vertex
      * @return edge: the edge connecting u and v
      */
     public Edge getEdgeByVertices(Vertex u, Vertex v) {
@@ -129,8 +132,16 @@ public class Graph {
      * @return Boolean : if the edge was added
      */
     public boolean addEdge(Edge e) {
-        return this.edges.add(e);
+        boolean added = this.edges.add(e);
+        if (added) {
+            Vertex a = e.getVertexA();
+            Vertex b = e.getVertexB();
+            a.addNeighbor(b);
+        }
+        return added;
     }
+
+
 
     /**
      * remove an edge from the list of current Edges
@@ -139,8 +150,19 @@ public class Graph {
      * @return deleting was succesfull or not
      */
     public boolean removeEdge(Edge e) {
-        return this.edges.remove(e);
+        boolean removed = this.edges.remove(e);
+        if (removed) {
+            Vertex a = e.getVertexA();
+            Vertex b = e.getVertexB();
+            a.removeNeighbor(b);
+            b.removeNeighbor(a);
+        }
+        return removed;
     }
+
+
+
+
 
     @Override
     public String toString() {

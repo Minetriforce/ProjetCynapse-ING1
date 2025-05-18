@@ -210,30 +210,29 @@ public class MainCLI {
                             case "1":
                             case "prim":
                                 // Create the maze using Prim's algorithm
-                                mazeController.createMaze(MethodName.GenMethodName.PRIM,
-                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                                mazeController.createMaze(MethodName.GenMethodName.PRIM, rows, columns, seed);
+
                             
                                 break;
     
                             case "2":
                             case "kruskal":
                                 // Create the maze using Kruskal's algorithm
-                                mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
-                                        MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                                mazeController.createMaze(MethodName.GenMethodName.KRUSKAL, rows, columns, seed);
     
                                 break;
     
                             case "3":
                             case "rng_dfs":
                                 // Create the maze using RNG_DFS's algorithm
-                                mazeController.createMaze(MethodName.GenMethodName.DFS,
-                                        MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                                mazeController.createMaze(MethodName.GenMethodName.DFS, rows, columns, seed);
+
                                 break;
                             case "4":
                             case "imperfect":
                                 // Create the maze using Imperfect's algorithm
-                                mazeController.createMaze(MethodName.GenMethodName.IMPERFECT,
-                                        MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                                mazeController.createMaze(MethodName.GenMethodName.IMPERFECT, rows, columns, seed);
+
                         }
                     }
 
@@ -283,24 +282,24 @@ public class MainCLI {
                             case "1":
                             case "astar":
                                 // Solve the maze using Astar's algorithm
-                                mazeController.findSolution(MethodName.SolveMethodName.ASTAR, maze.getVertexByID(startId), maze.getVertexByID(endId), MethodName.Type.COMPLETE, 0.0);
+                                mazeController.findSolution(MethodName.SolveMethodName.ASTAR, maze.getVertexByID(startId), maze.getVertexByID(endId));
                                 break;
     
                             case "2":
                             case "bfs":
                                 // Solve the maze using BFS algorithm
-                                mazeController.findSolution(MethodName.SolveMethodName.BFS, maze.getVertexByID(startId), maze.getVertexByID(endId), MethodName.Type.COMPLETE, 0.0);
+                                mazeController.findSolution(MethodName.SolveMethodName.BFS, maze.getVertexByID(startId), maze.getVertexByID(endId));
                                 break;
     
                             case "3":
                             case "dfs":
                                 // Create the maze using DFS algorithm
-                                mazeController.findSolution(MethodName.SolveMethodName.DFS, maze.getVertexByID(startId), maze.getVertexByID(endId), MethodName.Type.COMPLETE, 0.0);
+                                mazeController.findSolution(MethodName.SolveMethodName.DFS, maze.getVertexByID(startId), maze.getVertexByID(endId));
                                 break;
                             case "4":
                             case "righthand":
                                 // Create the maze using Righthand algorithm
-                                mazeController.findSolution(MethodName.SolveMethodName.RIGHTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId), MethodName.Type.COMPLETE, 0.0);
+                                mazeController.findSolution(MethodName.SolveMethodName.RIGHTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId));
                         }
 
                         // Solve the maze
