@@ -69,6 +69,7 @@ public class FXController {
     @FXML
     private ToggleButton editEdgeButton;
 
+
     private boolean isEditingEdges = false;
 
 
@@ -99,16 +100,19 @@ public class FXController {
      */
     @FXML
     private void initialize() {
+
         // Bind background image size to stackpane size
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
 
         // Fill combo boxes with enum values
         generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
-        generationMethodComboBox.getSelectionModel().selectFirst();
+        generationMethodComboBox.setPromptText("Choose a generation method"); // 👈
 
         solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
-        solutionMethodComboBox.getSelectionModel().selectFirst();
+        solutionMethodComboBox.setPromptText("Choose a solving method");   // 👈
+
+        resolutionLabyrinth.setDisable(true); //resolution disable at first until we click generation button.
 
         // Disable start/end fields initially
         startField.setDisable(true);
@@ -117,17 +121,31 @@ public class FXController {
         // Toggle button action: enable/disable editing of start/end
         changeStartEndButton.setOnAction(e -> {
             isEditingStartEnd = !isEditingStartEnd;
+
             if (isEditingStartEnd) {
                 changeStartEndButton.setText("Validate Change");
                 startField.setDisable(false);
                 endField.setDisable(false);
+
+                // avoid edge edition to avoid conflicts
+                if (isEditingEdges) {
+                    isEditingEdges = false;
+                    editEdgeButton.setSelected(false);
+                    editEdgeButton.setText("Add or Remove Edge");
+                }
+                editEdgeButton.setDisable(true);  // disable other mode button
+
             } else {
                 changeStartEndButton.setText("Change Start/End");
                 startField.setDisable(true);
                 endField.setDisable(true);
+
+                editEdgeButton.setDisable(false); // re-enable it
             }
+
             displayMaze(maze);
         });
+
 
         // Checkbox to enable/disable timestep input
         stepByStepCheckBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
@@ -139,46 +157,7 @@ public class FXController {
         });
         timeStepField.setDisable(true);
 
-        // Mouse click on maze canvas: toggle walls or edit start/end points
-        mazeCanvas.setOnMouseClicked(event -> {
-            int col = (int) (event.getX() / blockSize);
-            int row = (int) (event.getY() / blockSize);
 
-            if (col < 0 || col >= cols || row < 0 || row >= rows) return;
-
-            Vertex clickedVertex = maze.getVertexByID(row * cols + col);
-            if (clickedVertex == null) return;
-
-            if (isEditingStartEnd) {
-                // Alternately select start or end vertex
-                if (selectingStart) {
-                    start = clickedVertex.getID();
-                    startField.setText(String.valueOf(start));
-                    System.out.println("Start vertex selected: " + start);
-                    selectingStart = false;
-                } else {
-                    end = clickedVertex.getID();
-                    endField.setText(String.valueOf(end));
-                    System.out.println("End vertex selected: " + end);
-                    selectingStart = true;
-                    changeStartEndButton.setSelected(false);
-                    isEditingStartEnd = false;
-                    changeStartEndButton.setText("Change Start/End");
-                    startField.setDisable(true);
-                    endField.setDisable(true);
-                }
-                displayMaze(maze);
-            } else {
-                // Toggle wall between two selected vertices
-                if (firstSelectedVertex == null) {
-                    firstSelectedVertex = clickedVertex;
-                    System.out.println("First cell selected: " + firstSelectedVertex.getID());
-                } else {
-                    toggleWallBetween(firstSelectedVertex, clickedVertex);
-                    firstSelectedVertex = null;
-                }
-            }
-        });
 
         // Redraw maze when toggle button selection changes
         changeStartEndButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
@@ -217,20 +196,33 @@ public class FXController {
 
         editEdgeButton.setOnAction(e -> {
             isEditingEdges = editEdgeButton.isSelected();
+
             if (isEditingEdges) {
                 editEdgeButton.setText("Confirm Changes");
-                firstSelectedVertex = null; // reset selection
+                firstSelectedVertex = null;
+
+                //disable start/end editing to avoid conflicts
+                if (isEditingStartEnd) {
+                    isEditingStartEnd = false;
+                    changeStartEndButton.setSelected(false);
+                    changeStartEndButton.setText("Change Start/End");
+                    startField.setDisable(true);
+                    endField.setDisable(true);
+                }
+                changeStartEndButton.setDisable(true); // disable other mode button
+
                 showAlert("Edit Mode Enabled",
                         "Select two cells such that an edge appears or disappears between them.");
             } else {
                 editEdgeButton.setText("Add or Remove Edge");
-                firstSelectedVertex = null; // reset selection when done
+                firstSelectedVertex = null;
+
+                changeStartEndButton.setDisable(false); // re-enable other button
             }
         });
 
-        mazeCanvas.setOnMouseClicked(event -> {
-            if (!isEditingEdges) return; // do nothing if not in edge edit mode
 
+        mazeCanvas.setOnMouseClicked(event -> {
             int col = (int) (event.getX() / blockSize);
             int row = (int) (event.getY() / blockSize);
 
@@ -239,14 +231,38 @@ public class FXController {
             Vertex clickedVertex = maze.getVertexByID(row * cols + col);
             if (clickedVertex == null) return;
 
-            if (firstSelectedVertex == null) {
-                firstSelectedVertex = clickedVertex;
-                System.out.println("First cell selected: " + firstSelectedVertex.getID());
-            } else {
-                toggleWallBetween(firstSelectedVertex, clickedVertex);
-                firstSelectedVertex = null;
+            if (isEditingStartEnd) {
+                // Alterner entre start et end
+                if (selectingStart) {
+                    start = clickedVertex.getID();
+                    startField.setText(String.valueOf(start));
+                    System.out.println("Start vertex selected: " + start);
+                    selectingStart = false;
+                } else {
+                    end = clickedVertex.getID();
+                    endField.setText(String.valueOf(end));
+                    System.out.println("End vertex selected: " + end);
+                    selectingStart = true;
+                    changeStartEndButton.setSelected(false);
+                    isEditingStartEnd = false;
+                    changeStartEndButton.setText("Change Start/End");
+                    startField.setDisable(true);
+                    endField.setDisable(true);
+                    editEdgeButton.setDisable(false);
+                }
+                displayMaze(maze);
+            } else if (isEditingEdges) {
+                // Modifier les murs
+                if (firstSelectedVertex == null) {
+                    firstSelectedVertex = clickedVertex;
+                    System.out.println("First cell selected: " + firstSelectedVertex.getID());
+                } else {
+                    toggleWallBetween(firstSelectedVertex, clickedVertex);
+                    firstSelectedVertex = null;
+                }
             }
         });
+
     }
 
     public void setMazeController(MazeController mazeController) {
@@ -289,6 +305,7 @@ public class FXController {
 
             labyrinthIsGenerated = true;
             resolutionLabyrinth.setDisable(false);
+
 
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
             System.out.println("Selected generation method: " + selectedGenMethod);
