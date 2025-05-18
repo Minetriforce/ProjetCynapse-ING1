@@ -41,6 +41,7 @@ public class Main extends Application {
 
         // Set up the scene with the loaded layout
         Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
+        stage.setMaximized(true);
         stage.setTitle("Cynapse");
         stage.setScene(scene);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/smiley.png")));

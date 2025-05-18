@@ -8,15 +8,21 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.text.Text;
+import javafx.scene.image.Image;
+import javafx.scene.control.Alert;
+
 
 /**
- * JavaFX Controller for handling maze display, button actions, and maze
- * generation/solving.
+ * This class manages the JavaFX interface, with maze canvas, combo boxes for selecting methods,
+ * user-defined parameters, and displays maze changes dynamically.
  *
  * @author Florianne, Lorelle
  */
@@ -47,6 +53,25 @@ public class FXController {
     @FXML
     private TextField timeStepField;
 
+    @FXML
+    private TextField startField;
+    @FXML
+    private TextField endField;
+
+    @FXML
+    private ToggleButton changeStartEndButton;
+    private boolean selectingStart = true;
+    private boolean isEditingStartEnd = false;
+
+    @FXML
+    private CheckBox stepByStepCheckBox;
+    @FXML
+    private ToggleButton editEdgeButton;
+
+
+    private boolean isEditingEdges = false;
+
+
     private MazeController mazeController;
     private boolean labyrinthIsGenerated = false;
 
@@ -55,25 +80,146 @@ public class FXController {
     private int cols;
     private int seed;
     private int timeStep = 0;
+    private int start = 0;
+    private int end = 0;
 
-    private int blockSize = (rows > 90 || cols > 90) ? 5
-            : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
+    private int blockSize = 20;  // default initial block size
 
-    private int destination = rows * cols - 1;
     private Set<Edge> visibleEdges = new HashSet<>();
     private MethodName.SolveMethodName currentSolveMethod;
 
-    private Vertex firstSelectedVertex = null; // First click
+    private Vertex firstSelectedVertex = null;  // First clicked vertex for toggling walls
 
+    private Image startIcon;
+    private Image endIcon;
+
+    /**
+     * Initializes UI bindings and event listeners.
+     * Automatically called by the JavaFX framework after FXML loading.
+     */
     @FXML
     private void initialize() {
+
+        // Bind background image size to stackpane size
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+
+        // Fill combo boxes with enum values
         generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
-        generationMethodComboBox.getSelectionModel().selectFirst();
+        generationMethodComboBox.setPromptText("Choose a generation method"); // 👈
 
         solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
-        solutionMethodComboBox.getSelectionModel().selectFirst();
+        solutionMethodComboBox.setPromptText("Choose a solving method");   // 👈
+
+        resolutionLabyrinth.setDisable(true); //resolution disable at first until we click generation button.
+
+        // Disable start/end fields initially
+        startField.setDisable(true);
+        endField.setDisable(true);
+
+        // Toggle button action: enable/disable editing of start/end
+        changeStartEndButton.setOnAction(e -> {
+            isEditingStartEnd = !isEditingStartEnd;
+
+            if (isEditingStartEnd) {
+                changeStartEndButton.setText("Validate Change");
+                startField.setDisable(false);
+                endField.setDisable(false);
+
+                // avoid edge edition to avoid conflicts
+                if (isEditingEdges) {
+                    isEditingEdges = false;
+                    editEdgeButton.setSelected(false);
+                    editEdgeButton.setText("Add or Remove Edge");
+                }
+                editEdgeButton.setDisable(true);  // disable other mode button
+
+            } else {
+                changeStartEndButton.setText("Change Start/End");
+                startField.setDisable(true);
+                endField.setDisable(true);
+
+                editEdgeButton.setDisable(false); // re-enable it
+            }
+
+            displayMaze(maze);
+        });
+
+
+        // Checkbox to enable/disable timestep input
+        stepByStepCheckBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+            timeStepField.setDisable(!isNowSelected);
+            if (!isNowSelected) {
+                timeStepField.setText("");
+                timeStep = 0;
+            }
+        });
+        timeStepField.setDisable(true);
+
+
+
+        // Redraw maze when toggle button selection changes
+        changeStartEndButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            if (maze != null) {
+                displayMaze(maze);
+            }
+        });
+
+        // Update start and end fields and redraw when text changes
+        startField.textProperty().addListener((obs, oldText, newText) -> {
+            try {
+                int val = Integer.parseInt(newText);
+                if (val >= 0 && val < rows * cols) {
+                    start = val;
+                    displayMaze(maze);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        });
+
+        endField.textProperty().addListener((obs, oldText, newText) -> {
+            try {
+                int val = Integer.parseInt(newText);
+                if (val >= 0 && val < rows * cols) {
+                    end = val;
+                    displayMaze(maze);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        });
+
+        startIcon = new Image(getClass().getResourceAsStream("/images/start.png"));
+        endIcon = new Image(getClass().getResourceAsStream("/images/end.png"));
+
+
+
+        editEdgeButton.setOnAction(e -> {
+            isEditingEdges = editEdgeButton.isSelected();
+
+            if (isEditingEdges) {
+                editEdgeButton.setText("Confirm Changes");
+                firstSelectedVertex = null;
+
+                //disable start/end editing to avoid conflicts
+                if (isEditingStartEnd) {
+                    isEditingStartEnd = false;
+                    changeStartEndButton.setSelected(false);
+                    changeStartEndButton.setText("Change Start/End");
+                    startField.setDisable(true);
+                    endField.setDisable(true);
+                }
+                changeStartEndButton.setDisable(true); // disable other mode button
+
+                showAlert("Edit Mode Enabled",
+                        "Select two cells such that an edge appears or disappears between them.");
+            } else {
+                editEdgeButton.setText("Add or Remove Edge");
+                firstSelectedVertex = null;
+
+                changeStartEndButton.setDisable(false); // re-enable other button
+            }
+        });
+
 
         mazeCanvas.setOnMouseClicked(event -> {
             int col = (int) (event.getX() / blockSize);
@@ -86,12 +232,35 @@ public class FXController {
             if (clickedVertex == null)
                 return;
 
-            if (firstSelectedVertex == null) {
-                firstSelectedVertex = clickedVertex;
-                System.out.println("First cell selected: " + firstSelectedVertex.getID());
-            } else {
-                toggleWallBetween(firstSelectedVertex, clickedVertex);
-                firstSelectedVertex = null; // reset after second click
+            if (isEditingStartEnd) {
+                // Alterner entre start et end
+                if (selectingStart) {
+                    start = clickedVertex.getID();
+                    startField.setText(String.valueOf(start));
+                    System.out.println("Start vertex selected: " + start);
+                    selectingStart = false;
+                } else {
+                    end = clickedVertex.getID();
+                    endField.setText(String.valueOf(end));
+                    System.out.println("End vertex selected: " + end);
+                    selectingStart = true;
+                    changeStartEndButton.setSelected(false);
+                    isEditingStartEnd = false;
+                    changeStartEndButton.setText("Change Start/End");
+                    startField.setDisable(true);
+                    endField.setDisable(true);
+                    editEdgeButton.setDisable(false);
+                }
+                displayMaze(maze);
+            } else if (isEditingEdges) {
+                // Modifier les murs
+                if (firstSelectedVertex == null) {
+                    firstSelectedVertex = clickedVertex;
+                    System.out.println("First cell selected: " + firstSelectedVertex.getID());
+                } else {
+                    toggleWallBetween(firstSelectedVertex, clickedVertex);
+                    firstSelectedVertex = null;
+                }
             }
         });
 
@@ -112,7 +281,13 @@ public class FXController {
         this.cols = cols;
 
         blockSize = (rows > 90 || cols > 90) ? 5
-                : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
+                : (rows > 40 || cols > 40) ? 15
+                : (rows > 30 || cols > 30) ? 20
+                : (rows > 20 || cols > 20) ? 30
+                : (rows > 15 || cols > 15) ? 40
+                : (rows > 10 || cols > 10) ? 70
+                : (rows > 5 || cols > 5) ? 80
+                : 100;
     }
 
     /**
@@ -120,23 +295,36 @@ public class FXController {
      */
     @FXML
     private void onStartGenerationClick() {
-        resetSolution();
         try {
-            this.rows = Integer.parseInt(rowsField.getText());
-            this.cols = Integer.parseInt(colsField.getText());
-            this.seed = Integer.parseInt(seedField.getText());
-            this.timeStep = Integer.parseInt(timeStepField.getText());
-            this.destination = rows * cols - 1;
+            int inputRows = Integer.parseInt(rowsField.getText());
+            int inputCols = Integer.parseInt(colsField.getText());
+            int inputSeed = Integer.parseInt(seedField.getText());
+
+            int inputTimeStep = 0;
+            if (stepByStepCheckBox.isSelected() && !timeStepField.getText().isEmpty()) {
+                inputTimeStep = Integer.parseInt(timeStepField.getText());
+            }
+
+            this.rows = inputRows;
+            this.cols = inputCols;
+            this.seed = inputSeed;
+            this.timeStep = Math.max(0, inputTimeStep);
+            this.end = rows * cols - 1;
+
+            setMazeSize(rows, cols);
 
             System.out.println(this.timeStep);
             labyrinthIsGenerated = true;
             resolutionLabyrinth.setDisable(false);
+
+
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
-            System.out.println("Méthode génération choisie : " + selectedGenMethod);
+            System.out.println("Selected generation method: " + selectedGenMethod);
+
             new Thread(() -> generateMaze(selectedGenMethod, seed, rows, cols)).start();
         } catch (NumberFormatException e) {
-            System.out.println(
-                    "Rentre des valeurs de taille du labyrinthe. Les valeurs entrées doivent être des nombres entiers valides.");
+            System.out.println("Please enter valid integers for all input fields.");
+            showAlert("Error", "Please enter valids integers for rows,cols and seed to generate a maze! You can choose the generation and solving methods. For the generation, you can also enable step-by-step mode and specify the time step you want.");
         }
     }
 
@@ -147,8 +335,19 @@ public class FXController {
     private void onStartResolutionClick() {
         resetSolution();
         this.timeStep = Integer.parseInt(timeStepField.getText());
+
+        try {
+            this.start = Integer.parseInt(startField.getText());
+            this.end = Integer.parseInt(endField.getText());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid start or end ID, using defaults.");
+            start = 0;
+            end = rows * cols - 1;
+        }
+
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
-        System.out.println("Méthode résolution choisie : " + selectedSolveMethod);
+        System.out.println("Selected solving method: " + selectedSolveMethod);
+
         if (maze != null) {
             currentSolveMethod = selectedSolveMethod;
             new Thread(() -> solveMaze(selectedSolveMethod)).start();
@@ -192,32 +391,26 @@ public class FXController {
      * @param antecedents: the array of antecedents for each vertex
      */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
+        for (int id : orders) {
+            if (id == -1) break;
 
-        for (int i = 0; i < orders.length; i++) {
-            if (orders[i] == -1) {
-                if (orders[i] == -1) {
-                    break;
-                }
+            Vertex v = maze.getVertexByID(id);
+            v.setState(VertexState.VISITED);
+            Platform.runLater(() -> displayMaze(maze));
 
-                Vertex v = maze.getVertexByID(orders[i]);
-                v.setState(VertexState.VISITED);
-                Platform.runLater(() -> displayMaze(maze));
-                try {
-                    Thread.sleep(timeStep);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                Thread.sleep(timeStep);
+            } catch (InterruptedException ignored) {
             }
+        }
 
-            ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(destination), antecedents);
-            for (Vertex v : solutionVertices) {
-                v.setState(VertexState.SOLUTION);
-                Platform.runLater(() -> displayMaze(maze));
-                try {
-                    Thread.sleep(timeStep);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(end), antecedents);
+        for (Vertex v : solutionVertices) {
+            v.setState(VertexState.SOLUTION);
+            Platform.runLater(() -> displayMaze(maze));
+            try {
+                Thread.sleep(timeStep);
+            } catch (InterruptedException ignored) {
             }
         }
     }
@@ -237,7 +430,6 @@ public class FXController {
             System.out.println("Canvas is not initialized!");
             return;
         }
-
         if (rows <= 0 || cols <= 0) {
             System.out.println("Invalid maze dimensions: rows = " + rows + ", cols = " + cols);
             return;
@@ -252,9 +444,7 @@ public class FXController {
             int x = v.getX() * blockSize;
             int y = v.getY() * blockSize;
 
-            Color fillColor = getColorForVertex(v);
-
-            g.setFill(fillColor);
+            g.setFill(getColorForVertex(v));
             g.fillRect(x, y, blockSize, blockSize);
 
             // Draw walls between cells if they're not neighbors
@@ -277,33 +467,68 @@ public class FXController {
                     g.strokeLine(x, y, x, y + blockSize); // left
                 }
             }
+
+            if (v.getID() == start) {
+                g.drawImage(startIcon, x, y, blockSize, blockSize);}
+            if (v.getID() == end) {
+                g.drawImage(endIcon, x, y, blockSize, blockSize);}
+
+            if (isEditingStartEnd) {
+                String idStr = String.valueOf(v.getID());
+                Text text = new Text(idStr);
+                text.setFont(g.getFont());
+                double textWidth = text.getLayoutBounds().getWidth();
+                double textHeight = text.getLayoutBounds().getHeight();
+
+                double textX = x + (blockSize - textWidth) / 2;
+                double textY = y + (blockSize + textHeight) / 2;
+
+                g.setFill(Color.BLACK);
+                g.fillText(idStr, textX, textY);
+            }
+
+            if (v.getID() == start) {
+                g.drawImage(startIcon, x, y, blockSize, blockSize);}
+            if (v.getID() == end) {
+                g.drawImage(endIcon, x, y, blockSize, blockSize);}
+
+            if (isEditingStartEnd) {
+                String idStr = String.valueOf(v.getID());
+                Text text = new Text(idStr);
+                text.setFont(g.getFont());
+                double textWidth = text.getLayoutBounds().getWidth();
+                double textHeight = text.getLayoutBounds().getHeight();
+
+                double textX = x + (blockSize - textWidth) / 2;
+                double textY = y + (blockSize + textHeight) / 2;
+
+                g.setFill(Color.BLACK);
+                g.fillText(idStr, textX, textY);
+            }
         }
     }
 
     private Color getColorForVertex(Vertex v) {
-        if (v.getID() == 0) {
-            return Color.RED;
-        }
-        if (v.getID() == destination) {
-            return Color.GREEN;
-        }
-        switch (v.getState()) {
-            case VISITED:
-                return Color.rgb(169, 169, 169);
-            case SOLUTION:
-                return Color.rgb(173, 216, 230);
-            default:
-                return Color.WHITE;
+        return switch (v.getState()) {
+            case VISITED -> Color.rgb(169, 169, 169);
+            case SOLUTION -> Color.rgb(173, 216, 230);
+            default -> Color.WHITE;
+        };
+    }
 
-        }
+
+    private boolean hasNeighbor(Vertex v, int r, int c) {
+        if (r < 0 || r >= rows || c < 0 || c >= cols) return false;
+        Vertex neighbor = maze.getVertexByID(r * cols + c);
+        return neighbor != null && visibleEdges.contains(new Edge(v, neighbor, true));
     }
 
     private void toggleWallBetween(Vertex v1, Vertex v2) {
-        // Optional: enforce adjacency to keep maze valid
         int r1 = v1.getID() / cols;
         int c1 = v1.getID() % cols;
         int r2 = v2.getID() / cols;
         int c2 = v2.getID() % cols;
+
         if (Math.abs(r1 - r2) + Math.abs(c1 - c2) != 1) {
             System.out.println("Vertices are not adjacent. Can't toggle wall.");
             return;
@@ -333,6 +558,17 @@ public class FXController {
             v.setState(VertexState.DEFAULT);
         }
         Platform.runLater(() -> displayMaze(maze));
+    }
+
+
+    private void showAlert(String title, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
     }
 
 }
