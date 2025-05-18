@@ -70,13 +70,16 @@ public class MazeController {
      * @param end         an ending vertex
      * @throws Exception if no maze has been instantiated
      */
-    public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end) throws Exception {
-        if (maze != null) {
+    public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end){
+        try {
+            if (maze == null) {
+                throw new Exception("No maze has been created/instantiated! Aborting resolution.");
+            }
             mazeSolver = new Solver(solveMethod);
             visited = mazeSolver.solve(maze, start, end, MethodName.Type.COMPLETE);
             solution = mazeSolver.solve(maze, start, end, MethodName.Type.STEPPER);
-        } else {
-            throw new Exception("No maze has been created / instantiad ! \naborting resolution");
+        } catch (Exception e) {
+            System.err.println("Error in findSolution: " + e.getMessage());
         }
     }
 
