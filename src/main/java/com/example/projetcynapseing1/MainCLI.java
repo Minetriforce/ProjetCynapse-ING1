@@ -12,10 +12,8 @@ import java.util.Scanner;
  * @author Jonathan
  */
 public class MainCLI {
-    // TODO : add an encapsulation (public, private...)
     // mazeController / FXController Instantiated
     private static final MazeController mazeController = new MazeController();
-    private static final FXController fxController = new FXController();
 
     // ANSI escape codes for colors
     public static final String RESET = "\u001B[0m";
@@ -29,6 +27,81 @@ public class MainCLI {
     public static final String ITALIC = "\u001B[3m";
     public static final String UNDERLINE = "\u001B[4m";
     public static final String GRAY = "\u001b[38;5;244m";
+
+    /**
+     * Utility method to get a valid positive integer input from the user
+     * @param scanner The Scanner object to read input
+     * @param prompt The prompt message to display to the user
+     * @return A valid positive integer entered by the user
+     */
+    private static int verifPositiveInteger(Scanner scanner, String prompt) {
+        int value;
+        while (true) {
+            System.out.println(ITALIC + prompt + RESET);
+            if (scanner.hasNextInt()) {
+                value = scanner.nextInt();
+                scanner.nextLine();
+                if (value > 0) {
+                    return value;  // valid input, return the value
+                } else {
+                    System.out.println(RED + "Please enter a positive integer." + RESET);
+                }
+            } else {
+                System.out.println(RED + "Invalid input. Please enter a positive integer." + RESET);
+                scanner.nextLine(); // consume the invalid input
+            }
+        }
+    }
+
+    private static int verifPositiveOrZeroInteger(Scanner scanner, String prompt) {
+        int value;
+        while (true) {
+            System.out.println(ITALIC + prompt + RESET);
+            if (scanner.hasNextInt()) {
+                value = scanner.nextInt();
+                if (value >= 0) {
+                    return value;  // valid input, return the value
+                } else {
+                    System.out.println(RED + "Please enter a positive integer." + RESET);
+                }
+            } else {
+                System.out.println(RED + "Invalid input. Please enter a positive integer." + RESET);
+                scanner.nextLine(); // consume the invalid input
+            }
+        }
+    }
+
+    private static int verifCorrectInterval(Scanner sc, int rows, int columns){
+        int value;
+        while (true) {
+            if (sc.hasNextInt()) {
+                value = sc.nextInt();
+                // Check if the input is within the valid range
+                if (value >= 0 && value < rows * columns) {
+                    return value;
+                } else {
+                    System.out.println(RED + "Please enter an integer between 0 and " + ((rows * columns) - 1) + ": " + RESET);
+                }
+            } else {
+                System.out.println(RED + "Invalid input. Please enter a integer: " + RESET);
+                sc.nextLine(); // consume the invalid input
+            }
+        }
+    }
+
+    private static String verifYesNo(Scanner sc){
+        String YesNoChoice;
+        while (true) {
+            YesNoChoice = sc.nextLine().toLowerCase().trim();
+            if (YesNoChoice.equals("y") || YesNoChoice.equals("n")) {
+                return YesNoChoice;  // valid input, exit loop
+            } else {
+                System.out.println(RED + "Invalid choice. Please enter 'Y' or 'N'." + RESET);
+            }
+        }
+    }
+        
+        
 
     /**
      * Main entry point of the application.
@@ -49,6 +122,7 @@ public class MainCLI {
         String menuChoice = null;
         String generationChoice = null;
         String solveChoice = null;
+        String solvingChoice = null;
         String saveChoice = null;
 
         // Variables to store the starting and ending point
@@ -57,53 +131,53 @@ public class MainCLI {
 
         // Check if command-line arguments are provided
         if (args.length > 0) {
-            String command = args[0];
+        String command = args[0];
             // If the command is "cli", display the CLI menu
-            switch (command) {
-                case "cli":
+        switch (command) {
+            case "cli":
                     // Print the program title
-                    System.out.println(BLUE + BOLD
-                            + "  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n"
-                            + //
-                            " |  _ \\  |  _ \\   / _ \\      | | | ____| |_   _|    / ___| \\ \\ / / | \\ | |    / \\    |  _ \\  / ___|  | ____|\n"
-                            + //
-                            " | |_) | | |_) | | | | |  _  | | |  _|     | |     | |      \\ V /  |  \\| |   / _ \\   | |_) | \\___ \\  |  _|  \n"
-                            + //
-                            " |  __/  |  _ <  | |_| | | |_| | | |___    | |     | |___    | |   | |\\  |  / ___ \\  |  __/   ___) | | |___ \n"
-                            + //
+                    System.out.println(BLUE + BOLD +
+                            "  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n" + 
+                            " |  _ \\  |  _ \\   / _ \\      | | | ____| |_   _|    / ___| \\ \\ / / | \\ | |    / \\    |  _ \\  / ___|  | ____|\n" + 
+                            " | |_) | | |_) | | | | |  _  | | |  _|     | |     | |      \\ V /  |  \\| |   / _ \\   | |_) | \\___ \\  |  _|  \n" +
+                            " |  __/  |  _ <  | |_| | | |_| | | |___    | |     | |___    | |   | |\\  |  / ___ \\  |  __/   ___) | | |___ \n" +
                             " |_|     |_| \\_\\  \\___/   \\___/  |_____|   |_|      \\____|   |_|   |_| \\_| /_/   \\_\\ |_|     |____/  |_____|\n"
                             + RESET);
 
-                    Scanner sc = new Scanner(System.in);
+                Scanner sc = new Scanner(System.in);
 
                     // Display the menu
                     System.out.println(BOLD + UNDERLINE + "MENU" + RESET);
-                    System.out.println(BOLD + " 1 " + RESET + "- Generate a maze");
-                    System.out.println(BOLD + " 2 " + RESET + "- Load a maze from a file" + RESET);
+                    System.out.println(BOLD + " 1 " + RESET + "- " + BOLD + "Generate " + RESET + "a maze");
+                    System.out.println(BOLD + " 2 " + RESET + "- " + BOLD + "Load " + RESET + "a maze from a file" + RESET);
 
                     
                     // Read the user's choice for the menu
                     while (true) {
                         System.out.print("Choose an option: ");
                         menuChoice = sc.nextLine().toLowerCase().trim();
-                        if (menuChoice.equals("1") || menuChoice.equals("generate a maze") ||
-                            menuChoice.equals("2") || menuChoice.equals("load a maze from a file")) {
+                        if (menuChoice.equals("1") || menuChoice.equals("generate") ||
+                            menuChoice.equals("2") || menuChoice.equals("load")) {
                             break; // valid input
-                        } else {
-                            System.out.println("Invalid choice. Please enter '1' or '2'.");
+                        } 
+                        else {
+                            System.out.println(RED + "Invalid choice. Please enter the first word or the corresponding number" + RESET);
                         }
                     }
 
                     // If the user chooses to generate a maze
-                    if (menuChoice.equalsIgnoreCase("1") || menuChoice.equalsIgnoreCase("generate a maze")) {
-                        // Ask the user for maze dimensions and seed value
-                        System.out.println(ITALIC + "Enter the number of rows:" + RESET);
-                        rows = sc.nextInt();
-                        System.out.println(ITALIC + "Enter the number of columns:" + RESET);
-                        columns = sc.nextInt();
-                        System.out.println(ITALIC + "Enter a seed (or 0 for random):" + RESET);
-                        seed = sc.nextInt();
+                    if (menuChoice.equals("1") || menuChoice.equals("generate")) {
+                        // Get number of rows
+                        rows = verifPositiveInteger(sc, ITALIC + "Enter the number of rows:" + RESET);
+                        
+                        // Get number of columns
+                        columns = verifPositiveInteger(sc, ITALIC + "Enter the number of columns:" + RESET);
 
+                        // Get the seed
+                        seed = verifPositiveOrZeroInteger(sc, "Enter a seed (or 0 for random):");
+                        
+                        sc.nextLine(); // Consume the newline after nextInt()
+                        
                         // Ask the user to select a generation method
                         System.out.println(ITALIC + "How would you like to generate it?" + RESET);
                         System.out.println(BOLD + " 1 " + RESET + "- Prim");
@@ -111,7 +185,6 @@ public class MainCLI {
                         System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
                         System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.IMPERFECT + RESET);
 
-                        sc.nextLine(); // Consume the newline after nextInt()
 
                         while(true){
                             generationChoice = sc.nextLine().toLowerCase().trim();
@@ -122,44 +195,46 @@ public class MainCLI {
                                 break;
                             }
                             else{
-                                System.out.println("Invalid choice. Please enter the name or the corresponding number.");
+                                System.out.println(RED + "Invalid choice. Please enter the name or the corresponding number" + RESET);
                             }
                         }
                     }
 
-                    else if(menuChoice.equals("2") || menuChoice.equalsIgnoreCase("load a maze from a file")){
+                    else if(menuChoice.equals("2") || menuChoice.equals("load")){
                         mazeController.loadMaze();
                     }
 
-                    // Based on the user's choice, create the maze
-                    switch (generationChoice) {
-                        case "1":
-                        case "prim":
-                            // Create the maze using Prim's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.PRIM,
+                    if(generationChoice!=null){
+                        // Based on the user's choice, create the maze
+                        switch (generationChoice) {
+                            case "1":
+                            case "prim":
+                                // Create the maze using Prim's algorithm
+                                mazeController.createMaze(MethodName.GenMethodName.PRIM,
                                     MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
-
-                            break;
-
-                        case "2":
-                        case "kruskal":
-                            // Create the maze using Kruskal's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
-                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
-
-                            break;
-
-                        case "3":
-                        case "rng_dfs":
-                            // Create the maze using RNG_DFS's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.DFS,
-                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
-                            break;
-                        case "4":
-                        case "imperfect":
-                            // Create the maze using Imperfect's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.IMPERFECT,
-                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                            
+                                break;
+    
+                            case "2":
+                            case "kruskal":
+                                // Create the maze using Kruskal's algorithm
+                                mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
+                                        MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+    
+                                break;
+    
+                            case "3":
+                            case "rng_dfs":
+                                // Create the maze using RNG_DFS's algorithm
+                                mazeController.createMaze(MethodName.GenMethodName.DFS,
+                                        MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                                break;
+                            case "4":
+                            case "imperfect":
+                                // Create the maze using Imperfect's algorithm
+                                mazeController.createMaze(MethodName.GenMethodName.IMPERFECT,
+                                        MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                        }
                     }
 
                     // Retrieve the generated maze
@@ -167,48 +242,70 @@ public class MainCLI {
                     System.out.println(UNDERLINE + BOLD + "\nGenerated Maze:" + RESET);
                     System.out.println(maze);
 
-                    System.out.println("Starting point : ");
-                    while (true) {
-                        if (sc.hasNextInt()) {
-                            startId = sc.nextInt();
-                            // Check if the input is within the valid range
-                            if (startId >= 0 && startId < rows * columns) {
-                                break; // valid value, exit loop
-                            } else {
-                                System.out.println("Please enter an integer between 0 and " + ((rows * columns) - 1) + ": ");
-                            }
-                        } else {
-                            System.out.println("Invalid input. Please enter an integer: ");
-                            sc.next(); // consume the invalid input
-                        }
-                    }
+                    System.out.println(ITALIC + "Starting point : " + RESET);
+                    startId = verifCorrectInterval(sc, rows, columns);
                     
-                    System.out.println("Ending point : ");
-                    while (true) {
-                        if (sc.hasNextInt()) {
-                            endId = sc.nextInt();
-                            // Check if the input is within the valid range
-                            if (endId >= 0 && endId < rows * columns) {
-                                break; // valid value, exit loop
-                            } else {
-                                System.out.println("Please enter an integer between 0 and " + ((rows * columns) - 1) + ": ");
-                            }
-                        } else {
-                            System.out.println("Invalid input. Please enter an integer: ");
-                            sc.next(); // consume the invalid input
-                        }
-                    }
+                    System.out.println(ITALIC + "Ending point : " + RESET);
+                    endId = verifCorrectInterval(sc, rows, columns);
 
                     sc.nextLine();
 
-                    System.out.println(ITALIC + "Solve the maze? " + RESET + BOLD + "[Y/N]" + RESET);
-                    solveChoice = sc.nextLine().toLowerCase().trim();
+                    System.out.println(ITALIC + "Solve the maze? " + RESET + BOLD + "[" + GREEN + BOLD + "Y" + RESET +"/"+ RED + BOLD +"N" + RESET + "]" + RESET);
+
+
+                    solveChoice = verifYesNo(sc);
 
                     
-
+                    
                     if(solveChoice.equals("y")){
+                        // Ask the user to select a solving method
+                        System.out.println(ITALIC + "How would you like to solve it?" + RESET);
+                        System.out.println(BOLD + " 1 " + RESET + "- " + MethodName.SolveMethodName.ASTAR + RESET);
+                        System.out.println(BOLD + " 2 " + RESET + "- " + MethodName.SolveMethodName.BFS + RESET);
+                        System.out.println(BOLD + " 3 " + RESET + "- " + MethodName.SolveMethodName.DFS + RESET);
+                        System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.SolveMethodName.RIGHTHAND + RESET);
+
+                        while(true){
+                            solvingChoice = sc.nextLine().toLowerCase().trim();
+                            if(solvingChoice.equals("1") || solvingChoice.equals("astar")
+                            || solvingChoice.equals("2") || solvingChoice.equals("bfs")
+                            || solvingChoice.equals("3") || solvingChoice.equals("dfs")
+                            || solvingChoice.equals("4") || solvingChoice.equals("righthand")){
+                                break;
+                            }
+                            else{
+                                System.out.println(RED + "Invalid choice. Please enter the name or the corresponding number" + RESET);
+                            }
+                        }
+
+                        // Based on the user's choice, create the maze
+                        switch (solvingChoice) {
+                            case "1":
+                            case "astar":
+                                // Solve the maze using Astar's algorithm
+                                mazeController.findSolution(MethodName.SolveMethodName.ASTAR, maze.getVertexByID(startId), maze.getVertexByID(endId), MethodName.Type.COMPLETE, 0.0);
+                                break;
+    
+                            case "2":
+                            case "bfs":
+                                // Solve the maze using BFS algorithm
+                                mazeController.findSolution(MethodName.SolveMethodName.BFS, maze.getVertexByID(startId), maze.getVertexByID(endId), MethodName.Type.COMPLETE, 0.0);
+                                break;
+    
+                            case "3":
+                            case "dfs":
+                                // Create the maze using DFS algorithm
+                                mazeController.findSolution(MethodName.SolveMethodName.DFS, maze.getVertexByID(startId), maze.getVertexByID(endId), MethodName.Type.COMPLETE, 0.0);
+                                break;
+                            case "4":
+                            case "righthand":
+                                // Create the maze using Righthand algorithm
+                                mazeController.findSolution(MethodName.SolveMethodName.RIGHTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId), MethodName.Type.COMPLETE, 0.0);
+                        }
+
                         // Solve the maze
-                        Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
+                        Solver solver = mazeController.getSolver();
+                        System.out.println(solver);
     
                         int[] antecedents = solver.solve(maze,
                                 maze.getVertexByID(startId),
@@ -222,21 +319,22 @@ public class MainCLI {
                         System.out.println(maze.solutionToString(antecedents,solution));
                     }
 
-                    System.out.println(ITALIC + "Save the maze? " + RESET + BOLD + "[Y/N]" + RESET);
-                    saveChoice = sc.nextLine().toLowerCase().trim();
+                    System.out.println(ITALIC + "Save the maze? " + RESET + BOLD + "[" + GREEN + BOLD + "Y" + RESET +"/"+ RED + BOLD +"N" + RESET + "]" + RESET);
+
+                    saveChoice = verifYesNo(sc);
 
                     if(saveChoice.equals("y")){
                         mazeController.saveMaze();
                     }
                     sc.close();
                     System.exit(0);
-                    break;
+                break;
 
 
-                default:
+            default:
                     // If the command is invalid
-                    System.out.println("Invalid command");
-                    break;
+                    System.out.println(RED + "Invalid command" + RESET);
+                break;
 
 
             }
