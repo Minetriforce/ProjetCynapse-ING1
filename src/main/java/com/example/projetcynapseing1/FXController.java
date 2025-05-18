@@ -14,14 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-import java.util.Set;
-import java.util.HashSet;
-import javafx.scene.control.ComboBox;
-
-import javafx.scene.control.TextField;
-
-import java.util.ArrayList;
-
 /**
  * JavaFX Controller for handling maze display, button actions, and maze
  * generation/solving.
@@ -128,12 +120,15 @@ public class FXController {
      */
     @FXML
     private void onStartGenerationClick() {
+        resetSolution();
         try {
             this.rows = Integer.parseInt(rowsField.getText());
             this.cols = Integer.parseInt(colsField.getText());
             this.seed = Integer.parseInt(seedField.getText());
+            this.timeStep = Integer.parseInt(timeStepField.getText());
             this.destination = rows * cols - 1;
 
+            System.out.println(this.timeStep);
             labyrinthIsGenerated = true;
             resolutionLabyrinth.setDisable(false);
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
@@ -151,6 +146,7 @@ public class FXController {
     @FXML
     private void onStartResolutionClick() {
         resetSolution();
+        this.timeStep = Integer.parseInt(timeStepField.getText());
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
         System.out.println("Méthode résolution choisie : " + selectedSolveMethod);
         if (maze != null) {
@@ -168,7 +164,7 @@ public class FXController {
             for (Edge e : generatedMaze.getEdges()) {
                 visibleEdges.add(e);
                 Platform.runLater(() -> displayMaze(generatedMaze));
-                Thread.sleep(timeStep);
+                Thread.sleep(this.timeStep);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -267,12 +263,12 @@ public class FXController {
                     g.strokeLine(x, y, x + blockSize, y); // top
                 }
             }
-            if (v.getX() != this.cols) {
+            if (v.getX() != this.cols - 1) {
                 if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() + 1))) {
                     g.strokeLine(x + blockSize, y, x + blockSize, y + blockSize); // right
                 }
             }
-            if (v.getY() != this.rows)
+            if (v.getY() != this.rows - 1)
                 if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() + this.cols))) {
                     g.strokeLine(x, y + blockSize, x + blockSize, y + blockSize); // bottom
                 }

@@ -12,7 +12,6 @@ import java.util.Scanner;
  * @author Jonathan
  */
 public class MainCLI {
-    // TODO : add an encapsulation (public, private...)
     // mazeController / FXController Instantiated
     private static final MazeController mazeController = new MazeController();
 
@@ -195,7 +194,7 @@ public class MainCLI {
                     if (solveChoice.equals("y")) {
                         // Solve the maze
                         Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-    
+
                         int[] antecedents = solver.solve(maze,
                                 maze.getVertexByID(startId),
                                 maze.getVertexByID(endId),

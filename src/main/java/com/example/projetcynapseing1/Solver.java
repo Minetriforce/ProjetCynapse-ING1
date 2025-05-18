@@ -1,5 +1,4 @@
 package com.example.projetcynapseing1;
-import javafx.application.Platform;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

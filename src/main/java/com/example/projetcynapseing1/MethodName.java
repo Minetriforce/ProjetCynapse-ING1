@@ -1,7 +1,5 @@
 package com.example.projetcynapseing1;
 
-import java.lang.reflect.Method;
-
 /**
  * The {@code MethodName} class is an abstract utility class that serves as a
  * container
