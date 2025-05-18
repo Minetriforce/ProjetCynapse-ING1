@@ -75,10 +75,13 @@ public class Graph implements Serializable {
      * Return a Vertex Object according to it's ID
      * 
      * @param ID integer between 0 and n to identify vertex in graph
-     * @return Vertex
+     * @return Vertex or null if it does not exists
      */
-    public Vertex getVertexByID(Integer ID) {
-        return vertices.get(ID);
+    public Vertex getVertexByID(Integer id) {
+        if(id < 0 || id > vertices.size()-1){
+            return null;
+        }
+        return vertices.get(id);
     }
 
     /**

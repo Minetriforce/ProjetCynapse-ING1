@@ -37,7 +37,7 @@ public class FileController {
 
             FileDialog dialog = new FileDialog((Frame) null, "Save As Maze", FileDialog.SAVE); // open system "save as"
                                                                                                // dialog
-            dialog.setFile(String.valueOf(maze.hashCode())); // default file name
+            dialog.setFile("maze" + maze.hashCode()); // default file name
             dialog.setVisible(true);
             String directory = dialog.getDirectory();
             String file = dialog.getFile();
@@ -101,8 +101,12 @@ public class FileController {
             System.out.println("Maze class not found");
             c.printStackTrace();
             return null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            FXController.showAlert("ERROR WHILE LOADING FILE", e.getMessage());
         }
         System.out.println("Maze Loaded");
+        System.out.println(emp);
         return emp;
     }
 }

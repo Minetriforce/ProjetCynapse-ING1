@@ -16,12 +16,6 @@ public class MazeController {
     private Generator mazeGenerator;
 
     /**
-     * FX controller variable is used in case communication is necessary between
-     * maze controller and FX Controller
-     */
-    private FXController fxController;
-
-    /**
      * Maze Solver is saved each time a request to solve a maze is made. It is saved
      * to keep informations of solving
      */
@@ -92,10 +86,10 @@ public class MazeController {
      * @return maze
      */
     public Maze getCurrentMaze() {
-        if (maze == null) {
+        if (this.maze == null) {
             System.out.println("No maze has been created/instantiated !");
         }
-        return (maze);
+        return (this.maze);
     }
 
     /**
@@ -169,19 +163,6 @@ public class MazeController {
     }
 
     /**
-     * Set the Instance of the fx controller currently used by JavaFX
-     * 
-     * @param fxController instance of FXController class
-     */
-    public void setFXController(FXController fxController) {
-        if (fxController == null) {
-            System.out.println("-- Maze Controller ");
-            System.err.println("Warning : fxController is null");
-        }
-        this.fxController = fxController;
-    }
-
-    /**
      * Save current maze with the FileController class
      * 
      * @return confirmation if maze was succesfully saved
@@ -200,11 +181,13 @@ public class MazeController {
      * Lauch the load Maze function from the filController and asign the loaded maze
      * to current maze variable
      */
-    public void loadMaze() {
-        maze = FileController.loadMaze();
+    public Boolean loadMaze() {
+        this.maze = FileController.loadMaze();
         if (maze == null) {
             System.out.println("--- Maze Controller ---");
             System.out.println("WARNING : loaded maze seems to be null, try to load it again or change file");
+            return false;
         }
+        return true;
     }
 }

@@ -6,7 +6,10 @@ import java.util.ArrayList;
 enum VertexState {
     DEFAULT, // not visited
     VISITED, // explored
-    SOLUTION // part of final path
+    SOLUTION, // part of final path
+    SELECTEDDEL, // selected path to del
+    SELECTEDADD,
+    FIRSTSELECTED // first vertex
 }
 
 /**
