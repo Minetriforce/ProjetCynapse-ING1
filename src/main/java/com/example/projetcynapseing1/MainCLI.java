@@ -53,6 +53,15 @@ public class MainCLI {
         }
     }
 
+/**
+ * Prompts the user with the given message to enter an integer that is zero or positive.
+ * Continuously reads input from the provided Scanner until a valid integer >= 0 is entered.
+ * If the input is invalid or negative, an error message is displayed and the user is prompted again.
+ *
+ * @param scanner The Scanner object used to read user input.
+ * @param prompt  The message displayed to prompt the user.
+ * @return A valid integer input that is zero or positive.
+ */
     private static int verifPositiveOrZeroInteger(Scanner scanner, String prompt) {
         int value;
         while (true) {
@@ -71,11 +80,22 @@ public class MainCLI {
         }
     }
 
+/**
+ * Continuously prompts the user to input an integer within the valid range [0, rows * columns - 1].
+ * Reads from the provided Scanner until a valid integer is entered.
+ * If the input is not an integer or out of the valid range, displays an error message and prompts again.
+ *
+ * @param sc      The Scanner object used to read user input.
+ * @param rows    The number of rows in the maze (used to determine the upper bound).
+ * @param columns The number of columns in the maze (used to determine the upper bound).
+ * @return A valid integer input within the range [0, rows * columns - 1].
+ */
     private static int verifCorrectInterval(Scanner sc, int rows, int columns){
         int value;
         while (true) {
             if (sc.hasNextInt()) {
                 value = sc.nextInt();
+                sc.nextLine();
                 // Check if the input is within the valid range
                 if (value >= 0 && value < rows * columns) {
                     return value;
@@ -89,6 +109,14 @@ public class MainCLI {
         }
     }
 
+/**
+ * Reads user input from the given Scanner and validates that it is either
+ * "y" or "n" (case-insensitive). The method repeatedly prompts until a valid
+ * response is entered.
+ *
+ * @param sc The Scanner object to read input from
+ * @return The validated user input as a lowercase string, either "y" or "n"
+ */
     private static String verifYesNo(Scanner sc){
         String YesNoChoice;
         while (true) {
@@ -101,7 +129,58 @@ public class MainCLI {
         }
     }
         
+
+/**
+ * Allows the user to add or remove a wall between two adjacent cells in the maze.
+ * Prompts for two cell IDs, checks adjacency, and toggles the wall accordingly.
+ *
+ * @param sc      Scanner for reading user input
+ * @param maze    The current Maze object
+ */
+    private static void toggleWall(Scanner sc, Maze maze) {
+        int rows = maze.getRows();
+        int columns = maze.getColumns();
+        System.out.println(ITALIC + "Enter two adjacent cell IDs to add/remove a wall between them." + RESET);
+        int first = -1;
+        int second = -1;
+    
+        while (true) {
+            System.out.print("First cell ID: ");
+            first = verifCorrectInterval(sc, rows, columns);
+            System.out.print("Second cell ID: ");
+            second = verifCorrectInterval(sc, rows, columns);
         
+            // Check if the two cells are adjacent (difference of 1 in row or column)
+            // Calculate the row and column of the first cell
+            int r1 = first / columns;
+            int c1 = first % columns;
+            // Calculate the row and column of the second cell
+            int r2 = second / columns;
+            int c2 = second % columns;
+        
+            // Check if the two cells are adjacent
+            if (Math.abs(r1 - r2) + Math.abs(c1 - c2) != 1) {
+                System.out.println(RED + "Cells are not adjacent! Please try again." + RESET);
+                continue;
+            }
+            break;
+        }
+    
+        Vertex v1 = maze.getVertexByID(first);
+        Vertex v2 = maze.getVertexByID(second);
+    
+        Edge edge = new Edge(v1, v2, true);
+    
+        // Toggle the presence of the wall (edge)
+        if (maze.getEdges().contains(edge)) {
+            maze.removeEdge(edge);
+            System.out.println("Wall added between " + first + " and " + second);
+        } else {
+            maze.addEdge(edge);
+            System.out.println("Wall removed between " + first + " and " + second);
+        }
+    }
+            
 
     /**
      * Main entry point of the application.
@@ -243,13 +322,32 @@ public class MainCLI {
                     System.out.println(UNDERLINE + BOLD + "\nGenerated Maze:" + RESET);
                     System.out.println(maze);
 
+                    System.out.println(ITALIC + "Do you want to edit walls in the maze? " + RESET + BOLD + "[" + GREEN + "Y" + RESET + "/" + RED + "N" + RESET + "]");
+
+                    String editWallsChoice = verifYesNo(sc);
+
+                    if (editWallsChoice.equals("y")) {
+                        while (true) {
+                            toggleWall(sc, mazeController.getCurrentMaze());
+                            System.out.println(mazeController.getCurrentMaze());
+                            System.out.println(ITALIC + "Edit another wall? " + RESET + BOLD + "[" + GREEN + "Y" + RESET + "/" + RED + "N" + RESET + "]");
+                            String choice = verifYesNo(sc);
+                            if (choice.equals("n")) break;
+                        }
+                    
+                        System.out.println("\n" + UNDERLINE + BOLD + "Maze after editing walls:" + RESET);
+                        System.out.println(maze);
+                    }
+
+
+
+
                     System.out.println(ITALIC + "Starting point : " + RESET);
                     startId = verifCorrectInterval(sc, rows, columns);
                     
                     System.out.println(ITALIC + "Ending point : " + RESET);
                     endId = verifCorrectInterval(sc, rows, columns);
 
-                    sc.nextLine();
 
                     System.out.println(ITALIC + "Solve the maze? " + RESET + BOLD + "[" + GREEN + BOLD + "Y" + RESET +"/"+ RED + BOLD +"N" + RESET + "]" + RESET);
 
