@@ -10,7 +10,7 @@ import java.util.Stack;
 
 /**
  * Class Solver is used to solve mazes with a specific method and a timestep.
- * 
+ *
  * @author Junjie
  */
 public class Solver {
@@ -19,7 +19,7 @@ public class Solver {
 
     /**
      * constructor of Solver object
-     * 
+     *
      * @param m: method's name
      */
     public Solver(MethodName.SolveMethodName m) {
@@ -35,7 +35,7 @@ public class Solver {
 
     /**
      * getter of method
-     * 
+     *
      * @return method
      */
     public MethodName.SolveMethodName getMethod() {
@@ -44,7 +44,7 @@ public class Solver {
 
     /**
      * setter of method
-     * 
+     *
      * @param m: new method
      */
     public void setMethod(MethodName.SolveMethodName m) {
@@ -252,7 +252,7 @@ public class Solver {
 
             // ui the index of the vertex visiting
             ui = toVisit.pop();
-            
+
             // the difference of id between vertex u and vertex antecedent to u
             di = ui - antecedents[ui];
             for (int i = 0; i < 4; i++) {
@@ -482,7 +482,7 @@ public class Solver {
 
     /**
      * index of the path without other information
-     * 
+     *
      * @param m:           maze graph
      * @param end:         ending vertex
      * @param antecedents: array of antecedents of each vertex in the path
@@ -537,7 +537,7 @@ public class Solver {
 
     /**
      * get the path from start to end
-     * 
+     *
      * @param m:           maze graph
      * @param end:         ending vertex
      * @param antecedents: array of antecedents of each vertex in the path
@@ -588,7 +588,7 @@ public class Solver {
 
     /**
      * get the path from start to end
-     * 
+     *
      * @param m:           maze graph
      * @param end:         ending vertex
      * @param antecedents: array of antecedents of each vertex in the path
