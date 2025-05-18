@@ -202,6 +202,8 @@ public class MainCLI {
 
                     else if(menuChoice.equals("2") || menuChoice.equals("load")){
                         mazeController.loadMaze();
+                        rows = mazeController.getCurrentMaze().getRows();
+                        columns = mazeController.getCurrentMaze().getColumns();
                     }
 
                     if(generationChoice!=null){
