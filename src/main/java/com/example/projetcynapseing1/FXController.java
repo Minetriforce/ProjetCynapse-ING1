@@ -372,7 +372,7 @@ public class FXController {
 
     private void solveMaze(MethodName.SolveMethodName solveMethod) {
         try {
-            mazeController.findSolution(solveMethod, maze.getVertexByID(0), maze.getVertexByID(destination));
+            mazeController.findSolution(solveMethod, maze.getVertexByID(0), maze.getVertexByID(end));
             // Start visualizing the solution, marking visited vertices and solution path
             markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited());
         } catch (Exception e) {
@@ -514,13 +514,6 @@ public class FXController {
             case SOLUTION -> Color.rgb(173, 216, 230);
             default -> Color.WHITE;
         };
-    }
-
-
-    private boolean hasNeighbor(Vertex v, int r, int c) {
-        if (r < 0 || r >= rows || c < 0 || c >= cols) return false;
-        Vertex neighbor = maze.getVertexByID(r * cols + c);
-        return neighbor != null && visibleEdges.contains(new Edge(v, neighbor, true));
     }
 
     private void toggleWallBetween(Vertex v1, Vertex v2) {
