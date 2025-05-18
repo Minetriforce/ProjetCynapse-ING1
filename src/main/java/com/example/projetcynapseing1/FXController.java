@@ -12,6 +12,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+
 import java.util.Set;
 import java.util.HashSet;
 import javafx.scene.control.ComboBox;
@@ -32,18 +34,6 @@ public class FXController {
     private ImageView backgroundImage;
     @FXML
     private StackPane stackpane;
-
-    @FXML
-    private void initialize() {
-        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
-        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
-        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
-        generationMethodComboBox.getSelectionModel().selectFirst();
-
-        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
-        solutionMethodComboBox.getSelectionModel().selectFirst();
-    }
-
     @FXML
     private Button resolutionLabyrinth;
     @FXML
@@ -69,20 +59,19 @@ public class FXController {
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows;
-    private static int cols;
-    private static int seed;
-    private static int timeStep = 0;
-
+    private int rows;
+    private int cols;
+    private int seed;
+    private int timeStep = 0;
 
     private int blockSize = (rows > 90 || cols > 90) ? 5
             : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
 
-    private static int destination = rows * cols - 1;
+    private int destination = rows * cols - 1;
     private Set<Edge> visibleEdges = new HashSet<>();
     private MethodName.SolveMethodName currentSolveMethod;
 
-    private Vertex firstSelectedVertex = null;  // First click
+    private Vertex firstSelectedVertex = null; // First click
 
     @FXML
     private void initialize() {
@@ -98,20 +87,21 @@ public class FXController {
             int col = (int) (event.getX() / blockSize);
             int row = (int) (event.getY() / blockSize);
 
-            if (col < 0 || col >= cols || row < 0 || row >= rows) return;
+            if (col < 0 || col >= cols || row < 0 || row >= rows)
+                return;
 
             Vertex clickedVertex = maze.getVertexByID(row * cols + col);
-            if (clickedVertex == null) return;
+            if (clickedVertex == null)
+                return;
 
             if (firstSelectedVertex == null) {
                 firstSelectedVertex = clickedVertex;
                 System.out.println("First cell selected: " + firstSelectedVertex.getID());
             } else {
                 toggleWallBetween(firstSelectedVertex, clickedVertex);
-                firstSelectedVertex = null;  // reset after second click
+                firstSelectedVertex = null; // reset after second click
             }
         });
-
 
     }
 
@@ -209,28 +199,29 @@ public class FXController {
 
         for (int i = 0; i < orders.length; i++) {
             if (orders[i] == -1) {
-            if (orders[i] == -1) {
-                break;
+                if (orders[i] == -1) {
+                    break;
+                }
+
+                Vertex v = maze.getVertexByID(orders[i]);
+                v.setState(VertexState.VISITED);
+                Platform.runLater(() -> displayMaze(maze));
+                try {
+                    Thread.sleep(timeStep);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
-            Vertex v = maze.getVertexByID(orders[i]);
-            v.setState(VertexState.VISITED);
-            Platform.runLater(() -> displayMaze(maze));
-            try {
-                Thread.sleep(timeStep);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(destination), antecedents);
-        for (Vertex v : solutionVertices) {
-            v.setState(VertexState.SOLUTION);
-            Platform.runLater(() -> displayMaze(maze));
-            try {
-                Thread.sleep(timeStep);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(destination), antecedents);
+            for (Vertex v : solutionVertices) {
+                v.setState(VertexState.SOLUTION);
+                Platform.runLater(() -> displayMaze(maze));
+                try {
+                    Thread.sleep(timeStep);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -261,7 +252,7 @@ public class FXController {
         mazeCanvas.setHeight(rows * blockSize);
         g.setLineWidth(2);
 
-        for (Vertex v : maze.getVertices()) {         
+        for (Vertex v : maze.getVertices()) {
             int x = v.getX() * blockSize;
             int y = v.getY() * blockSize;
 
@@ -286,7 +277,7 @@ public class FXController {
                     g.strokeLine(x, y + blockSize, x + blockSize, y + blockSize); // bottom
                 }
             if (v.getX() != 0) {
-                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() -1))) {
+                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() - 1))) {
                     g.strokeLine(x, y, x, y + blockSize); // left
                 }
             }
@@ -311,15 +302,6 @@ public class FXController {
         }
     }
 
-    private boolean hasNeighbor(Vertex v, int r, int c) {
-        if (r < 0 || r >= rows || c < 0 || c >= cols)
-            return false;
-        Vertex neighbor = maze.getVertexByID(r * cols + c);
-        if (neighbor == null)
-            return false;
-        return visibleEdges.contains(new Edge(v, neighbor, true));
-    }
-
     private void toggleWallBetween(Vertex v1, Vertex v2) {
         // Optional: enforce adjacency to keep maze valid
         int r1 = v1.getID() / cols;
@@ -342,7 +324,6 @@ public class FXController {
             maze.addEdge(edge);
             System.out.println("Wall removed between " + v1.getID() + " and " + v2.getID());
         }
-
 
         Platform.runLater(() -> displayMaze(maze));
     }
