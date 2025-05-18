@@ -118,7 +118,7 @@ public class Generator {
      * @return a grid graph of size rows * columns
      */
     private Maze makeGridGraph() {
-        Maze G = new Maze(this.rows, this.columns, null);
+        Maze G = new Maze(this.rows, this.columns);
 
         // link every vertices to others in order to make a grid
         ArrayList<Vertex> ListVertex = G.getVertices();

@@ -59,7 +59,12 @@ public class Edge implements Comparable<Edge>, Serializable {
         }
     }
 
-
+    /**
+     * Create a vertex by skipping addNeigbors
+     * @param vA First Vertex
+     * @param vB Second Vertex
+     * @param skipAddNeighbors Boolean, set to true or false it does the same thing
+     */
     public Edge(Vertex vA, Vertex vB, boolean skipAddNeighbors) {
         this.vertexA = vA;
         this.vertexB = vB;

@@ -36,6 +36,11 @@ public class MazeController {
     private int[] solution;
 
     /**
+     * 
+     */
+    private int[] visited;
+
+    /**
      * current maze saved.
      * WARNING: maze and solution can be on differents basis, make sure to run
      * findSolution function if you have generated and solved multiple mazes
@@ -47,15 +52,12 @@ public class MazeController {
      * it to generate a maze
      * 
      * @param genMethod algorithm used to generate the maze
-     * @param type      step-by-step or complete
      * @param x         strictly positive integer : number of columns
      * @param y         striclty positive integer : number of rows
-     * @param timeStep  generation time between each steps
      * @param seed      strictly positive integer : used in the randim number
      *                  generator of the generator
      */
-    public void createMaze(MethodName.GenMethodName genMethod, MethodName.Type type, Integer x, Integer y,
-            Double timeStep, Integer seed) {
+    public void createMaze(MethodName.GenMethodName genMethod, Integer x, Integer y, Integer seed) {
         try {
             mazeGenerator = new Generator(x, y, genMethod, seed);
             maze = mazeGenerator.makeMaze();
@@ -72,16 +74,23 @@ public class MazeController {
      * @param solveMethod method used to solve the maze
      * @param start       a starting vertex
      * @param end         an ending vertex
-     * @param type        complete or step-by-step
-     * @param timeStep    time stamp between each steps of solution finding
-     * @throws Exception if there's no maze instantiated
+     * @throws Exception if no maze has been instantiated
      */
-    public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end, MethodName.Type type,
-            Double timeStamp) {
-        mazeSolver = new Solver(solveMethod);
-        // mazeSolver.solve(maze, start, end, type)
+    public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end) throws Exception {
+        if (maze != null) {
+            mazeSolver = new Solver(solveMethod);
+            visited = mazeSolver.solve(maze, start, end, MethodName.Type.COMPLETE);
+            solution = mazeSolver.solve(maze, start, end, MethodName.Type.STEPPER);
+        } else {
+            throw new Exception("No maze has been created / instantiad ! \naborting resolution");
+        }
     }
 
+    /**
+     * return the current maze or null
+     * 
+     * @return maze
+     */
     public Maze getCurrentMaze() {
         if (maze == null) {
             System.out.println("No maze has been created/instantiated !");
@@ -96,7 +105,7 @@ public class MazeController {
      * 
      * @return ArrayList of vertices, path found or null
      */
-    public ArrayList<Vertex> getSolution() {
+    public ArrayList<Vertex> getSolutionasVertexList() {
         ArrayList<Vertex> convertSolution = new ArrayList<Vertex>();
 
         if (solution == null) {
@@ -113,6 +122,24 @@ public class MazeController {
             }
         }
         return (convertSolution);
+    }
+
+    /**
+     * get the list of IDs of vertices in solution
+     * 
+     * @return int[] of vertices ID maze
+     */
+    public int[] getSolution() {
+        return this.solution;
+    }
+
+    /**
+     * get the list of visited vertices IDs while finding solution
+     * 
+     * @return int[] of vertices ID in maze
+     */
+    public int[] getVisited() {
+        return this.visited;
     }
 
     /**
@@ -157,7 +184,6 @@ public class MazeController {
     /**
      * Save current maze with the FileController class
      * 
-     * @param mazeName name of file
      * @return confirmation if maze was succesfully saved
      */
     public Boolean saveMaze() {

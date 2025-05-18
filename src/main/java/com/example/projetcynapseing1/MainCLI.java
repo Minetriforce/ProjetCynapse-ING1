@@ -15,7 +15,6 @@ public class MainCLI {
     // TODO : add an encapsulation (public, private...)
     // mazeController / FXController Instantiated
     private static final MazeController mazeController = new MazeController();
-    private static final FXController fxController = new FXController();
 
     // ANSI escape codes for colors
     public static final String RESET = "\u001B[0m";
@@ -124,16 +123,14 @@ public class MainCLI {
                         case "1":
                         case "prim":
                             // Create the maze using Prim's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.PRIM,
-                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                            mazeController.createMaze(MethodName.GenMethodName.PRIM, rows, columns, seed);
 
                             break;
 
                         case "2":
                         case "kruskal":
                             // Create the maze using Kruskal's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.KRUSKAL,
-                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                            mazeController.createMaze(MethodName.GenMethodName.KRUSKAL, rows, columns, seed);
 
                             break;
 
@@ -141,13 +138,13 @@ public class MainCLI {
                         case "rng_dfs":
                             // Create the maze using RNG_DFS's algorithm
                             mazeController.createMaze(MethodName.GenMethodName.DFS,
-                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                                    rows, columns, seed);
                             break;
                         case "4":
                         case "unperfect":
                             // Create the maze using Unperfect's algorithm
                             mazeController.createMaze(MethodName.GenMethodName.IMPERFECT,
-                                    MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
+                                    rows, columns, seed);
                     }
 
                     mazeController.loadMaze();

@@ -12,6 +12,7 @@ import java.awt.Frame;
 
 /**
  * Class used to manage Saving / loading of Mazes Files
+ * It should be acceseed in a static way
  * 
  * @author Bari-joris
  * @see Maze
@@ -22,8 +23,8 @@ public class FileController {
     /**
      * Method to save maze in a specific file
      * 
-     * @param maze     object to save
-     * @param fileName name of the file
+     * @param maze object to save
+     * @throws Exception throws when trying to save an empty maze
      * @return if saving was succesfull
      */
     public static Boolean SaveData(Maze maze) throws Exception {

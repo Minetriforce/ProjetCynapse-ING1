@@ -9,7 +9,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import java.util.Set;
 import java.util.HashSet;
 import javafx.scene.control.ComboBox;
@@ -30,18 +29,6 @@ public class FXController {
     private ImageView backgroundImage;
     @FXML
     private StackPane stackpane;
-
-    @FXML
-    private void initialize() {
-        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
-        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
-        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
-        generationMethodComboBox.getSelectionModel().selectFirst();
-
-        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
-        solutionMethodComboBox.getSelectionModel().selectFirst();
-    }
-
     @FXML
     private Button resolutionLabyrinth;
     @FXML
@@ -55,7 +42,6 @@ public class FXController {
     @FXML
     private ComboBox<MethodName.SolveMethodName> solutionMethodComboBox;
 
-
     @FXML
     private TextField rowsField;
     @FXML
@@ -63,21 +49,32 @@ public class FXController {
     @FXML
     private TextField seedField;
 
-
+    @FXML
+    private Image image;
 
     private MazeController mazeController;
     private boolean labyrinthIsGenerated = false;
 
     private Maze maze;
-    private static int rows ;
-    private static int cols;
-    private static int seed;
+    private int rows;
+    private int cols;
+    private int seed;
     private int blockSize = (rows > 90 || cols > 90) ? 5
             : (rows > 40 || cols > 40) ? 12 : (rows > 30 || cols > 30) ? 15 : (rows > 20 || cols > 20) ? 20 : 40;
-    private int[] antecedents; // Store the solution path antecedents
-    private static int destination = rows * cols - 1;
+    private int destination = rows * cols - 1;
     private Set<Edge> visibleEdges = new HashSet<>();
 
+    @FXML
+    private void initialize() {
+        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
+        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+       
+        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
+        generationMethodComboBox.getSelectionModel().selectFirst();
+
+        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
+        solutionMethodComboBox.getSelectionModel().selectFirst();
+    }
 
     /**
      * Set the maze controller.
@@ -88,7 +85,12 @@ public class FXController {
         this.mazeController = mazeController;
     }
 
-    // Method to set maze size
+    /**
+     * Method to set maze size
+     * 
+     * @param rows number of vertical vertices
+     * @param cols number of horizontal vertices
+     */
     public void setMazeSize(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
@@ -100,39 +102,33 @@ public class FXController {
         }
     }
 
-
-    // Called when the generation button is clicked
+    /**
+     * Called when the generation button is clicked
+     */
     @FXML
     protected void onStartGenerationClick() {
         try {
-
-            int inputRows = Integer.parseInt(rowsField.getText());;
-        int inputCols = Integer.parseInt(colsField.getText());
-        int inputSeed = Integer.parseInt(seedField.getText());
-        this.rows = inputRows;
-        this.cols = inputCols;
-        this.seed = inputSeed;
-        this.destination = rows * cols - 1;
-
-
+            this.rows = Integer.parseInt(rowsField.getText());
+            this.cols = Integer.parseInt(colsField.getText());
+            this.seed = Integer.parseInt(seedField.getText());
+            this.destination = rows * cols - 1;
 
             labyrinthIsGenerated = true;
-        resolutionLabyrinth.setDisable(false);
-        MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
-        System.out.println("Méthode génération choisie : " + selectedGenMethod);
-        new Thread(() -> generateMaze(selectedGenMethod, inputSeed, rows, cols)).start();
-    } catch (NumberFormatException e) {
-        System.out.println("Rentre des valeurs de taille du labyrinthe. Les valeurs entrées doivent être des nombres entiers valides.");
+            resolutionLabyrinth.setDisable(false);
+            MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
+            System.out.println("Méthode génération choisie : " + selectedGenMethod);
+            new Thread(() -> generateMaze(selectedGenMethod, seed, rows, cols)).start();
+        } catch (NumberFormatException e) {
+            System.out.println(
+                    "Rentre des valeurs de taille du labyrinthe. Les valeurs entrées doivent être des nombres entiers valides.");
+        }
     }
-}
-
 
     /**
      * Called when the "Solve" button is clicked. Starts solving the maze.
      */
     @FXML
     protected void onStartResolutionClick() {
-
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
         System.out.println("Méthode résolution choisie : " + selectedSolveMethod);
         if (maze != null) {
@@ -146,7 +142,7 @@ public class FXController {
      */
     private void generateMaze(MethodName.GenMethodName generationMethod, int seed, int rows, int cols) {
         try {
-            mazeController.createMaze(generationMethod, MethodName.Type.COMPLETE, rows, cols, 0.0, seed);
+            mazeController.createMaze(generationMethod, rows, cols, seed);
             Maze generatedMaze = mazeController.getCurrentMaze();
             visibleEdges.clear();
 
@@ -154,8 +150,8 @@ public class FXController {
                 visibleEdges.add(e);
                 Platform.runLater(() -> displayMaze(generatedMaze));
                 Thread.sleep(10);
-            }}
-        catch (Exception e) {
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -166,15 +162,14 @@ public class FXController {
      */
 
     private void solveMaze(MethodName.SolveMethodName solveMethod) {
-        Solver solver = new Solver(solveMethod);
-
-        int[] antecedents = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.COMPLETE);
-        int[] orders = solver.solve(maze, maze.getVertexByID(0), maze.getVertexByID(destination), MethodName.Type.STEPPER);
-
         try {
+            mazeController.findSolution(solveMethod, maze.getVertexByID(0), maze.getVertexByID(destination));
             // Start visualizing the solution, marking visited vertices and solution path
-            markVisitedAndSolutionPath(orders, antecedents);
+            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited());
         } catch (Exception e) {
+            System.out.println("--- Fx Controller ---");
+            System.out.println(e.getMessage());
+            System.out.println("------------------");
             e.printStackTrace();
         }
     }
@@ -183,14 +178,13 @@ public class FXController {
      * Marks the visited vertices and solution path, displaying the solution
      * incrementally.
      *
-     * @param orders: array of vertices' index in the visited order
+     * @param orders:      array of vertices' index in the visited order
      * @param antecedents: the array of antecedents for each vertex
      */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
 
-
         for (int i = 0; i < orders.length; i++) {
-            if (orders[i] == -1){
+            if (orders[i] == -1) {
                 break;
             }
 
@@ -219,6 +213,7 @@ public class FXController {
 
     /**
      * Displays the maze on the canvas.
+     * 
      * @param maze the maze to display
      */
     public void displayMaze(Maze maze) {
@@ -249,14 +244,9 @@ public class FXController {
         mazeCanvas.setHeight(rows * blockSize);
         g.setLineWidth(2);
 
-        for (Vertex v : maze.getVertices()) {
-            int id = v.getID();
-            // TODO : remplacer par les fonctions v.getX() et v.getY()
-            int row = id / cols;
-            int col = id % cols;
-
-            int x = col * blockSize;
-            int y = row * blockSize;
+        for (Vertex v : maze.getVertices()) {         
+            int x = v.getX() * blockSize;
+            int y = v.getY() * blockSize;
 
             Color fillColor = getColorForVertex(v);
 
@@ -264,17 +254,24 @@ public class FXController {
             g.fillRect(x, y, blockSize, blockSize);
 
             // Draw walls between cells if they're not neighbors
-            if (!hasNeighbor(v, row - 1, col)) {
-                g.strokeLine(x, y, x + blockSize, y); // top
+            if (v.getY() != 0) {
+                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() - this.cols))) {
+                    g.strokeLine(x, y, x + blockSize, y); // top
+                }
             }
-            if (!hasNeighbor(v, row, col + 1)) {
-                g.strokeLine(x + blockSize, y, x + blockSize, y + blockSize); // right
+            if (v.getX() != this.cols) {
+                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() + 1))) {
+                    g.strokeLine(x + blockSize, y, x + blockSize, y + blockSize); // right
+                }
             }
-            if (!hasNeighbor(v, row + 1, col)) {
-                g.strokeLine(x, y + blockSize, x + blockSize, y + blockSize); // bottom
-            }
-            if (!hasNeighbor(v, row, col - 1)) {
-                g.strokeLine(x, y, x, y + blockSize); // left
+            if (v.getY() != this.rows)
+                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() + this.cols))) {
+                    g.strokeLine(x, y + blockSize, x + blockSize, y + blockSize); // bottom
+                }
+            if (v.getX() != 0) {
+                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() -1))) {
+                    g.strokeLine(x, y, x, y + blockSize); // left
+                }
             }
         }
     }
@@ -294,23 +291,5 @@ public class FXController {
             default:
                 return Color.WHITE;
         }
-    }
-
-    /**
-     * Checks if a vertex has a neighbor at the specified position.
-     *
-     * @param v the vertex to check
-     * @param r the row of the neighbor
-     * @param c the column of the neighbor
-     * @return true if the vertex has a neighbor at the given position, false
-     *         otherwise
-     */
-    private boolean hasNeighbor(Vertex v, int r, int c) {
-        if (r < 0 || r >= rows || c < 0 || c >= cols)
-            return false;
-        Vertex neighbor = maze.getVertexByID(r * cols + c);
-        if (neighbor == null)
-            return false;
-        return visibleEdges.contains(new Edge(v, neighbor, true));
     }
 }

@@ -1,5 +1,7 @@
 package com.example.projetcynapseing1;
 
+import java.lang.reflect.Method;
+
 /**
  * The {@code MethodName} class is an abstract utility class that serves as a
  * container
@@ -22,6 +24,12 @@ package com.example.projetcynapseing1;
  * </p>
  */
 public class MethodName {
+    /**
+     * nth
+     */
+    public MethodName() {
+    }
+
     /**
      * enumerated type of generation methods
      */

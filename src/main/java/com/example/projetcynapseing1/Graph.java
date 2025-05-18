@@ -99,8 +99,10 @@ public class Graph implements Serializable {
     }
 
     /**
-     * @param u: vertex
-     * @param v: vertex
+     * get an Edge instance by it's two vertices
+     * 
+     * @param u vertex
+     * @param v vertex
      * @return edge: the edge connecting u and v
      */
     public Edge getEdgeByVertices(Vertex u, Vertex v) {
