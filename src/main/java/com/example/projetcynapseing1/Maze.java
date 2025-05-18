@@ -112,6 +112,8 @@ public class Maze extends Graph {
                         "Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
                 return this.toString();
             }
+
+
         }
 
         // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;├;┤;┬;┴;+;=;-;|;*
@@ -257,13 +259,11 @@ public class Maze extends Graph {
                     if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
                         // if path solution
                         if (solution[i] == i + columns || solution[i + columns] == i) {
-                            s += (x == 0) ? pathVerticalBorderLeft
-                                    : ((x == columns - 1) ? pathVerticalBorderRight : pathVertical);
+                            s += (x == 0) ? pathVerticalBorderLeft : (x == columns - 1) ? pathVerticalBorderRight : pathVertical;
                         }
                         // if path
                         else if (antecedents[i] == i + columns || antecedents[i + columns] == i) {
-                            s += (x == 0) ? pathWrongVerticalBorderLeft
-                                    : ((x == columns - 1) ? pathWrongVerticalBorderRight : pathWrongVertical);
+                            s += (x == 0) ? pathWrongVerticalBorderLeft : (x == columns - 1) ? pathWrongVerticalBorderRight : pathWrongVertical;
                         }
                         // if not path
                         else {

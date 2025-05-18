@@ -106,9 +106,17 @@ public class MethodName {
         RIGHTHAND("Right hand"),
 
         /**
-         * Trémaux resolution algorithm
+         * Left hand resolution algorithm
          */
-        LEFTHAND("Left hand");
+        LEFTHAND("Left hand"),
+        /**
+         * DFS resolution algorithm
+         */
+        DFS("DFS"),
+        /**
+         * BFS resolution algorithm
+         */
+        BFS("BFS");
 
         // name of the method
         private final String name;

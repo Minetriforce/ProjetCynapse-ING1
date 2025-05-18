@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 /**
  * Main class of the application responsible for launching the JavaFX
  * application.
+ * @author Bari-Joris, Lorelle, Florianne, Jonathan, Junjie
  */
 public class Main extends Application {
 
@@ -35,7 +36,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Load the FXML file for the layout and set the controller
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view.fxml"));
         fxmlLoader.setController(fxController);
 
         // Set up the scene with the loaded layout

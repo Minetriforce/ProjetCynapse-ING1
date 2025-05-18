@@ -132,8 +132,16 @@ public class Graph implements Serializable {
      * @return Boolean : if the edge was added
      */
     public boolean addEdge(Edge e) {
-        return this.edges.add(e);
+        boolean added = this.edges.add(e);
+        if (added) {
+            Vertex a = e.getVertexA();
+            Vertex b = e.getVertexB();
+            a.addNeighbor(b);
+        }
+        return added;
     }
+
+
 
     /**
      * remove an edge from the list of current Edges
@@ -142,10 +150,19 @@ public class Graph implements Serializable {
      * @return deleting was succesfull or not
      */
     public boolean removeEdge(Edge e) {
-        e.getVertexA().removeNeighbor(e.getVertexB());
-        e.getVertexB().removeNeighbor(e.getVertexA());
-        return this.edges.remove(e);
+        boolean removed = this.edges.remove(e);
+        if (removed) {
+            Vertex a = e.getVertexA();
+            Vertex b = e.getVertexB();
+            a.removeNeighbor(b);
+            b.removeNeighbor(a);
+        }
+        return removed;
     }
+
+
+
+
 
     @Override
     public String toString() {

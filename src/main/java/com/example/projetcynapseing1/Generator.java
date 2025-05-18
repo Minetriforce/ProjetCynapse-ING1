@@ -119,6 +119,7 @@ public class Generator {
      */
     private Maze makeGridGraph() {
         Maze G = new Maze(this.rows, this.columns);
+        Maze G = new Maze(this.rows, this.columns);
 
         // link every vertices to others in order to make a grid
         ArrayList<Vertex> ListVertex = G.getVertices();
@@ -221,6 +222,10 @@ public class Generator {
                         maze.getVertexByID(edge.getVertexB().getID()))); // Add adge to maze
                 union(edge.getVertexA().getID(), edge.getVertexB().getID(), parents); // merge trees in the list of
                 // trees (parents)
+
+                if (maze.getEdges().size() == maze.getVertices().size() - 1){
+                    break;
+                }
             }
         }
     }
@@ -343,16 +348,23 @@ public class Generator {
         ArrayList<Edge> edgesGridMaze = baseGraph.getEdges();
 
         for (int m = 0; m < numberEdges; m++) {
+            if (edgesGridMaze.size() == 0){
+                break;
+            }
+
             Edge e = edgesGridMaze.get(rng.nextInt(edgesGridMaze.size())); // pick a random Edge in the grid Graph
             edgesGridMaze.remove(e); // removes it from the grid Graph : it makes sure to not pick the same Edge in
+            
             // the following iterations
-            maze.addEdge(
-                    new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
+
+            maze.addEdge(new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
             // this
             // picked
             // edge
             // to
             // maze
+            
+            System.out.println(e);
         }
     }
 
@@ -368,6 +380,7 @@ public class Generator {
 
         // Create a basic grid graph and a second graph (maze is the result)
         Maze base = this.makeGridGraph();
+        Maze maze = new Maze(this.rows, this.columns);
         Maze maze = new Maze(this.rows, this.columns);
 
         switch (this.genMethod) {
@@ -401,7 +414,10 @@ public class Generator {
                 break;
             case IMPERFECT:
                 imperfect(base, maze);
-                System.out.println("End of Imperfect geenration.");
+                base = null;
+                System.gc();
+                time = System.currentTimeMillis() - time;
+                System.out.println("End of Imperfect generation.");
         }
 
         System.out.println("Timestamp : " + time + "ms");

@@ -195,8 +195,8 @@ public class MainCLI {
                     if (solveChoice.equals("y")) {
                         // Solve the maze
                         Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
-
-                        int[] antecedents = solver.solveAstar(maze,
+    
+                        int[] antecedents = solver.solve(maze,
                                 maze.getVertexByID(startId),
                                 maze.getVertexByID(endId),
                                 MethodName.Type.COMPLETE);
