@@ -3,9 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -13,13 +10,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 
 
 <StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml">
     
     <!-- Background image -->
-    <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
+    <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.85">
         <image>
             <Image url="@images/logo.png"/>
         </image>
@@ -49,40 +47,19 @@
                     <Insets bottom="20.0" left="20.0" right="20.0" top="10.0"/>
                 </padding>
                 <HBox spacing="10.0" alignment="CENTER">
-
-                    <ComboBox fx:id="generationMethodBox" promptText="generation method">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Kruskal"/>
-                                <String fx:value="Prim"/>
-                                <String fx:value="DFS"/>
-                            </FXCollections>
-                        </items>
-                    </ComboBox>
-                    
-                    <ComboBox fx:id="solutionMethodBox" promptText="solution method">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="A*"/>
-                                <String fx:value="right-hand"/>
-                                <String fx:value="Tremaux"/>
-                            </FXCollections>
-                        </items>
-                    </ComboBox>
+                    <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="100"/>
+                    <ComboBox fx:id="generationMethodComboBox" prefWidth="200" />
+                    <ComboBox fx:id="solutionMethodComboBox" prefWidth="200" />
+                    <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick"/>
+                    <Button fx:id="resolutionLabyrinth" text="Resolve" onAction="#onStartResolutionClick" disable="true"/>
                 </HBox>
 
                 <HBox spacing="10.0" alignment="CENTER">
-                    <TextField fx:id="textLength" promptText="length" prefWidth="50"/>
-                    <TextField fx:id="textWidth" promptText="width" prefWidth="50"/>
-                    <TextField fx:id="seed" promptText="seed" prefWidth="50"/>
+                    <TextField fx:id="rowsField" promptText="rows" prefWidth="50"/>
+                    <TextField fx:id="colsField" promptText="cols" prefWidth="50"/>
+                    <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
                 </HBox>
 
-
-                <HBox spacing="10" alignment="CENTER">
-                    <Button fx:id="generationLabyrinth" text="generation" onAction="#onStartGenerationClick"/>
-                    <Button fx:id="resolutionLabyrinth" text="Resolve" onAction="#onStartResolutionClick" disable="true"/>
-
-                </HBox>
             </VBox>
         </bottom>
     </BorderPane>

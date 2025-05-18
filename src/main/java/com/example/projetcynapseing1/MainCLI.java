@@ -92,7 +92,7 @@ public class MainCLI {
                         System.out.println(BOLD + " 1 " + RESET + "- Prim");
                         System.out.println(BOLD + " 2 " + RESET + "- Kruskal" + RESET);
                         System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
-                        System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.UNPERFECT + RESET);
+                        System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.IMPERFECT + RESET);
 
                         sc.nextLine(); // Consume the newline after nextInt()
 
@@ -126,7 +126,7 @@ public class MainCLI {
                         case "4":
                         case "unperfect":
                             // Create the maze using Unperfect's algorithm
-                            mazeController.createMaze(MethodName.GenMethodName.UNPERFECT,
+                            mazeController.createMaze(MethodName.GenMethodName.IMPERFECT,
                                     MethodName.Type.COMPLETE, rows, columns, 0.0, seed);
                     }
 
@@ -139,16 +139,16 @@ public class MainCLI {
                     Solver solver = new Solver(MethodName.SolveMethodName.ASTAR);
                     int startId = 0; // Top-left corner
                     int endId = (rows * columns) - 1; // Bottom-right corner
-                    int[] parents = solver.solveAstar(maze,
+                    int[] antecedents = solver.solveAstar(maze,
                             maze.getVertexByID(startId),
                             maze.getVertexByID(endId),
                             MethodName.Type.COMPLETE);
                     int[] solution = Solver.pathIndex(maze,
                             maze.getVertexByID(endId),
-                            parents);
+                            antecedents);
 
                     System.out.println("\nSolution found:");
-                    System.out.println(maze.solutionToString(solution));
+                    System.out.println(maze.solutionToString(antecedents, solution));
 
                     break;
 

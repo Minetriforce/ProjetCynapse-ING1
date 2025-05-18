@@ -188,4 +188,6 @@ public class Vertex implements Serializable {
     public String toString() {
         return ("Vertexid:" + this.id + ";x:" + this.x + ";y:" + this.y);
     }
+
+
 }
