@@ -32,6 +32,7 @@ public class FXController {
     private ImageView backgroundImage;
     @FXML
     private StackPane stackpane;
+
     @FXML
     private Button resolutionLabyrinth;
     @FXML
@@ -106,10 +107,10 @@ public class FXController {
 
         // Fill combo boxes with enum values
         generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
-        generationMethodComboBox.setPromptText("Choose a generation method"); // 👈
+        generationMethodComboBox.setPromptText("Choose a generation method");
 
         solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
-        solutionMethodComboBox.setPromptText("Choose a solving method");   // 👈
+        solutionMethodComboBox.setPromptText("Choose a solving method");  
 
         resolutionLabyrinth.setDisable(true); //resolution disable at first until we click generation button.
 
@@ -225,12 +226,10 @@ public class FXController {
             int col = (int) (event.getX() / blockSize);
             int row = (int) (event.getY() / blockSize);
 
-            if (col < 0 || col >= cols || row < 0 || row >= rows)
-                return;
+            if (col < 0 || col >= cols || row < 0 || row >= rows) return;
 
             Vertex clickedVertex = maze.getVertexByID(row * cols + col);
-            if (clickedVertex == null)
-                return;
+            if (clickedVertex == null) return;
 
             if (isEditingStartEnd) {
                 // Alterner entre start et end
@@ -270,12 +269,6 @@ public class FXController {
         this.mazeController = mazeController;
     }
 
-    /**
-     * Method to set maze size
-     * 
-     * @param rows number of vertical vertices
-     * @param cols number of horizontal vertices
-     */
     public void setMazeSize(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
@@ -290,9 +283,6 @@ public class FXController {
                 : 100;
     }
 
-    /**
-     * Called when the generation button is clicked
-     */
     @FXML
     private void onStartGenerationClick() {
         try {
@@ -313,7 +303,6 @@ public class FXController {
 
             setMazeSize(rows, cols);
 
-            System.out.println(this.timeStep);
             labyrinthIsGenerated = true;
             resolutionLabyrinth.setDisable(false);
 
@@ -328,13 +317,9 @@ public class FXController {
         }
     }
 
-    /**
-     * Called when the "Solve" button is clicked. Starts solving the maze.
-     */
     @FXML
     private void onStartResolutionClick() {
         resetSolution();
-        this.timeStep = Integer.parseInt(timeStepField.getText());
 
         try {
             this.start = Integer.parseInt(startField.getText());
@@ -363,7 +348,7 @@ public class FXController {
             for (Edge e : generatedMaze.getEdges()) {
                 visibleEdges.add(e);
                 Platform.runLater(() -> displayMaze(generatedMaze));
-                Thread.sleep(this.timeStep);
+                Thread.sleep(timeStep);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -371,25 +356,14 @@ public class FXController {
     }
 
     private void solveMaze(MethodName.SolveMethodName solveMethod) {
-        try {
-            mazeController.findSolution(solveMethod, maze.getVertexByID(0), maze.getVertexByID(end));
-            // Start visualizing the solution, marking visited vertices and solution path
-            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited());
-        } catch (Exception e) {
-            System.out.println("--- Fx Controller ---");
-            System.out.println(e.getMessage());
-            System.out.println("------------------");
-            e.printStackTrace();
-        }
+        Solver solver = new Solver(solveMethod);
+
+        int[] antecedents = solver.solve(maze, maze.getVertexByID(start), maze.getVertexByID(end), MethodName.Type.COMPLETE);
+        int[] orders = solver.solve(maze, maze.getVertexByID(start), maze.getVertexByID(end), MethodName.Type.STEPPER);
+
+        markVisitedAndSolutionPath(orders, antecedents);
     }
 
-    /**
-     * Marks the visited vertices and solution path, displaying the solution
-     * incrementally.
-     *
-     * @param orders:      array of vertices' index in the visited order
-     * @param antecedents: the array of antecedents for each vertex
-     */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
         for (int id : orders) {
             if (id == -1) break;
@@ -415,11 +389,6 @@ public class FXController {
         }
     }
 
-    /**
-     * Displays the maze on the canvas.
-     * 
-     * @param maze the maze to display
-     */
     public void displayMaze(Maze maze) {
         this.maze = maze;
         drawMazeWithWalls();
@@ -441,31 +410,27 @@ public class FXController {
         g.setLineWidth(2);
 
         for (Vertex v : maze.getVertices()) {
-            int x = v.getX() * blockSize;
-            int y = v.getY() * blockSize;
+            int id = v.getID();
+            int row = id / cols;
+            int col = id % cols;
+
+            int x = col * blockSize;
+            int y = row * blockSize;
 
             g.setFill(getColorForVertex(v));
             g.fillRect(x, y, blockSize, blockSize);
 
-            // Draw walls between cells if they're not neighbors
-            if (v.getY() != 0) {
-                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() - this.cols))) {
-                    g.strokeLine(x, y, x + blockSize, y); // top
-                }
+            if (!hasNeighbor(v, row - 1, col)) {
+                g.strokeLine(x, y, x + blockSize, y);
             }
-            if (v.getX() != this.cols - 1) {
-                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() + 1))) {
-                    g.strokeLine(x + blockSize, y, x + blockSize, y + blockSize); // right
-                }
+            if (!hasNeighbor(v, row, col + 1)) {
+                g.strokeLine(x + blockSize, y, x + blockSize, y + blockSize);
             }
-            if (v.getY() != this.rows - 1)
-                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() + this.cols))) {
-                    g.strokeLine(x, y + blockSize, x + blockSize, y + blockSize); // bottom
-                }
-            if (v.getX() != 0) {
-                if (!v.getNeighbors().contains(maze.getVertexByID(v.getID() - 1))) {
-                    g.strokeLine(x, y, x, y + blockSize); // left
-                }
+            if (!hasNeighbor(v, row + 1, col)) {
+                g.strokeLine(x, y + blockSize, x + blockSize, y + blockSize);
+            }
+            if (!hasNeighbor(v, row, col - 1)) {
+                g.strokeLine(x, y, x, y + blockSize);
             }
 
             if (v.getID() == start) {
@@ -474,26 +439,7 @@ public class FXController {
                 g.drawImage(endIcon, x, y, blockSize, blockSize);}
 
             if (isEditingStartEnd) {
-                String idStr = String.valueOf(v.getID());
-                Text text = new Text(idStr);
-                text.setFont(g.getFont());
-                double textWidth = text.getLayoutBounds().getWidth();
-                double textHeight = text.getLayoutBounds().getHeight();
-
-                double textX = x + (blockSize - textWidth) / 2;
-                double textY = y + (blockSize + textHeight) / 2;
-
-                g.setFill(Color.BLACK);
-                g.fillText(idStr, textX, textY);
-            }
-
-            if (v.getID() == start) {
-                g.drawImage(startIcon, x, y, blockSize, blockSize);}
-            if (v.getID() == end) {
-                g.drawImage(endIcon, x, y, blockSize, blockSize);}
-
-            if (isEditingStartEnd) {
-                String idStr = String.valueOf(v.getID());
+                String idStr = String.valueOf(id);
                 Text text = new Text(idStr);
                 text.setFont(g.getFont());
                 double textWidth = text.getLayoutBounds().getWidth();
@@ -514,6 +460,13 @@ public class FXController {
             case SOLUTION -> Color.rgb(173, 216, 230);
             default -> Color.WHITE;
         };
+    }
+
+
+    private boolean hasNeighbor(Vertex v, int r, int c) {
+        if (r < 0 || r >= rows || c < 0 || c >= cols) return false;
+        Vertex neighbor = maze.getVertexByID(r * cols + c);
+        return neighbor != null && visibleEdges.contains(new Edge(v, neighbor, true));
     }
 
     private void toggleWallBetween(Vertex v1, Vertex v2) {
