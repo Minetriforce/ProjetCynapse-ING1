@@ -65,8 +65,7 @@
                     <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
                     <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="100" disable="true"/>
 
-                    <TextField fx:id="startField" promptText="start ID" prefWidth="70" disable="true"/>
-                    <TextField fx:id="endField" promptText="end ID" prefWidth="70" disable="true"/>
+                
                     <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
                     <ToggleButton fx:id="editEdgeButton" text="Add or Remove Edge"/>
 
