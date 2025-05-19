@@ -425,7 +425,7 @@ public class MainCLI {
                                 antecedents);
     
                         System.out.println(UNDERLINE + BOLD + "\nSolution found:" + RESET);
-                        System.out.println(maze.solutionToString(antecedents,solution));
+                        System.out.println(maze.solutionToString(antecedents,solution, startId, endId));
                     }
 
                     System.out.println(ITALIC + "Save the maze? " + RESET + BOLD + "[" + GREEN + BOLD + "Y" + RESET +"/"+ RED + BOLD +"N" + RESET + "]" + RESET);

@@ -87,9 +87,11 @@ public class Maze extends Graph implements Serializable {
      * 
      * @param antecedents: parent of each vertex
      * @param solution:    parent of each vertex in the solution path
+     * @param start: index of the starting vertex
+     * @param end: index of the ending vertex
      * @return the maze with the solution in a string format
      */
-    public String solutionToString(int[] antecedents, int[] solution) {
+    public String solutionToString(int[] antecedents, int[] solution, int start, int end) {
         // number of vertices
         int n = rows * columns;
 
@@ -113,8 +115,8 @@ public class Maze extends Graph implements Serializable {
                         "Table solution is inappropriately indexed: solution[" + i + "] = " + solution[i] + " !");
                 return this.toString();
             }
-
         }
+
 
         // other chars: ·;■;▀;▄;▌;▐;█;═;║;╔;╗;╚;╝;╬;┼;─;│;┌;┐;└;┘;├;┤;┬;┴;+;=;-;|;*
         String s = "";
@@ -220,8 +222,7 @@ public class Maze extends Graph implements Serializable {
 
             for (int x = 0; x < columns; x++) {
                 i = y * columns + x;
-                s += (solution[i] != i) ? MainCLI.GREENBACK + MainCLI.BOLD
-                        : (antecedents[i] != i) ? MainCLI.REDBACK : "";
+                s += (solution[i] != i || (i == start && solution[end] != end)) ? MainCLI.GREENBACK + MainCLI.BOLD : (antecedents[i] != i || i == start) ? MainCLI.REDBACK : "";
                 s += Maze.paddingInt(i, padding);
                 s += (solution[i] != i || antecedents[i] != i) ? MainCLI.RESET : "";
 
@@ -319,8 +320,8 @@ public class Maze extends Graph implements Serializable {
      * @param solution: parent of each vertex in the solution path
      * @return the maze with the solution in a string format
      */
-    public String solutionToString(int[] solution) {
-        return this.solutionToString(solution, solution);
+    public String solutionToString(int[] solution, int start, int end) {
+        return this.solutionToString(solution, solution, start, end);
     }
 
     /**
