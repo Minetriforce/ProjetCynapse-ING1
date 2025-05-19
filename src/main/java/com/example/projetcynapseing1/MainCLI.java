@@ -363,13 +363,15 @@ public class MainCLI {
                         System.out.println(BOLD + " 2 " + RESET + "- " + MethodName.SolveMethodName.BFS + RESET);
                         System.out.println(BOLD + " 3 " + RESET + "- " + MethodName.SolveMethodName.DFS + RESET);
                         System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.SolveMethodName.RIGHTHAND + RESET);
+                        System.out.println(BOLD + " 5 " + RESET + "- " + MethodName.SolveMethodName.LEFTHAND + RESET);
 
                         while(true){
                             solvingChoice = sc.nextLine().toLowerCase().trim();
                             if(solvingChoice.equals("1") || solvingChoice.equals("astar")
                             || solvingChoice.equals("2") || solvingChoice.equals("bfs")
                             || solvingChoice.equals("3") || solvingChoice.equals("dfs")
-                            || solvingChoice.equals("4") || solvingChoice.equals("righthand")){
+                            || solvingChoice.equals("4") || solvingChoice.equals("righthand")
+                            || solvingChoice.equals("5") || solvingChoice.equals("lefthand")){
                                 break;
                             }
                             else{
@@ -400,6 +402,12 @@ public class MainCLI {
                             case "righthand":
                                 // Create the maze using Righthand algorithm
                                 mazeController.findSolution(MethodName.SolveMethodName.RIGHTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                                break;
+                            case "5":
+                            case "lefthand":
+                                // Create the maze using Righthand algorithm
+                                mazeController.findSolution(MethodName.SolveMethodName.LEFTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                                break;
                         }
 
                         // Solve the maze
