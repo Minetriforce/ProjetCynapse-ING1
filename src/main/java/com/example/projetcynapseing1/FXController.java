@@ -34,6 +34,53 @@ public class FXController {
     private StackPane stackpane;
 
     @FXML
+    private ComboBox<String> backgroundSelector;
+    
+    @FXML
+    private void initialize() {
+        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
+        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+        
+        backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar");
+        backgroundSelector.setValue("labyrinth");
+
+        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
+        generationMethodComboBox.getSelectionModel().selectFirst();
+
+        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
+        solutionMethodComboBox.getSelectionModel().selectFirst();
+    }
+
+    @FXML
+    private void onBackgroundSelectionChanged() {
+        String selectedImage = backgroundSelector.getValue();
+        setBackgroundImage(selectedImage);
+    }
+
+    private void setBackgroundImage(String selectedName) {
+        String fileName;
+        switch (selectedName) {
+            case "labyrinth":
+                fileName="images/logo.png";
+                break;
+            case "sakura":
+                fileName="images/sakura.jpg";
+                break;
+            case "beach":
+                fileName="images/beach.jpg";
+                break;
+            case "shootingstar":
+                fileName="images/shootingstar.jpg";
+                break;
+            default:
+                fileName="images/logo.png";
+        }
+        Image image = new Image(getClass().getResourceAsStream("/"+fileName));
+        backgroundImage.setImage(image);
+    }
+
+    
+    @FXML
     private Button resolutionLabyrinth;
     @FXML
     private Button generationLabyrinth;
