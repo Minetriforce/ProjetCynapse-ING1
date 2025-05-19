@@ -678,6 +678,9 @@ public class FXController {
         if (mazeController.loadMaze() == true) {
             /* Bypass all generation requirements and changing */
             this.maze = mazeController.getCurrentMaze();
+            this.visibleEdges.clear();
+            this.visibleEdges.addAll(this.maze.getEdges());
+            this.start = 0;
             this.rows = maze.getRows();
             this.cols = maze.getColumns();
             setMazeSize(this.rows, this.cols);
@@ -685,6 +688,7 @@ public class FXController {
             labyrinthIsGenerated = true;
             resolutionLabyrinth.setDisable(false);
 
+            this.resetSolution();
             displayMaze(this.maze);
             saveMaze.setDisable(false);
         } else {
