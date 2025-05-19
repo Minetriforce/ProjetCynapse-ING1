@@ -107,10 +107,10 @@ public class FXController {
 
         // Fill combo boxes with enum values
         generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
-        generationMethodComboBox.setPromptText("Choose a generation method"); // 👈
+        generationMethodComboBox.setPromptText("Choose a generation method");
 
         solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
-        solutionMethodComboBox.setPromptText("Choose a solving method");   // 👈
+        solutionMethodComboBox.setPromptText("Choose a solving method");
 
         resolutionLabyrinth.setDisable(true); //resolution disable at first until we click generation button.
 
@@ -232,7 +232,7 @@ public class FXController {
             if (clickedVertex == null) return;
 
             if (isEditingStartEnd) {
-                // Alterner entre start et end
+                // alternate between start et end
                 if (selectingStart) {
                     start = clickedVertex.getID();
                     startField.setText(String.valueOf(start));

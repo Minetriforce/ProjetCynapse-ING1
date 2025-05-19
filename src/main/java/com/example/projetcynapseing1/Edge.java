@@ -144,7 +144,6 @@ public class Edge implements Comparable<Edge>, Serializable {
         }
         return false;
     }
-
     @Override
     public int hashCode() {
         return vertexA.hashCode() + vertexB.hashCode();
