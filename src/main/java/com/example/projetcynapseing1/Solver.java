@@ -465,7 +465,18 @@ public class Solver {
 
         return result;
     }
-
+    /**
+     * solve the maze with the A* algorithm upgrated
+     * the returning value depends of t
+     * antecedents: array of antecedents of each vertex in the path
+     * orders: the index of vertices visited in order
+     * @param m: maze graph
+     * @param start: starting vertex
+     * @param end: ending vertex
+     * @param t: type of printing
+     * @return result
+     */
+    //private int[] solveAstar2(Maze m, Vertex start, Vertex end, MethodName.Type t){}
     /**
      * Manhattan distance
      * @param a: First vertex

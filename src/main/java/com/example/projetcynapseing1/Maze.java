@@ -336,32 +336,85 @@ public class Maze extends Graph implements Serializable {
         padding += (padding % 2 == 0) ? 1 : 0;
         // padding must > 2
         padding = (padding < 3) ? 3 : padding;
+
         // absence of vertical wall
         String spaceVertical = "   ";
         // absence of horizontal wall
-        String spaceHorizontal = " ".repeat(padding);
-        // vertical wall
-        String wallVertical = " │ ";
-        // horizontal wall
-        String wallHorizontal = "─".repeat(padding);
-        // corner
-        String corner = " · ";
+        String spaceHorizontal = " ".repeat(padding + 2);
+        // absence of horizontal wall next to border
+        String spaceHorizontalBorder = " ".repeat(padding + 1);
 
-        // border
-        s += " ╔" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╗ " + "\n";
+        // vertical wall
+        String wallVertical = MainCLI.GRAY + " │ " + MainCLI.RESET;
+        // horizontal wall
+        String wallHorizontal = MainCLI.GRAY + "─".repeat(padding + 2) + MainCLI.RESET;
+        // horizontal wall next to border
+        String wallHorizontalBorder = MainCLI.GRAY + "─".repeat(padding + 1) + MainCLI.RESET;
+
+        // corners
+        String cornerEmpty = " ";
+        String cornerRight = MainCLI.GRAY + "─" + MainCLI.RESET;
+        String cornerDown = MainCLI.GRAY + "│" + MainCLI.RESET;
+        String cornerLeft = MainCLI.GRAY + "─" + MainCLI.RESET;
+        String cornerUp = MainCLI.GRAY + "│" + MainCLI.RESET;
+        String cornerRightDown = MainCLI.GRAY + "┌" + MainCLI.RESET;
+        String cornerRightLeft = MainCLI.GRAY + "─" + MainCLI.RESET;
+        String cornerRightUp = MainCLI.GRAY + "└" + MainCLI.RESET;
+        String cornerDownLeft = MainCLI.GRAY + "┐" + MainCLI.RESET;
+        String cornerDownUp = MainCLI.GRAY + "│" + MainCLI.RESET;
+        String cornerLeftUp = MainCLI.GRAY + "┘" + MainCLI.RESET;
+        String cornerRightDownLeft = MainCLI.GRAY + "┬" + MainCLI.RESET;
+        String cornerRightDownUp = MainCLI.GRAY + "├" + MainCLI.RESET;
+        String cornerRightLeftUp = MainCLI.GRAY + "┴" + MainCLI.RESET;
+        String cornerDownLeftUp = MainCLI.GRAY + "┤" + MainCLI.RESET;
+        String cornerAll = MainCLI.GRAY + "┼" + MainCLI.RESET;
+        Map<Integer, String> corners = new HashMap<>();
+        corners.put(1, cornerEmpty);
+        corners.put(2, cornerRight);
+        corners.put(3, cornerDown);
+        corners.put(5, cornerLeft);
+        corners.put(7, cornerUp);
+        corners.put(6, cornerRightDown);
+        corners.put(10, cornerRightLeft);
+        corners.put(14, cornerRightUp);
+        corners.put(15, cornerDownLeft);
+        corners.put(21, cornerDownUp);
+        corners.put(35, cornerLeftUp);
+        corners.put(30, cornerRightDownLeft);
+        corners.put(42, cornerRightDownUp);
+        corners.put(70, cornerRightLeftUp);
+        corners.put(105, cornerDownLeftUp);
+        corners.put(210, cornerAll);
+
+        // vertical border
+        String borderVertical = MainCLI.GRAY + " ║ " + MainCLI.RESET;
+        // border horizontal
+        String borderHorizontal = "═".repeat(padding * columns + 3 * (columns - 1) + 2);
+        // border up
+        String borderUp = MainCLI.GRAY + " ╔" + borderHorizontal + "╗ " + MainCLI.RESET;
+        // border down
+        String borderDown = MainCLI.GRAY + " ╚" + borderHorizontal + "╝ " + MainCLI.RESET;
 
         // id of vertex
         int i = 0;
+        // counter for borders
+        int c;
+
+        // border
+        s += borderUp + "\n";
+
         // the maze
         for (int y = 0; y < rows; y++) {
-            s += " ║ ";
+            s += borderVertical;
+
             for (int x = 0; x < columns; x++) {
                 i = y * columns + x;
                 s += Maze.paddingInt(i, padding);
+
                 // if not the last column
                 if (x < columns - 1) {
-                    // if there's not a wall
-                    if (((vertices.get(i)).isNeighbor(vertices.get(i + 1)))) {
+                    // if vertex n + 1 neighboring
+                    if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + 1))) {
                         s += spaceVertical;
                     }
                     // if there's a wall
@@ -370,33 +423,54 @@ public class Maze extends Graph implements Serializable {
                     }
                 }
             }
+
             // line between 2 rows
-            s += " ║ " + "\n";
+            s += borderVertical + "\n";
             // if not the last row
             if (y < rows - 1) {
-                s += " ║ ";
+                s += borderVertical;
+
                 for (int x = 0; x < columns; x++) {
                     i = y * columns + x;
-                    // if there's not a wall
-                    if (((vertices.get(i)).isNeighbor(vertices.get(i + columns)))) {
-                        s += spaceHorizontal;
+
+                    // if vertex n + columns neighboring
+                    if (((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
+                        s += (x > 0 && x < columns - 1) ? spaceHorizontal : spaceHorizontalBorder;
                     }
                     // if there's a wall
                     else {
-                        s += wallHorizontal;
+                        s += (x > 0 && x < columns - 1) ? wallHorizontal : wallHorizontalBorder;
                     }
+
                     // if not the last column
                     if (x < columns - 1) {
-                        s += corner;
+                        c = 1;
+
+                        // tests to chose the corner
+                        if (!((vertices.get(i + 1)).getNeighbors()).contains(vertices.get(i + 1 + columns))) {
+                            c *= 2;
+                        }
+                        if (!((vertices.get(i + columns)).getNeighbors()).contains(vertices.get(i + 1 + columns))) {
+                            c *= 3;
+                        }
+                        if (!((vertices.get(i)).getNeighbors()).contains(vertices.get(i + columns))) {
+                            c *= 5;
+                        }
+                        if (!((vertices.get(i)).getNeighbors()).contains(vertices.get(i + 1))) {
+                            c *= 7;
+                        }
+
+                        s += corners.get(c);
                     }
                 }
+
                 // next row
-                s += " ║ " + "\n";
+                s += borderVertical + "\n";
             }
         }
 
         // border
-        s += " ╚" + "═".repeat(padding * columns + 3 * (columns - 1) + 2) + "╝ " + "\n";
+        s += borderDown + "\n";
 
         return s;
     }
