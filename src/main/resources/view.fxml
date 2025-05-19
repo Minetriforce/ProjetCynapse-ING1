@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.canvas.*?>
+
+<StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml/1" stylesheets="style.css">
+
+    <!-- Background image -->
+    <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
+        <image>
+            <Image url="@images/logo.png"/>
+        </image>
+    </ImageView>
+
+    <!-- Main layout container -->
+    <BorderPane fx:id="borderpane">
+
+        <!-- Top: Title -->
+        <!--
+        <top>
+            <VBox alignment="CENTER" spacing="10.0">
+                <padding>
+                    <Insets top="20" bottom="10" left="20" right="20"/>
+                </padding>
+                <Label fx:id="welcomeText" text="Welcome to Cynapse!"
+                       style="-fx-font-size: 30; -fx-text-fill: white;"/>
+                <Label fx:id="etapeLabel"/>
+            </VBox>
+        </top>-->
+
+        <!-- Center: Maze canvas -->
+        <center>
+            <VBox alignment="CENTER" spacing="10.0">
+                <Canvas fx:id="mazeCanvas" width="300" height="300"/>
+            </VBox>
+        </center>
+
+        <!-- Bottom: Controls -->
+        <bottom>
+            <HBox fx:id="mainHBox" alignment="CENTER" spacing="10.0">
+                <VBox alignment="CENTER" spacing="10.0">
+                    <padding>
+                        <Insets top="10" bottom="20" left="20" right="20"/>
+                    </padding>
+
+                    <!-- Row 1: Method selection and generation -->
+                    <HBox alignment="CENTER" spacing="10.0">
+                        <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="100"/>
+                        <ComboBox fx:id="generationMethodComboBox" prefWidth="240"/>
+                        <ComboBox fx:id="solutionMethodComboBox" prefWidth="240"/>
+                        <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
+
+                        <CheckBox fx:id="stepByStepCheckBox" text="Step-by-step" style="-fx-text-fill: white;"/>
+
+                        <Button fx:id="resolutionLabyrinth" text="Solve" onAction="#onStartResolutionClick" disable="true"/>
+                    </HBox>
+
+                    <!-- Row 2: Parameters input -->
+                    <HBox alignment="CENTER" spacing="10.0">
+                    <TextField fx:id="rowsField" promptText="rows" prefWidth="50"/>
+                    <TextField fx:id="colsField" promptText="cols" prefWidth="50"/>
+                    <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
+                    <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="100" disable="true"/>
+
+                    <TextField fx:id="startField" promptText="start ID" prefWidth="70" disable="true"/>
+                    <TextField fx:id="endField" promptText="end ID" prefWidth="70" disable="true"/>
+                    <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
+                    <ToggleButton fx:id="editEdgeButton" text="Add or Remove Edge"/>
+
+                    </HBox>
+                </VBox>
+                <VBox alignment="CENTER" spacing = "10.0">
+                    <padding>
+                        <Insets top="10" bottom="20" left="20" right="20"/>
+                    </padding>
+                    <Button fx:id="loadMaze" text="Load" onAction="#onLoadClick" />
+                    <Button fx:id="saveMaze" text="Save" onAction="#onSaveClick" disable="true" />
+                </VBox>
+            </HBox>
+        </bottom>
+    </BorderPane>
+</StackPane>

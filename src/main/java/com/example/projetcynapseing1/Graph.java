@@ -1,8 +1,8 @@
 package com.example.projetcynapseing1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,9 +30,8 @@ import java.util.Set;
  * </pre>
  * 
  * @author Bari-joris
- * @version 1.0
  */
-public class Graph {
+public class Graph implements Serializable {
     /**
      * List of unique vertices in graph
      */
@@ -76,10 +75,13 @@ public class Graph {
      * Return a Vertex Object according to it's ID
      * 
      * @param ID integer between 0 and n to identify vertex in graph
-     * @return Vertex
+     * @return Vertex or null if it does not exists
      */
-    public Vertex getVertexByID(Integer ID) {
-        return vertices.get(ID);
+    public Vertex getVertexByID(Integer id) {
+        if(id < 0 || id > vertices.size()-1){
+            return null;
+        }
+        return vertices.get(id);
     }
 
     /**
@@ -100,8 +102,10 @@ public class Graph {
     }
 
     /**
-     * @param u: vertex
-     * @param v: vertex
+     * get an Edge instance by it's two vertices
+     * 
+     * @param u vertex
+     * @param v vertex
      * @return edge: the edge connecting u and v
      */
     public Edge getEdgeByVertices(Vertex u, Vertex v) {
@@ -131,8 +135,37 @@ public class Graph {
      * @return Boolean : if the edge was added
      */
     public boolean addEdge(Edge e) {
-        return this.edges.add(e);
+        boolean added = this.edges.add(e);
+        if (added) {
+            Vertex a = e.getVertexA();
+            Vertex b = e.getVertexB();
+            a.addNeighbor(b);
+        }
+        return added;
     }
+
+
+
+    /**
+     * remove an edge from the list of current Edges
+     * 
+     * @param e edge to remove
+     * @return deleting was succesfull or not
+     */
+    public boolean removeEdge(Edge e) {
+        boolean removed = this.edges.remove(e);
+        if (removed) {
+            Vertex a = e.getVertexA();
+            Vertex b = e.getVertexB();
+            a.removeNeighbor(b);
+            b.removeNeighbor(a);
+        }
+        return removed;
+    }
+
+
+
+
 
     @Override
     public String toString() {
@@ -161,33 +194,5 @@ public class Graph {
                     .append("\n");
         }
         return sb.toString();
-    }
-
-    public String asMaze(Integer nbLines, Integer nbColumns) {
-        String s = "";
-        List<Vertex> vertices = this.getVertices();
-
-        for (int y = 0; y < nbLines; y++) {
-            for (int x = 0; x < nbColumns; x++) {
-                int n = y * nbColumns + x;
-                s += String.format("%-2d", n);
-                if (x < nbColumns - 1) {
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + 1))) ? "  " : "||";
-                }
-            }
-            s += "\n";
-            if (y < nbLines - 1) {
-                for (int x = 0; x < nbColumns; x++) {
-                    int n = y * nbColumns + x;
-                    s += (((vertices.get(n)).getNeighbors()).contains(vertices.get(n + nbColumns))) ? "  " : "--";
-                    if (x < nbColumns - 1) {
-                        s += "  ";
-                    }
-                }
-                s += "\n";
-            }
-        }
-
-        return s;
     }
 }

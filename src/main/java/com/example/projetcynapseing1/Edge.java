@@ -22,7 +22,6 @@ import java.io.Serializable;
  * </pre>
  * 
  * @author Bari-joris
- * @version 1.0
  */
 public class Edge implements Comparable<Edge>, Serializable {
     /**
@@ -60,10 +59,19 @@ public class Edge implements Comparable<Edge>, Serializable {
         }
     }
 
-
+    /**
+     * This constructor allows creating an edge without modifying the neighbor
+     * lists of the involved vertices.
+     *
+     * @param vA               the first vertex of the edge
+     * @param vB               the second vertex of the edge
+     * @param skipAddNeighbors if true, neighbor lists of the vertices will not be
+     *                         updated
+     */
     public Edge(Vertex vA, Vertex vB, boolean skipAddNeighbors) {
         this.vertexA = vA;
-        this.vertexB = vB;}
+        this.vertexB = vB;
+    }
 
     /**
      * Return vertex A in edge
@@ -139,7 +147,6 @@ public class Edge implements Comparable<Edge>, Serializable {
     public int hashCode() {
         return vertexA.hashCode() + vertexB.hashCode();
     }
-
 
     @Override
     public int compareTo(Edge e) {

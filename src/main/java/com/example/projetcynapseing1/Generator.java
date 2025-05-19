@@ -61,6 +61,52 @@ public class Generator {
         this.seed = seed;
     }
 
+    /* SETTERS */
+    /**
+     * Set number of rows of the maze
+     * 
+     * @param rows number of rows
+     */
+    public void setRows(Integer rows) {
+        this.rows = rows;
+    }
+
+    /**
+     * Set number of columns
+     * 
+     * @param columns number of columns
+     */
+    public void setColumns(Integer columns) {
+        if (columns <= 0)
+            this.columns = columns;
+    }
+
+    /**
+     * Set generation method
+     * 
+     * @param genMethod KRUSKAL / PRIM / DFS / UNPERFECT
+     */
+    public void setGenMethod(MethodName.GenMethodName genMethod) {
+        this.genMethod = genMethod;
+    }
+
+    /**
+     * Set seed of the randomn number generator
+     * 
+     * @param seed null to or 0 to have a random seed, else put a strictly positive
+     *             integer
+     */
+    public void setSeed(Integer seed) {
+        // In case seed is null, generate a random seed
+        if (this.seed == null) {
+            System.out.println("Warning : seed is null, generating random seed");
+            this.seed = new Random().nextInt(100000);
+            System.out.println("Seed generated : " + this.seed);
+        } else {
+            this.seed = seed;
+        }
+    }
+
     /**
      * <p>
      * This method is used to create a grid graph of size rows * columns.
@@ -72,7 +118,7 @@ public class Generator {
      * @return a grid graph of size rows * columns
      */
     private Maze makeGridGraph() {
-        Maze G = new Maze(this.rows, this.columns, null);
+        Maze G = new Maze(this.rows, this.columns);
 
         // link every vertices to others in order to make a grid
         ArrayList<Vertex> ListVertex = G.getVertices();
@@ -113,7 +159,7 @@ public class Generator {
      */
     private int find(Integer i, int[] parent) {
         if (parent[i] != i) {
-            parent[i] = find(parent[i], parent); //path compression to reduce access time
+            parent[i] = find(parent[i], parent); // path compression to reduce access time
         }
         return parent[i];
     }
@@ -175,6 +221,10 @@ public class Generator {
                         maze.getVertexByID(edge.getVertexB().getID()))); // Add adge to maze
                 union(edge.getVertexA().getID(), edge.getVertexB().getID(), parents); // merge trees in the list of
                 // trees (parents)
+
+                if (maze.getEdges().size() == maze.getVertices().size() - 1){
+                    break;
+                }
             }
         }
     }
@@ -253,8 +303,8 @@ public class Generator {
      * @param randomGen     random number generator, it ensures us to keep the same
      *                      maze if we send the same seed
      */
-    private void randomDFS(Graph baseGraph, Graph maze, Stack<Vertex> visitedStack, Vertex currentVertex,
-                           ArrayList<Boolean> mark, Random randomGen) {
+    private void randomDFS(Maze baseGraph, Maze maze, Stack<Vertex> visitedStack, Vertex currentVertex,
+            ArrayList<Boolean> mark, Random randomGen) {
         mark.set(currentVertex.getID(), true);
         ArrayList<Vertex> availableNeighbors = new ArrayList<Vertex>();
 
@@ -297,17 +347,23 @@ public class Generator {
         ArrayList<Edge> edgesGridMaze = baseGraph.getEdges();
 
         for (int m = 0; m < numberEdges; m++) {
+            if (edgesGridMaze.size() == 0){
+                break;
+            }
+
             Edge e = edgesGridMaze.get(rng.nextInt(edgesGridMaze.size())); // pick a random Edge in the grid Graph
             edgesGridMaze.remove(e); // removes it from the grid Graph : it makes sure to not pick the same Edge in
+            
             // the following iterations
 
-            maze.addEdge(
-                    new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
+            maze.addEdge(new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
             // this
             // picked
             // edge
             // to
             // maze
+            
+            System.out.println(e);
         }
     }
 
@@ -318,20 +374,12 @@ public class Generator {
      * @see Maze
      */
     public Maze makeMaze() {
-
-        // In case seed is null, generate a random seed
-        if (this.seed == null) {
-            System.out.println("Warning : seed is null, generating random seed");
-            this.seed = new Random().nextInt(100000);
-            System.out.println("Seed generated : " + this.seed);
-        }
-
         // Used to display generation time
         long time = System.currentTimeMillis();
 
         // Create a basic grid graph and a second graph (maze is the result)
         Maze base = this.makeGridGraph();
-        Maze maze = new Maze(this.rows, this.columns, this.genMethod);
+        Maze maze = new Maze(this.rows, this.columns);
 
         switch (this.genMethod) {
             case KRUSKAL:
@@ -339,7 +387,6 @@ public class Generator {
                 kruskal(base, maze);
                 base = null;
                 System.gc();
-                time = System.currentTimeMillis() - time;
                 System.out.println("End of Kruskal Generation");
                 break;
 
@@ -348,7 +395,6 @@ public class Generator {
                 prim(base, maze, base.getVertices().getFirst());
                 base = null;
                 System.gc();
-                time = System.currentTimeMillis() - time;
                 System.out.println("End of PRIM generation");
                 break;
 
@@ -358,16 +404,21 @@ public class Generator {
                 for (int i = 0; i < maze.getVertices().size(); i++) {
                     mark.add(false);
                 }
-
                 randomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
-
                 break;
+
             case IMPERFECT:
                 imperfect(base, maze);
-                System.out.println("End of Imperfect geenration.");
+                base = null;
+                System.gc();
+                System.out.println("End of Imperfect generation.");
+                break;
+            default:
+                maze = base;
+                System.out.println("No method has been provied, return a grid maze.");
         }
 
-        System.out.println("Timestamp : " + time + "ms");
+        System.out.println("Timestamp : " + (System.currentTimeMillis()-time) + "ms");
         return maze;
     }
 

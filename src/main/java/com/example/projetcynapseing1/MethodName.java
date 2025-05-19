@@ -5,7 +5,7 @@ package com.example.projetcynapseing1;
  * container
  * for enumerations representing various method names. It is not intended to be
  * instantiated or extended.
- * 
+ *
  * <p>
  * The class contains the following enumerations:
  * </p>
@@ -15,13 +15,19 @@ package com.example.projetcynapseing1;
  * <li>{@link SolveMethodName} - Represents solving method names for algorithms
  * such as A*, Right-hand rule, and Tremaux's method.</li>
  * </ul>
- * 
+ *
  * <p>
  * This class is primarily used to organize and group related enumerations for
  * better code readability and maintainability.
  * </p>
  */
 public class MethodName {
+    /**
+     * nth
+     */
+    public MethodName() {
+    }
+
     /**
      * enumerated type of generation methods
      */
@@ -42,14 +48,14 @@ public class MethodName {
          * this type of generation is completly random and don't ensure the maze to be
          * perfect
          */
-        IMPERFECT("imperfect");
+        IMPERFECT("Imperfect");
 
         // name of the method
         private final String name;
 
         /**
          * constructor
-         * 
+         *
          * @param n: name
          */
         private GenMethodName(String n) {
@@ -58,7 +64,7 @@ public class MethodName {
 
         /**
          * getter of name
-         * 
+         *
          * @return name
          */
         public String getName() {
@@ -68,7 +74,7 @@ public class MethodName {
         /**
          * return the method name corresponding to the name given
          * default: PRIMS
-         * 
+         *
          * @param n: name of the method
          * @return method name
          */
@@ -98,16 +104,24 @@ public class MethodName {
         RIGHTHAND("Right hand"),
 
         /**
-         * Trémaux resolution algorithm
+         * Left hand resolution algorithm
          */
-        LEFTHAND("Left hand");
+        LEFTHAND("Left hand"),
+        /**
+         * DFS resolution algorithm
+         */
+        DFS("DFS"),
+        /**
+         * BFS resolution algorithm
+         */
+        BFS("BFS");
 
         // name of the method
         private final String name;
 
         /**
          * constructor
-         * 
+         *
          * @param n: name
          */
         private SolveMethodName(String n) {
@@ -116,7 +130,7 @@ public class MethodName {
 
         /**
          * getter of name
-         * 
+         *
          * @return name
          */
         public String getName() {
@@ -126,7 +140,7 @@ public class MethodName {
         /**
          * return the method name corresponding to the name given
          * default: ASTAR
-         * 
+         *
          * @param n: name of the method
          * @return method name
          */
@@ -178,7 +192,7 @@ public class MethodName {
 
         /**
          * constructor
-         * 
+         *
          * @param n: name
          */
         private Type(String n) {
@@ -187,7 +201,7 @@ public class MethodName {
 
         /**
          * getter of name
-         * 
+         *
          * @return name
          */
         public String getName() {
@@ -197,7 +211,7 @@ public class MethodName {
         /**
          * return the method name corresponding to the name given
          * default: COMPLETE
-         * 
+         *
          * @param n: name of the method
          * @return method name
          */
