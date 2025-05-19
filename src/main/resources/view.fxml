@@ -48,8 +48,7 @@
 
                     <!-- Row 1: Method selection and generation -->
                     <HBox alignment="CENTER" spacing="10.0">
-                                        <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="100"/>
-
+                        <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="100"/>
                         <ComboBox fx:id="generationMethodComboBox" prefWidth="240"/>
                         <ComboBox fx:id="solutionMethodComboBox" prefWidth="240"/>
                         <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
