@@ -178,24 +178,24 @@ public class Maze extends Graph implements Serializable {
         corners.put(210, cornerAll);
 
         // vertical path
-        String pathVertical = MainCLI.GREEN + " ".repeat(pad) + "│" + " ".repeat(pad) + MainCLI.RESET;
+        String pathVertical = MainCLI.GREENBACK + " ".repeat(pad) + "│" + " ".repeat(pad) + MainCLI.RESET;
         // vertical path next to left border
         String pathVerticalBorderLeft = pathVertical + " ";
         // vertical path next to right border
         String pathVerticalBorderRight = " " + pathVertical;
         pathVertical = pathVerticalBorderRight + " ";
         // horizontal path
-        String pathHorizontal = MainCLI.GREEN + "─".repeat(3) + MainCLI.RESET;
+        String pathHorizontal = MainCLI.GREENBACK + "─".repeat(3) + MainCLI.RESET;
 
         // wrong vertical path
-        String pathWrongVertical = MainCLI.RED + " ".repeat(pad) + "│" + " ".repeat(pad) + MainCLI.RESET;
+        String pathWrongVertical = MainCLI.REDBACK + " ".repeat(pad) + "│" + " ".repeat(pad) + MainCLI.RESET;
         // wrong vertical path next to left border
         String pathWrongVerticalBorderLeft = pathWrongVertical + " ";
         // wrong vertical path next to right border
         String pathWrongVerticalBorderRight = " " + pathWrongVertical;
         pathWrongVertical = pathWrongVerticalBorderRight + " ";
         // wrong horizontal path
-        String pathWrongHorizontal = MainCLI.RED + "─".repeat(3) + MainCLI.RESET;
+        String pathWrongHorizontal = MainCLI.REDBACK + "─".repeat(3) + MainCLI.RESET;
 
         // vertical border
         String borderVertical = MainCLI.GRAY + " ║ " + MainCLI.RESET;
@@ -220,7 +220,10 @@ public class Maze extends Graph implements Serializable {
 
             for (int x = 0; x < columns; x++) {
                 i = y * columns + x;
+                s += (solution[i] != i) ? MainCLI.GREENBACK + MainCLI.BOLD
+                        : (antecedents[i] != i) ? MainCLI.REDBACK : "";
                 s += Maze.paddingInt(i, padding);
+                s += (solution[i] != i || antecedents[i] != i) ? MainCLI.RESET : "";
 
                 // if not the last column
                 if (x < columns - 1) {

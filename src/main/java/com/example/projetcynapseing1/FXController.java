@@ -46,25 +46,24 @@ public class FXController {
         String fileName;
         switch (selectedName) {
             case "labyrinth":
-                fileName="images/logo.png";
+                fileName = "images/logo.png";
                 break;
             case "sakura":
-                fileName="images/sakura.jpg";
+                fileName = "images/sakura.jpg";
                 break;
             case "beach":
-                fileName="images/beach.jpg";
+                fileName = "images/beach.jpg";
                 break;
             case "shootingstar":
-                fileName="images/shootingstar.jpg";
+                fileName = "images/shootingstar.jpg";
                 break;
             default:
-                fileName="images/logo.png";
+                fileName = "images/logo.png";
         }
-        Image image = new Image(getClass().getResourceAsStream("/"+fileName));
+        Image image = new Image(getClass().getResourceAsStream("/" + fileName));
         backgroundImage.setImage(image);
     }
 
-    
     @FXML
     private Button resolutionLabyrinth;
     @FXML
@@ -137,7 +136,7 @@ public class FXController {
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
 
-         backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar");
+        backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar");
         backgroundSelector.setValue("labyrinth");
 
         // Fill combo boxes with enum values
@@ -360,14 +359,6 @@ public class FXController {
         this.rows = rows;
         this.cols = cols;
 
-        // blockSize = (rows > 90 || cols > 90) ? 5
-        // : (rows > 40 || cols > 40) ? 15
-        // : (rows > 30 || cols > 30) ? 20
-        // : (rows > 20 || cols > 20) ? 30
-        // : (rows > 15 || cols > 15) ? 40
-        // : (rows > 10 || cols > 10) ? 70
-        // : (rows > 5 || cols > 5) ? 80
-        // : 100;
         blockSize = (int) Math.max(5, 700 / this.rows);
     }
 
