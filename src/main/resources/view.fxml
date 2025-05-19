@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.canvas.*?>
 
-<StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml/1" stylesheets="style.css">
+<StackPane fx:id="stackPane" xmlns:fx="http://javafx.com/fxml/1" stylesheets="style.css">
 
     <!-- Background image -->
     <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
