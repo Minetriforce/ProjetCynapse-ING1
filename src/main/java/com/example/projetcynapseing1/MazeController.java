@@ -16,12 +16,6 @@ public class MazeController {
     private Generator mazeGenerator;
 
     /**
-     * FX controller variable is used in case communication is necessary between
-     * maze controller and FX Controller
-     */
-    private FXController fxController;
-
-    /**
      * Maze Solver is saved each time a request to solve a maze is made. It is saved
      * to keep informations of solving
      */
@@ -36,6 +30,11 @@ public class MazeController {
     private int[] solution;
 
     /**
+     * 
+     */
+    private int[] visited;
+
+    /**
      * current maze saved.
      * WARNING: maze and solution can be on differents basis, make sure to run
      * findSolution function if you have generated and solved multiple mazes
@@ -47,15 +46,12 @@ public class MazeController {
      * it to generate a maze
      * 
      * @param genMethod algorithm used to generate the maze
-     * @param type      step-by-step or complete
      * @param x         strictly positive integer : number of columns
      * @param y         striclty positive integer : number of rows
-     * @param timeStep  generation time between each steps
      * @param seed      strictly positive integer : used in the randim number
      *                  generator of the generator
      */
-    public void createMaze(MethodName.GenMethodName genMethod, MethodName.Type type, Integer x, Integer y,
-            Double timeStep, Integer seed) {
+    public void createMaze(MethodName.GenMethodName genMethod, Integer x, Integer y, Integer seed) {
         try {
             mazeGenerator = new Generator(x, y, genMethod, seed);
             maze = mazeGenerator.makeMaze();
@@ -72,21 +68,31 @@ public class MazeController {
      * @param solveMethod method used to solve the maze
      * @param start       a starting vertex
      * @param end         an ending vertex
-     * @param type        complete or step-by-step
-     * @param timeStep    time stamp between each steps of solution finding
-     * @throws Exception if there's no maze instantiated
+     * @throws Exception if no maze has been instantiated
      */
-    public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end, MethodName.Type type,
-            Double timeStamp) {
-        mazeSolver = new Solver(solveMethod);
-        // solution = mazeSolver.solveAstar(maze, start, end, type);
+    public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end){
+        try {
+            if (maze == null) {
+                throw new Exception("No maze has been created/instantiated! Aborting resolution.");
+            }
+            mazeSolver = new Solver(solveMethod);
+            visited = mazeSolver.solve(maze, start, end, MethodName.Type.COMPLETE);
+            solution = mazeSolver.solve(maze, start, end, MethodName.Type.STEPPER);
+        } catch (Exception e) {
+            System.err.println("Error in findSolution: " + e.getMessage());
+        }
     }
 
+    /**
+     * return the current maze or null
+     * 
+     * @return maze
+     */
     public Maze getCurrentMaze() {
-        if (maze == null) {
+        if (this.maze == null) {
             System.out.println("No maze has been created/instantiated !");
         }
-        return (maze);
+        return (this.maze);
     }
 
     /**
@@ -96,7 +102,7 @@ public class MazeController {
      * 
      * @return ArrayList of vertices, path found or null
      */
-    public ArrayList<Vertex> getSolution() {
+    public ArrayList<Vertex> getSolutionasVertexList() {
         ArrayList<Vertex> convertSolution = new ArrayList<Vertex>();
 
         if (solution == null) {
@@ -113,6 +119,24 @@ public class MazeController {
             }
         }
         return (convertSolution);
+    }
+
+    /**
+     * get the list of IDs of vertices in solution
+     * 
+     * @return int[] of vertices ID maze
+     */
+    public int[] getSolution() {
+        return this.solution;
+    }
+
+    /**
+     * get the list of visited vertices IDs while finding solution
+     * 
+     * @return int[] of vertices ID in maze
+     */
+    public int[] getVisited() {
+        return this.visited;
     }
 
     /**
@@ -142,22 +166,8 @@ public class MazeController {
     }
 
     /**
-     * Set the Instance of the fx controller currently used by JavaFX
-     * 
-     * @param fxController instance of FXController class
-     */
-    public void setFXController(FXController fxController) {
-        if (fxController == null) {
-            System.out.println("-- Maze Controller ");
-            System.err.println("Warning : fxController is null");
-        }
-        this.fxController = fxController;
-    }
-
-    /**
      * Save current maze with the FileController class
      * 
-     * @param mazeName name of file
      * @return confirmation if maze was succesfully saved
      */
     public Boolean saveMaze() {
@@ -174,11 +184,13 @@ public class MazeController {
      * Lauch the load Maze function from the filController and asign the loaded maze
      * to current maze variable
      */
-    public void loadMaze() {
-        maze = FileController.loadMaze();
+    public Boolean loadMaze() {
+        this.maze = FileController.loadMaze();
         if (maze == null) {
             System.out.println("--- Maze Controller ---");
             System.out.println("WARNING : loaded maze seems to be null, try to load it again or change file");
+            return false;
         }
+        return true;
     }
 }

@@ -23,6 +23,12 @@ package com.example.projetcynapseing1;
  */
 public class MethodName {
     /**
+     * nth
+     */
+    public MethodName() {
+    }
+
+    /**
      * enumerated type of generation methods
      */
     public enum GenMethodName {

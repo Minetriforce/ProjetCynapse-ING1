@@ -387,7 +387,6 @@ public class Generator {
                 kruskal(base, maze);
                 base = null;
                 System.gc();
-                time = System.currentTimeMillis() - time;
                 System.out.println("End of Kruskal Generation");
                 break;
 
@@ -396,7 +395,6 @@ public class Generator {
                 prim(base, maze, base.getVertices().getFirst());
                 base = null;
                 System.gc();
-                time = System.currentTimeMillis() - time;
                 System.out.println("End of PRIM generation");
                 break;
 
@@ -406,19 +404,21 @@ public class Generator {
                 for (int i = 0; i < maze.getVertices().size(); i++) {
                     mark.add(false);
                 }
-
                 randomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
-
                 break;
+
             case IMPERFECT:
                 imperfect(base, maze);
                 base = null;
                 System.gc();
-                time = System.currentTimeMillis() - time;
                 System.out.println("End of Imperfect generation.");
+                break;
+            default:
+                maze = base;
+                System.out.println("No method has been provied, return a grid maze.");
         }
 
-        System.out.println("Timestamp : " + time + "ms");
+        System.out.println("Timestamp : " + (System.currentTimeMillis()-time) + "ms");
         return maze;
     }
 

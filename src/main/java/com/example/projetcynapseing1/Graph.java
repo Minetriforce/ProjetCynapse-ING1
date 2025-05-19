@@ -1,5 +1,6 @@
 package com.example.projetcynapseing1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,7 @@ import java.util.Set;
  * 
  * @author Bari-joris
  */
-public class Graph {
+public class Graph implements Serializable {
     /**
      * List of unique vertices in graph
      */
@@ -74,10 +75,13 @@ public class Graph {
      * Return a Vertex Object according to it's ID
      * 
      * @param ID integer between 0 and n to identify vertex in graph
-     * @return Vertex
+     * @return Vertex or null if it does not exists
      */
-    public Vertex getVertexByID(Integer ID) {
-        return vertices.get(ID);
+    public Vertex getVertexByID(Integer id) {
+        if(id < 0 || id > vertices.size()-1){
+            return null;
+        }
+        return vertices.get(id);
     }
 
     /**
@@ -98,8 +102,10 @@ public class Graph {
     }
 
     /**
-     * @param u: vertex
-     * @param v: vertex
+     * get an Edge instance by it's two vertices
+     * 
+     * @param u vertex
+     * @param v vertex
      * @return edge: the edge connecting u and v
      */
     public Edge getEdgeByVertices(Vertex u, Vertex v) {

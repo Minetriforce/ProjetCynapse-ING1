@@ -6,7 +6,10 @@ import java.util.ArrayList;
 enum VertexState {
     DEFAULT, // not visited
     VISITED, // explored
-    SOLUTION // part of final path
+    SOLUTION, // part of final path
+    SELECTEDDEL, // selected path to del
+    SELECTEDADD,
+    FIRSTSELECTED // first vertex
 }
 
 /**
@@ -29,12 +32,12 @@ public class Vertex implements Serializable {
      * The position of the vertex on the graph, starting from (0,0) to (n,m).
      * X is horizontal
      */
-    private Integer x;
+    private final Integer x;
 
     /**
      * Y vertical position of the vertex
      */
-    private Integer y;
+    private final Integer y;
 
     /**
      * Neigbors contain all neighbors of vertex (other vertex linked to it).
@@ -45,7 +48,7 @@ public class Vertex implements Serializable {
     /**
      * unique id of the vertex. used as a name
      */
-    private Integer id;
+    private final Integer id;
 
     /**
      * State of the vertex in the final solution, can be sets to default, visited or
@@ -187,6 +190,5 @@ public class Vertex implements Serializable {
     public String toString() {
         return ("Vertexid:" + this.id + ";x:" + this.x + ";y:" + this.y);
     }
-
 
 }
