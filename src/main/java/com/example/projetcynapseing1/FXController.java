@@ -17,6 +17,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
+import javafx.stage.Stage;
+import java.io.File;
+import javafx.stage.FileChooser;
 
 /**
  * JavaFX Controller for handling maze display, button actions, and maze
@@ -39,7 +42,7 @@ public class FXController {
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
         
-        backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar");
+        backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar", "choose from your file");
         backgroundSelector.setValue("labyrinth");
 
         generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
