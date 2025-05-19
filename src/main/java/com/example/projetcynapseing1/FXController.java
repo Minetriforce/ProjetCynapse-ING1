@@ -379,7 +379,6 @@ public class FXController {
     @FXML
     private void onStartResolutionClick() {
         resetSolution();
-
         try {
             this.start = Integer.parseInt(startField.getText());
             this.end = Integer.parseInt(endField.getText());
@@ -392,7 +391,7 @@ public class FXController {
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
         System.out.println("Selected solving method: " + selectedSolveMethod);
 
-        if (maze != null) {
+        if (maze != null && selectedSolveMethod != null) {
             new Thread(() -> solveMaze(selectedSolveMethod)).start();
         }
     }
@@ -437,6 +436,8 @@ public class FXController {
             editEdgeButton.setDisable(true);
             generationLabyrinth.setDisable(true);
             resolutionLabyrinth.setDisable(true);
+
+            System.out.println(timeStep);
             markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited());
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -450,28 +451,25 @@ public class FXController {
      * @param antecedents color in grey all the other vertices visited
      */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
-        for (int id : orders) {
-            if (id == -1)
-                break;
+        try {
+            for (int id : orders) {
+                if (id == -1)
+                    break;
 
-            Vertex v = maze.getVertexByID(id);
-            v.setState(VertexState.VISITED);
-            Platform.runLater(() -> displayMaze(maze));
+                Vertex v = maze.getVertexByID(id);
+                v.setState(VertexState.VISITED);
 
-            try {
+                Platform.runLater(() -> displayMaze(maze));
                 Thread.sleep(timeStep);
-            } catch (InterruptedException ignored) {
             }
-        }
 
-        ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(end), antecedents);
-        for (Vertex v : solutionVertices) {
-            v.setState(VertexState.SOLUTION);
-            Platform.runLater(() -> displayMaze(maze));
-            try {
+            ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(end), antecedents);
+            for (Vertex v : solutionVertices) {
+                v.setState(VertexState.SOLUTION);
+                Platform.runLater(() -> displayMaze(maze));
                 Thread.sleep(timeStep);
-            } catch (InterruptedException ignored) {
             }
+        } catch (InterruptedException ignored) {
         }
         editEdgeButton.setDisable(false);
         generationLabyrinth.setDisable(false);
@@ -503,6 +501,7 @@ public class FXController {
         }
 
         GraphicsContext g = mazeCanvas.getGraphicsContext2D();
+        g.clearRect(0, 0, mazeCanvas.getWidth(), mazeCanvas.getHeight());
         mazeCanvas.setWidth(cols * blockSize);
         mazeCanvas.setHeight(rows * blockSize);
         g.setLineWidth(2);
