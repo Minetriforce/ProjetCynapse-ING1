@@ -18,6 +18,9 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
+import java.io.File;
+import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 
 /**
  * This class manages the JavaFX interface, with maze canvas, combo boxes for
@@ -39,7 +42,27 @@ public class FXController {
     @FXML
     private void onBackgroundSelectionChanged() {
         String selectedImage = backgroundSelector.getValue();
-        setBackgroundImage(selectedImage);
+        if ("choose from your file".equals(selectedImage)) {
+            onCustomBackgroundSelected();
+        }
+        else {
+            setBackgroundImage(selectedImage);
+        }
+    }
+    
+    private void onCustomBackgroundSelected() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select your own background image");
+        fileChooser.getExtensionFilters().addAll( new FileChooser.ExtensionFilter("Images", "*.jpg", "*.png", "*.jpeg"));
+
+        Stage stage = (Stage) stackpane.getScene().getWindow();
+
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile!=null) {
+            Image image = new Image(selectedFile.toURI().toString());
+            backgroundImage.setImage(image);
+        }
+
     }
 
     private void setBackgroundImage(String selectedName) {
@@ -137,7 +160,7 @@ public class FXController {
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
 
-         backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar");
+         backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar", "choose from your file");
         backgroundSelector.setValue("labyrinth");
 
         // Fill combo boxes with enum values
