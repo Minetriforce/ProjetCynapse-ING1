@@ -35,21 +35,6 @@ public class FXController {
 
     @FXML
     private ComboBox<String> backgroundSelector;
-    
-    @FXML
-    private void initialize() {
-        backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
-        backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
-        
-        backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar");
-        backgroundSelector.setValue("labyrinth");
-
-        generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
-        generationMethodComboBox.getSelectionModel().selectFirst();
-
-        solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
-        solutionMethodComboBox.getSelectionModel().selectFirst();
-    }
 
     @FXML
     private void onBackgroundSelectionChanged() {
@@ -151,6 +136,9 @@ public class FXController {
         // Bind background image size to stackpane size
         backgroundImage.fitWidthProperty().bind(stackpane.widthProperty());
         backgroundImage.fitHeightProperty().bind(stackpane.heightProperty());
+
+         backgroundSelector.getItems().addAll("labyrinth", "sakura", "beach", "shootingstar");
+        backgroundSelector.setValue("labyrinth");
 
         // Fill combo boxes with enum values
         generationMethodComboBox.getItems().setAll(MethodName.GenMethodName.values());
