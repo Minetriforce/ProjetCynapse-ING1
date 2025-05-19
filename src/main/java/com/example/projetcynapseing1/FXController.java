@@ -15,7 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
 import java.io.File;
@@ -111,11 +110,6 @@ public class FXController {
     private TextField timeStepField;
 
     @FXML
-    private TextField startField;
-    @FXML
-    private TextField endField;
-
-    @FXML
     private ToggleButton changeStartEndButton;
     private boolean selectingStart = true;
     private boolean isEditingStartEnd = false;
@@ -170,18 +164,12 @@ public class FXController {
 
         resolutionLabyrinth.setDisable(true); // resolution disable at first until we click generation button.
 
-        // Disable start/end fields initially
-        startField.setDisable(true);
-        endField.setDisable(true);
-
         // Toggle button action: enable/disable editing of start/end
         changeStartEndButton.setOnAction(e -> {
             isEditingStartEnd = !isEditingStartEnd;
 
             if (isEditingStartEnd) {
                 changeStartEndButton.setText("Validate Change");
-                startField.setDisable(false);
-                endField.setDisable(false);
 
                 // avoid edge edition to avoid conflicts
                 if (isEditingEdges) {
@@ -193,8 +181,6 @@ public class FXController {
 
             } else {
                 changeStartEndButton.setText("Change Start/End");
-                startField.setDisable(true);
-                endField.setDisable(true);
 
                 editEdgeButton.setDisable(false); // re-enable it
             }
@@ -219,29 +205,6 @@ public class FXController {
             }
         });
 
-        // Update start and end fields and redraw when text changes
-        startField.textProperty().addListener((obs, oldText, newText) -> {
-            try {
-                int val = Integer.parseInt(newText);
-                if (val >= 0 && val < rows * cols) {
-                    start = val;
-                    displayMaze(maze);
-                }
-            } catch (NumberFormatException ignored) {
-            }
-        });
-
-        endField.textProperty().addListener((obs, oldText, newText) -> {
-            try {
-                int val = Integer.parseInt(newText);
-                if (val >= 0 && val < rows * cols) {
-                    end = val;
-                    displayMaze(maze);
-                }
-            } catch (NumberFormatException ignored) {
-            }
-        });
-
         startIcon = new Image(getClass().getResourceAsStream("/images/start.png"));
         endIcon = new Image(getClass().getResourceAsStream("/images/end.png"));
 
@@ -257,8 +220,7 @@ public class FXController {
                     isEditingStartEnd = false;
                     changeStartEndButton.setSelected(false);
                     changeStartEndButton.setText("Change Start/End");
-                    startField.setDisable(true);
-                    endField.setDisable(true);
+
                 }
                 changeStartEndButton.setDisable(true); // disable other mode button
 
@@ -286,19 +248,15 @@ public class FXController {
             if (isEditingStartEnd) {
                 if (selectingStart) {
                     start = clickedVertex.getID();
-                    startField.setText(String.valueOf(start));
                     // System.out.println("Start vertex selected: " + start);
                     selectingStart = false;
                 } else {
                     end = clickedVertex.getID();
-                    endField.setText(String.valueOf(end));
                     // System.out.println("End vertex selected: " + end);
                     selectingStart = true;
                     changeStartEndButton.setSelected(false);
                     isEditingStartEnd = false;
                     changeStartEndButton.setText("Change Start/End");
-                    startField.setDisable(true);
-                    endField.setDisable(true);
                     editEdgeButton.setDisable(false);
                 }
                 displayMaze(maze);
@@ -401,6 +359,7 @@ public class FXController {
             this.cols = Integer.parseInt(colsField.getText());
             this.seed = Integer.parseInt(seedField.getText());
             this.timeStep = Math.max(0, this.timeStep);
+            this.start = 0;
             this.end = rows * cols - 1;
             if (this.rows <= 0 || this.cols <= 0 || this.seed <= 0) {
                 throw new Exception("Please enter valids integers for rows,cols and seed to generate a maze!");
@@ -425,14 +384,6 @@ public class FXController {
     @FXML
     private void onStartResolutionClick() {
         resetSolution();
-        try {
-            this.start = Integer.parseInt(startField.getText());
-            this.end = Integer.parseInt(endField.getText());
-        } catch (NumberFormatException e) {
-            // System.out.println("Invalid start or end ID, using defaults.");
-            start = 0;
-            end = rows * cols - 1;
-        }
 
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
         // System.out.println("Selected solving method: " + selectedSolveMethod);
@@ -681,10 +632,10 @@ public class FXController {
             this.maze = mazeController.getCurrentMaze();
             this.visibleEdges.clear();
             this.visibleEdges.addAll(this.maze.getEdges());
-            this.start = 0;
             this.rows = maze.getRows();
             this.cols = maze.getColumns();
             setMazeSize(this.rows, this.cols);
+            this.start = 0;
             this.end = maze.getVertices().getLast().getID();
             labyrinthIsGenerated = true;
             resolutionLabyrinth.setDisable(false);

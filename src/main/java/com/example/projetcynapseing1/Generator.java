@@ -222,7 +222,7 @@ public class Generator {
                 union(edge.getVertexA().getID(), edge.getVertexB().getID(), parents); // merge trees in the list of
                 // trees (parents)
 
-                if (maze.getEdges().size() == maze.getVertices().size() - 1){
+                if (maze.getEdges().size() == maze.getVertices().size() - 1) {
                     break;
                 }
             }
@@ -343,26 +343,21 @@ public class Generator {
     private void imperfect(Maze baseGraph, Maze maze) {
         // get minimum 1/4 of the edge of grid graph and maximum all the edges
         Random rng = new Random(this.seed);
-        Integer numberEdges = rng.nextInt(baseGraph.getEdges().size() * (3 / 2)) + baseGraph.getEdges().size() / 4;
+        Integer numberEdges = rng.nextInt((int) baseGraph.getEdges().size() / 2) + baseGraph.getEdges().size() / 4;
         ArrayList<Edge> edgesGridMaze = baseGraph.getEdges();
 
         for (int m = 0; m < numberEdges; m++) {
-            if (edgesGridMaze.size() == 0){
+            if (edgesGridMaze.size() == 0) {
                 break;
             }
 
             Edge e = edgesGridMaze.get(rng.nextInt(edgesGridMaze.size())); // pick a random Edge in the grid Graph
             edgesGridMaze.remove(e); // removes it from the grid Graph : it makes sure to not pick the same Edge in
-            
-            // the following iterations
+                                     // the following iterations
 
-            maze.addEdge(new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID()))); // add
-            // this
-            // picked
-            // edge
-            // to
-            // maze
-            
+            maze.addEdge(
+                    new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID())));
+
             System.out.println(e);
         }
     }
@@ -418,7 +413,7 @@ public class Generator {
                 System.out.println("No method has been provied, return a grid maze.");
         }
 
-        System.out.println("Timestamp : " + (System.currentTimeMillis()-time) + "ms");
+        System.out.println("Timestamp : " + (System.currentTimeMillis() - time) + "ms");
         return maze;
     }
 
