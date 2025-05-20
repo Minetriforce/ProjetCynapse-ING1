@@ -140,6 +140,7 @@ public class Graph implements Serializable {
             Vertex a = e.getVertexA();
             Vertex b = e.getVertexB();
             a.addNeighbor(b);
+            b.addNeighbor(a);
         }
         return added;
     }
