@@ -17,6 +17,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
 
 import java.io.File;
 import javafx.stage.Stage;
@@ -72,6 +74,9 @@ public class FXController {
     private CheckBox stepByStepCheckBox;
     @FXML
     private ToggleButton editEdgeButton;
+    @FXML
+    private VBox historyVBox;
+
 
     private boolean isEditingEdges = false;
 
@@ -285,7 +290,7 @@ public class FXController {
      * When a Vertex is clicked for a modification, this function mark this vertex
      * and the orthers valid vertices around in red if it means to delete a wall,
      * and green to add one
-     * 
+     *
      * @param v     first selected vertex
      * @param clear clear the colors
      */
@@ -325,7 +330,7 @@ public class FXController {
     /**
      * Setter for the maze controller Instance, used to generate, solve, load and
      * save a maze
-     * 
+     *
      * @param mazeController Instance of mazeController
      */
     public void setMazeController(MazeController mazeController) {
@@ -334,7 +339,7 @@ public class FXController {
 
     /**
      * Resize maze canvas according to number of rows and columns
-     * 
+     *
      * @param rows integer of rows of maze
      * @param cols integer of columns of maze
      */
@@ -383,6 +388,7 @@ public class FXController {
             // System.out.println("Selected generation method: " + selectedGenMethod);
             setButtonsState(false, false, false, false, false, false);
             new Thread(() -> generateMaze(selectedGenMethod, seed, rows, cols)).start();
+
         } catch (Exception e) {
             // System.out.println("Please enter valid integers for all input fields.");
             showAlert("Error", e.getMessage());
@@ -413,7 +419,7 @@ public class FXController {
 
     /**
      * Generate a maze according to parameters and start animation of the maze
-     * 
+     *
      * @param generationMethod method used to generate maze
      * @param seed             used in the random number generator
      * @param rows             number of rows
@@ -446,7 +452,7 @@ public class FXController {
 
     /**
      * Solve maze according to given method (only if a maze is instantiated)
-     * 
+     *
      * @param solveMethod method to solve maze
      */
     private void solveMaze(MethodName.SolveMethodName solveMethod) {
@@ -454,29 +460,41 @@ public class FXController {
             if (solveMethod == null) {
                 throw new Exception("You must select a resolution method to solve the maze");
             }
+
+            long startTime = System.currentTimeMillis();
             mazeController.findSolution(solveMethod, maze.getVertexByID(start), maze.getVertexByID(end));
-            // System.out.println(timeStep);
-            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited());
+            long endTime = System.currentTimeMillis();
+
+            long timeMs = endTime - startTime;
+
+
+            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited(),timeMs);
+
         } catch (Exception e) {
-            // System.out.println(e.getMessage());
             showAlert("Error solving maze", e.getMessage());
         }
     }
 
+
+
     /**
      * add color to vertices visitied during resolving maze
-     * 
+     *
      * @param orders      color in blue the path between start and end
      * @param antecedents color in grey all the other vertices visited
      */
-    private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
+    private void markVisitedAndSolutionPath(int[] orders, int[] antecedents, long timeMs) {
+        int pathLength = 0;
+        int visitedCount = 0;
+
         try {
             for (int id : orders) {
                 if (id == -1)
                     break;
-
                 Vertex v = maze.getVertexByID(id);
                 v.setState(VertexState.VISITED);
+                visitedCount++;
+
 
                 Set<Vertex> temp = new HashSet<>();
                 temp.add(v);
@@ -485,9 +503,12 @@ public class FXController {
                 Thread.sleep(timeStep);
             }
 
+
             ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(end), antecedents);
             for (Vertex v : solutionVertices) {
                 v.setState(VertexState.SOLUTION);
+                pathLength++;
+
 
                 Set<Vertex> temp = new HashSet<>();
                 temp.add(v);
@@ -497,13 +518,15 @@ public class FXController {
             }
         } catch (InterruptedException ignored) {
         }
+        //put the time of resolution, length of the path and visited cases for the solution
+        addResolutionStatsToHistory(pathLength, visitedCount, timeMs);
         setButtonsState(true, true, true, true, true, true);
     }
 
     /**
      * Function to display an entire maze.
-     * 
-     * 
+     *
+     *
      * @param maze a maze
      */
     private void displayMaze(Maze maze) {
@@ -528,7 +551,7 @@ public class FXController {
 
     /**
      * draw / update a specific list of vertices on maze Canvas.
-     * 
+     *
      * @param vList set of uniques vertices in maze
      */
     private void drawVertexWithWalls(Set<Vertex> vList) {
@@ -578,7 +601,7 @@ public class FXController {
 
     /**
      * Return the color of the box according to vertex state
-     * 
+     *
      * @param v a vertex in the maze
      * @return a color for the box
      */
@@ -595,7 +618,7 @@ public class FXController {
 
     /**
      * add or remove a wall between two adjacent vertices
-     * 
+     *
      * @param v1 First vertex
      * @param v2 Second vertex
      */
@@ -646,7 +669,7 @@ public class FXController {
 
     /**
      * Open an alert pop-up
-     * 
+     *
      * @param title   title of the pop-up
      * @param content content of the pop-up
      */
@@ -698,7 +721,7 @@ public class FXController {
      * enable or disable all users button, according to parameters.
      * False : button disabled
      * True : button enabled
-     * 
+     *
      * @param generation generation button
      * @param solve      solving button
      * @param startEnd   change start-end toggle button
@@ -707,7 +730,7 @@ public class FXController {
      * @param load       load maze button
      */
     private void setButtonsState(Boolean generation, Boolean solve, Boolean startEnd, Boolean modify, Boolean save,
-            Boolean load) {
+                                 Boolean load) {
         generationLabyrinth.setDisable(!generation);
         resolutionLabyrinth.setDisable(!solve);
         changeStartEndButton.setDisable(!startEnd);
@@ -715,4 +738,13 @@ public class FXController {
         saveMaze.setDisable(!save);
         loadMaze.setDisable(!load);
     }
+
+    private void addResolutionStatsToHistory(int pathLength, int visitedCount, long timeMs) {
+        String text = String.format("Path Length: %d | Visited: %d | Time: %d ms", pathLength, visitedCount, timeMs);
+        Label statLabel = new Label(text);
+        statLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 14;");
+        Platform.runLater(() -> historyVBox.getChildren().add(statLabel));
+    }
+
+
 }
