@@ -78,7 +78,7 @@ public class MethodName {
          * @param n: name of the method
          * @return method name
          */
-        public GenMethodName fromName(String n) {
+        public static GenMethodName fromName(String n) {
             for (GenMethodName m : values()) {
                 if (m.getName().equals(n)) {
                     return m;
@@ -144,7 +144,7 @@ public class MethodName {
          * @param n: name of the method
          * @return method name
          */
-        public SolveMethodName fromName(String n) {
+        public static SolveMethodName fromName(String n) {
             for (SolveMethodName m : values()) {
                 if (m.getName().equals(n)) {
                     return m;
@@ -215,7 +215,7 @@ public class MethodName {
          * @param n: name of the method
          * @return method name
          */
-        public Type fromName(String n) {
+        public static Type fromName(String n) {
             for (Type m : values()) {
                 if (m.getName().equals(n)) {
                     return m;
