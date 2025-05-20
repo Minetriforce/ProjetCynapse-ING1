@@ -17,9 +17,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
+
 import java.io.File;
 import javafx.stage.Stage;
-import kotlin.sequences.FlatteningSequence;
 import javafx.stage.FileChooser;
 
 /**
@@ -261,6 +261,8 @@ public class FXController {
                     editEdgeButton.setDisable(false);
                 }
                 Set<Vertex> temp = new HashSet<Vertex>();
+                temp.add(maze.getVertexByID(this.start));
+                temp.add(maze.getVertexByID(this.end));
                 temp.add(clickedVertex);
                 drawVertexWithWalls(temp);
 
@@ -355,20 +357,31 @@ public class FXController {
             }
 
             labyrinthIsGenerated = false;
-            setButtonsState(false, false, false, false, false, false);
+            if (rowsField.getText().equals("") || colsField.getText().equals("") || seedField.getText().equals("")) {
+                throw new Exception(
+                        "You must fill the following fields :"
+                                + (rowsField.getText().equals("") ? "Rows," : "")
+                                + (colsField.getText().equals("") ? "Columns," : "")
+                                + (seedField.getText().equals("") ? "Seed" : ""));
+            }
+
             this.rows = Integer.parseInt(rowsField.getText());
             this.cols = Integer.parseInt(colsField.getText());
             this.seed = Integer.parseInt(seedField.getText());
             this.timeStep = Math.max(0, this.timeStep);
+            MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
 
             if (this.rows <= 0 || this.cols <= 0 || this.seed <= 0) {
                 throw new Exception("Please enter valids integers for rows,cols and seed to generate a maze!");
             }
 
-            MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
+            if (selectedGenMethod == null) {
+                throw new Exception("You must select a generation method.");
+            }
+
             // System.out.println("timeStep = " + this.timeStep);
             // System.out.println("Selected generation method: " + selectedGenMethod);
-
+            setButtonsState(false, false, false, false, false, false);
             new Thread(() -> generateMaze(selectedGenMethod, seed, rows, cols)).start();
         } catch (Exception e) {
             // System.out.println("Please enter valid integers for all input fields.");
@@ -384,7 +397,8 @@ public class FXController {
     private void onStartResolutionClick() {
         resetSolution();
 
-        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
+        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel()
+                .getSelectedItem();
         // System.out.println("Selected solving method: " + selectedSolveMethod);
 
         if (maze != null && selectedSolveMethod != null) {
@@ -437,11 +451,15 @@ public class FXController {
      */
     private void solveMaze(MethodName.SolveMethodName solveMethod) {
         try {
+            if (solveMethod == null) {
+                throw new Exception("You must select a resolution method to solve the maze");
+            }
             mazeController.findSolution(solveMethod, maze.getVertexByID(start), maze.getVertexByID(end));
             // System.out.println(timeStep);
             markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited());
         } catch (Exception e) {
             // System.out.println(e.getMessage());
+            showAlert("Error solving maze", e.getMessage());
         }
     }
 
@@ -682,11 +700,11 @@ public class FXController {
      * True : button enabled
      * 
      * @param generation generation button
-     * @param solve solving button
-     * @param startEnd change start-end toggle button
-     * @param modify modify edges toggle button
-     * @param save save maze button
-     * @param load load maze button
+     * @param solve      solving button
+     * @param startEnd   change start-end toggle button
+     * @param modify     modify edges toggle button
+     * @param save       save maze button
+     * @param load       load maze button
      */
     private void setButtonsState(Boolean generation, Boolean solve, Boolean startEnd, Boolean modify, Boolean save,
             Boolean load) {
