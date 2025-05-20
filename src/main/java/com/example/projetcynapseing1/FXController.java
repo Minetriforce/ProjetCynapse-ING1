@@ -19,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
 import java.io.File;
 import javafx.stage.Stage;
+import kotlin.sequences.FlatteningSequence;
 import javafx.stage.FileChooser;
 
 /**
@@ -37,53 +38,6 @@ public class FXController {
 
     @FXML
     private ComboBox<String> backgroundSelector;
-
-    @FXML
-    private void onBackgroundSelectionChanged() {
-        String selectedImage = backgroundSelector.getValue();
-        if ("choose from your file".equals(selectedImage)) {
-            onCustomBackgroundSelected();
-        } else {
-            setBackgroundImage(selectedImage);
-        }
-    }
-
-    private void onCustomBackgroundSelected() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select your own background image");
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Images", "*.jpg", "*.png", "*.jpeg"));
-
-        Stage stage = (Stage) stackPane.getScene().getWindow();
-
-        File selectedFile = fileChooser.showOpenDialog(stage);
-        if (selectedFile != null) {
-            Image image = new Image(selectedFile.toURI().toString());
-            backgroundImage.setImage(image);
-        }
-
-    }
-
-    private void setBackgroundImage(String selectedName) {
-        String fileName;
-        switch (selectedName) {
-            case "labyrinth":
-                fileName = "images/logo.png";
-                break;
-            case "sakura":
-                fileName = "images/sakura.jpg";
-                break;
-            case "beach":
-                fileName = "images/beach.jpg";
-                break;
-            case "shootingstar":
-                fileName = "images/shootingstar.jpg";
-                break;
-            default:
-                fileName = "images/logo.png";
-        }
-        Image image = new Image(getClass().getResourceAsStream("/" + fileName));
-        backgroundImage.setImage(image);
-    }
 
     @FXML
     private Button resolutionLabyrinth;
@@ -141,6 +95,53 @@ public class FXController {
     private Image startIcon;
     private Image endIcon;
 
+    @FXML
+    private void onBackgroundSelectionChanged() {
+        String selectedImage = backgroundSelector.getValue();
+        if ("choose from your file".equals(selectedImage)) {
+            onCustomBackgroundSelected();
+        } else {
+            setBackgroundImage(selectedImage);
+        }
+    }
+
+    private void onCustomBackgroundSelected() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select your own background image");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Images", "*.jpg", "*.png", "*.jpeg"));
+
+        Stage stage = (Stage) stackPane.getScene().getWindow();
+
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            Image image = new Image(selectedFile.toURI().toString());
+            backgroundImage.setImage(image);
+        }
+
+    }
+
+    private void setBackgroundImage(String selectedName) {
+        String fileName;
+        switch (selectedName) {
+            case "labyrinth":
+                fileName = "images/logo.png";
+                break;
+            case "sakura":
+                fileName = "images/sakura.jpg";
+                break;
+            case "beach":
+                fileName = "images/beach.jpg";
+                break;
+            case "shootingstar":
+                fileName = "images/shootingstar.jpg";
+                break;
+            default:
+                fileName = "images/logo.png";
+        }
+        Image image = new Image(getClass().getResourceAsStream("/" + fileName));
+        backgroundImage.setImage(image);
+    }
+
     /**
      * Initializes UI bindings and event listeners.
      * Automatically called by the JavaFX framework after FXML loading.
@@ -162,7 +163,7 @@ public class FXController {
         solutionMethodComboBox.getItems().setAll(MethodName.SolveMethodName.values());
         solutionMethodComboBox.setPromptText("Choose a solving method");
 
-        resolutionLabyrinth.setDisable(true); // resolution disable at first until we click generation button.
+        setButtonsState(true, false, false, false, false, true);
 
         // Toggle button action: enable/disable editing of start/end
         changeStartEndButton.setOnAction(e -> {
@@ -184,8 +185,6 @@ public class FXController {
 
                 editEdgeButton.setDisable(false); // re-enable it
             }
-
-            displayMaze(maze);
         });
 
         // Checkbox to enable/disable timestep input
@@ -201,7 +200,9 @@ public class FXController {
         // Redraw maze when toggle button selection changes
         changeStartEndButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
             if (maze != null) {
-                displayMaze(maze);
+                Set<Vertex> temp = new HashSet<Vertex>();
+                temp.addAll(maze.getVertices());
+                drawVertexWithWalls(temp);
             }
         });
 
@@ -259,7 +260,10 @@ public class FXController {
                     changeStartEndButton.setText("Change Start/End");
                     editEdgeButton.setDisable(false);
                 }
-                displayMaze(maze);
+                Set<Vertex> temp = new HashSet<Vertex>();
+                temp.add(clickedVertex);
+                drawVertexWithWalls(temp);
+
             } else if (isEditingEdges) {
                 resetSolution();
                 if (firstSelectedVertex == null) {
@@ -284,7 +288,7 @@ public class FXController {
      * @param clear clear the colors
      */
     private void markSelectedVertices(Vertex v, Boolean clear) {
-        ArrayList<Vertex> temp = new ArrayList<Vertex>();
+        Set<Vertex> temp = new HashSet<Vertex>();
         if (v.getX() != 0) {
             temp.add(maze.getVertexByID(v.getID() - 1));
         }
@@ -312,7 +316,8 @@ public class FXController {
                 vTemp.setState(VertexState.DEFAULT);
             }
         }
-        displayMaze(maze);
+        temp.add(v);
+        drawVertexWithWalls(temp);
     }
 
     /**
@@ -350,21 +355,15 @@ public class FXController {
             }
 
             labyrinthIsGenerated = false;
-            resolutionLabyrinth.setDisable(true);
-            saveMaze.setDisable(true);
-            loadMaze.setDisable(true);
-            editEdgeButton.setDisable(true);
-
+            setButtonsState(false, false, false, false, false, false);
             this.rows = Integer.parseInt(rowsField.getText());
             this.cols = Integer.parseInt(colsField.getText());
             this.seed = Integer.parseInt(seedField.getText());
             this.timeStep = Math.max(0, this.timeStep);
-            this.start = 0;
-            this.end = rows * cols - 1;
+
             if (this.rows <= 0 || this.cols <= 0 || this.seed <= 0) {
                 throw new Exception("Please enter valids integers for rows,cols and seed to generate a maze!");
             }
-            setMazeSize(rows, cols);
 
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
             // System.out.println("timeStep = " + this.timeStep);
@@ -389,6 +388,11 @@ public class FXController {
         // System.out.println("Selected solving method: " + selectedSolveMethod);
 
         if (maze != null && selectedSolveMethod != null) {
+            if (stepByStepCheckBox.isSelected() && !timeStepField.getText().isEmpty()) {
+                this.timeStep = Integer.parseInt(timeStepField.getText());
+            }
+            setButtonsState(false, false, false, false, false, false);
+            this.timeStep = Math.max(0, this.timeStep);
             new Thread(() -> solveMaze(selectedSolveMethod)).start();
         }
     }
@@ -406,19 +410,21 @@ public class FXController {
             mazeController.createMaze(generationMethod, rows, cols, seed);
             Maze generatedMaze = mazeController.getCurrentMaze();
             visibleEdges.clear();
+            // displayMaze(generatedMaze);
+
+            displayMaze(generatedMaze);
 
             for (Edge e : generatedMaze.getEdges()) {
                 visibleEdges.add(e);
-                Platform.runLater(() -> displayMaze(generatedMaze));
+                Set<Vertex> temp = new HashSet<>();
+                temp.add(e.getVertexA());
+                temp.add(e.getVertexB());
+                Platform.runLater(() -> drawVertexWithWalls(temp));
                 Thread.sleep(timeStep);
             }
 
             labyrinthIsGenerated = true;
-            resolutionLabyrinth.setDisable(false);
-            saveMaze.setDisable(false);
-            loadMaze.setDisable(false);
-
-            editEdgeButton.setDisable(false);
+            setButtonsState(true, true, true, true, true, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -432,10 +438,6 @@ public class FXController {
     private void solveMaze(MethodName.SolveMethodName solveMethod) {
         try {
             mazeController.findSolution(solveMethod, maze.getVertexByID(start), maze.getVertexByID(end));
-            editEdgeButton.setDisable(true);
-            generationLabyrinth.setDisable(true);
-            resolutionLabyrinth.setDisable(true);
-
             // System.out.println(timeStep);
             markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited());
         } catch (Exception e) {
@@ -458,56 +460,68 @@ public class FXController {
                 Vertex v = maze.getVertexByID(id);
                 v.setState(VertexState.VISITED);
 
-                Platform.runLater(() -> displayMaze(maze));
+                Set<Vertex> temp = new HashSet<>();
+                temp.add(v);
+
+                Platform.runLater(() -> drawVertexWithWalls(temp));
                 Thread.sleep(timeStep);
             }
 
             ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(end), antecedents);
             for (Vertex v : solutionVertices) {
                 v.setState(VertexState.SOLUTION);
-                Platform.runLater(() -> displayMaze(maze));
+
+                Set<Vertex> temp = new HashSet<>();
+                temp.add(v);
+
+                Platform.runLater(() -> drawVertexWithWalls(temp));
                 Thread.sleep(timeStep);
             }
         } catch (InterruptedException ignored) {
         }
-        editEdgeButton.setDisable(false);
-        generationLabyrinth.setDisable(false);
-        resolutionLabyrinth.setDisable(false);
+        setButtonsState(true, true, true, true, true, true);
     }
 
     /**
-     * Lauch display maze function
+     * Function to display an entire maze.
+     * 
      * 
      * @param maze a maze
      */
     private void displayMaze(Maze maze) {
         this.maze = maze;
-        drawMazeWithWalls();
-    }
+        Set<Vertex> temp = new HashSet<Vertex>();
+        temp.addAll(maze.getVertices());
 
-    /**
-     * Draw the maze on the maze canvas
-     */
-    private void drawMazeWithWalls() {
-        if (mazeCanvas == null) {
-            // System.out.println("Canvas is not initialized!");
-            return;
-        }
-        if (rows <= 0 || cols <= 0) {
-            // System.out.println("Invalid maze dimensions: rows = " + rows + ", cols = " +
-            // cols);
-            return;
-        }
+        this.rows = maze.getRows();
+        this.cols = maze.getColumns();
+        setMazeSize(this.rows, this.cols);
 
         GraphicsContext g = mazeCanvas.getGraphicsContext2D();
         g.clearRect(0, 0, mazeCanvas.getWidth(), mazeCanvas.getHeight());
         mazeCanvas.setWidth(cols * blockSize);
         mazeCanvas.setHeight(rows * blockSize);
+
+        this.start = 0;
+        this.end = maze.getVertices().getLast().getID();
+
+        drawVertexWithWalls(temp);
+    }
+
+    /**
+     * draw / update a specific list of vertices on maze Canvas.
+     * 
+     * @param vList set of uniques vertices in maze
+     */
+    private void drawVertexWithWalls(Set<Vertex> vList) {
+        if (mazeCanvas == null) {
+            return;
+        }
+
+        GraphicsContext g = mazeCanvas.getGraphicsContext2D();
         g.setLineWidth(2);
 
-        for (Vertex v : maze.getVertices()) {
-            int id = v.getID();
-
+        for (Vertex v : vList) {
             int x = v.getX() * blockSize;
             int y = v.getY() * blockSize;
 
@@ -541,7 +555,6 @@ public class FXController {
             if (v.getID() == end) {
                 g.drawImage(endIcon, x, y, blockSize, blockSize);
             }
-
         }
     }
 
@@ -587,21 +600,30 @@ public class FXController {
             // v2.getID());
         }
 
-        Platform.runLater(() -> displayMaze(maze));
+        Set<Vertex> temp = new HashSet<Vertex>();
+        temp.add(v1);
+        temp.add(v2);
+
+        Platform.runLater(() -> drawVertexWithWalls(temp));
     }
 
     /**
      * Clean the maze of displayed solution
      */
     private void resetSolution() {
+        Set<Vertex> temp = new HashSet<Vertex>();
+
         if (maze == null) {
             // System.out.println("maze is null");
             return;
         }
         for (Vertex v : maze.getVertices()) {
-            v.setState(VertexState.DEFAULT);
+            if (v.getState() != VertexState.DEFAULT) {
+                v.setState(VertexState.DEFAULT);
+                temp.add(v);
+            }
         }
-        Platform.runLater(() -> displayMaze(maze));
+        Platform.runLater(() -> drawVertexWithWalls(temp));
     }
 
     /**
@@ -632,17 +654,11 @@ public class FXController {
             this.maze = mazeController.getCurrentMaze();
             this.visibleEdges.clear();
             this.visibleEdges.addAll(this.maze.getEdges());
-            this.rows = maze.getRows();
-            this.cols = maze.getColumns();
-            setMazeSize(this.rows, this.cols);
-            this.start = 0;
-            this.end = maze.getVertices().getLast().getID();
             labyrinthIsGenerated = true;
-            resolutionLabyrinth.setDisable(false);
 
             this.resetSolution();
             displayMaze(this.maze);
-            saveMaze.setDisable(false);
+            setButtonsState(true, true, true, true, true, true);
 
         } else {
             showAlert("LOADING MAZE FAIL", "Loaded maze seems to be empty / corrupted, try to load another file.");
@@ -660,4 +676,25 @@ public class FXController {
         }
     }
 
+    /**
+     * enable or disable all users button, according to parameters.
+     * False : button disabled
+     * True : button enabled
+     * 
+     * @param generation generation button
+     * @param solve solving button
+     * @param startEnd change start-end toggle button
+     * @param modify modify edges toggle button
+     * @param save save maze button
+     * @param load load maze button
+     */
+    private void setButtonsState(Boolean generation, Boolean solve, Boolean startEnd, Boolean modify, Boolean save,
+            Boolean load) {
+        generationLabyrinth.setDisable(!generation);
+        resolutionLabyrinth.setDisable(!solve);
+        changeStartEndButton.setDisable(!startEnd);
+        editEdgeButton.setDisable(!modify);
+        saveMaze.setDisable(!save);
+        loadMaze.setDisable(!load);
+    }
 }
