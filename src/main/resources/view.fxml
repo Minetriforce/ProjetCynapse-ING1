@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.canvas.*?>
 
-<StackPane fx:id="stackpane" xmlns:fx="http://javafx.com/fxml/1" stylesheets="style.css">
+<StackPane fx:id="stackPane" xmlns:fx="http://javafx.com/fxml/1" stylesheets="style.css">
 
     <!-- Background image -->
     <ImageView fx:id="backgroundImage" fitWidth="1200" fitHeight="700" preserveRatio="false" opacity="0.7">
@@ -48,8 +48,7 @@
 
                     <!-- Row 1: Method selection and generation -->
                     <HBox alignment="CENTER" spacing="10.0">
-                                        <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="100"/>
-
+                        <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="100"/>
                         <ComboBox fx:id="generationMethodComboBox" prefWidth="240"/>
                         <ComboBox fx:id="solutionMethodComboBox" prefWidth="240"/>
                         <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
@@ -66,8 +65,7 @@
                     <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
                     <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="100" disable="true"/>
 
-                    <TextField fx:id="startField" promptText="start ID" prefWidth="70" disable="true"/>
-                    <TextField fx:id="endField" promptText="end ID" prefWidth="70" disable="true"/>
+                
                     <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
                     <ToggleButton fx:id="editEdgeButton" text="Add or Remove Edge"/>
 

@@ -177,6 +177,15 @@ public class Vertex implements Serializable {
         return this.neighbors.contains(v);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Vertex) {
+            Vertex v = (Vertex) obj;
+            return x == v.getX() && y == v.getY() && id == v.getID();
+        }
+        return false;
+    }
+
     /**
      * <p>
      * Ovveride method of super class "Object" to display current Vertex as a string

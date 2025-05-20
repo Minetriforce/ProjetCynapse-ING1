@@ -18,7 +18,9 @@ public class MainCLI {
     // ANSI escape codes for colors
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
+    public static final String REDBACK = "\u001B[48;5;196m";
     public static final String GREEN = "\u001b[38;5;46m";
+    public static final String GREENBACK = "\u001b[48;5;46m";
     public static final String YELLOW = "\u001B[33m";
     public static final String BLUE = "\u001B[34m";
     public static final String CYAN = "\u001B[36m";
@@ -423,7 +425,7 @@ public class MainCLI {
                                 antecedents);
     
                         System.out.println(UNDERLINE + BOLD + "\nSolution found:" + RESET);
-                        System.out.println(maze.solutionToString(antecedents,solution));
+                        System.out.println(maze.solutionToString(antecedents,solution, startId, endId));
                     }
 
                     System.out.println(ITALIC + "Save the maze? " + RESET + BOLD + "[" + GREEN + BOLD + "Y" + RESET +"/"+ RED + BOLD +"N" + RESET + "]" + RESET);
