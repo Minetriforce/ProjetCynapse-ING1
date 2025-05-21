@@ -17,6 +17,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
 
 import java.io.File;
 import javafx.stage.Stage;
@@ -72,6 +74,9 @@ public class FXController {
     private CheckBox stepByStepCheckBox;
     @FXML
     private ToggleButton editEdgeButton;
+    @FXML
+    private VBox historyVBox;
+
 
     private boolean isEditingEdges = false;
 
@@ -343,7 +348,7 @@ public class FXController {
         this.rows = rows;
         this.cols = cols;
 
-        blockSize = (int) Math.max(5, 700 / this.rows);
+        blockSize = (int) Math.max(5, 800 / this.rows);
     }
 
     /**
@@ -384,6 +389,7 @@ public class FXController {
             // System.out.println("Selected generation method: " + selectedGenMethod);
             setButtonsState(false, false, false, false, false, false);
             new Thread(() -> generateMaze(selectedGenMethod, seed, rows, cols)).start();
+
         } catch (Exception e) {
             // System.out.println("Please enter valid integers for all input fields.");
             showAlert("Error", e.getMessage());
@@ -450,34 +456,49 @@ public class FXController {
      * 
      * @param solveMethod method to solve maze
      */
+    /**
+     * Solve maze according to given method (only if a maze is instantiated)
+     *
+     * @param solveMethod method to solve maze
+     */
     private void solveMaze(MethodName.SolveMethodName solveMethod) {
         try {
             if (solveMethod == null) {
                 throw new Exception("You must select a resolution method to solve the maze");
             }
+
+            long startTime = System.currentTimeMillis();
             mazeController.findSolution(solveMethod, maze.getVertexByID(start), maze.getVertexByID(end));
-            // System.out.println(timeStep);
-            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited());
+            long endTime = System.currentTimeMillis();
+
+            long timeMs = endTime - startTime;
+
+            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited(), timeMs, solveMethod.name());
+
         } catch (Exception e) {
-            // System.out.println(e.getMessage());
             showAlert("Error solving maze", e.getMessage());
         }
     }
 
     /**
      * add color to vertices visitied during resolving maze
-     * 
-     * @param orders      color in blue the path between start and end
-     * @param antecedents color in grey all the other vertices visited
+     *
+     * @param orders          color in blue the path between start and end
+     * @param antecedents     color in grey all the other vertices visited
+     * @param timeMs          time taken to solve
+     * @param solveMethodName name of the solving method
      */
-    private void markVisitedAndSolutionPath(int[] orders, int[] antecedents) {
+    private void markVisitedAndSolutionPath(int[] orders, int[] antecedents, long timeMs, String solveMethodName) {
+        int pathLength = 0;
+        int visitedCount = 0;
+
         try {
             for (int id : orders) {
                 if (id == -1)
                     break;
-
                 Vertex v = maze.getVertexByID(id);
                 v.setState(VertexState.VISITED);
+                visitedCount++;
 
                 Set<Vertex> temp = new HashSet<>();
                 temp.add(v);
@@ -489,6 +510,7 @@ public class FXController {
             ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(end), antecedents);
             for (Vertex v : solutionVertices) {
                 v.setState(VertexState.SOLUTION);
+                pathLength++;
 
                 Set<Vertex> temp = new HashSet<>();
                 temp.add(v);
@@ -498,6 +520,8 @@ public class FXController {
             }
         } catch (InterruptedException ignored) {
         }
+        // put the time of resolution, length of the path and visited cases for the solution
+        addResolutionStatsToHistory(pathLength, visitedCount, timeMs, solveMethodName);
         setButtonsState(true, true, true, true, true, true);
     }
 
@@ -708,7 +732,7 @@ public class FXController {
      * @param load       load maze button
      */
     private void setButtonsState(Boolean generation, Boolean solve, Boolean startEnd, Boolean modify, Boolean save,
-            Boolean load) {
+                                 Boolean load) {
         generationLabyrinth.setDisable(!generation);
         resolutionLabyrinth.setDisable(!solve);
         changeStartEndButton.setDisable(!startEnd);
@@ -716,4 +740,22 @@ public class FXController {
         saveMaze.setDisable(!save);
         loadMaze.setDisable(!load);
     }
+
+    /**
+     * Adds a summary of the maze resolution statistics to the history panel.
+     * Displays the solving method name, path length, number of visited vertices, and time taken for the solution.
+     *
+     * @param pathLength      the length of the found path from start to end
+     * @param visitedCount    the total number of vertices visited during solving
+     * @param timeMs          the time taken to solve the maze in milliseconds
+     * @param solveMethodName the name of the solving method used
+     */
+    private void addResolutionStatsToHistory(int pathLength, int visitedCount, long timeMs, String solveMethodName) {
+        String text = String.format("Method: %s | Path Length: %d | Visited: %d | Time: %d ms",
+                solveMethodName, pathLength, visitedCount, timeMs);
+        Label statLabel = new Label(text);
+        statLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 14;");
+        Platform.runLater(() -> historyVBox.getChildren().add(statLabel));
+    }
+
 }

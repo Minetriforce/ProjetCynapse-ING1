@@ -160,6 +160,7 @@ public class Graph implements Serializable {
             Vertex b = e.getVertexB();
             a.removeNeighbor(b);
             b.removeNeighbor(a);
+
         }
         return removed;
     }
