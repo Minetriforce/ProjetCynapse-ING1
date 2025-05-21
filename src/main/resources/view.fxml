@@ -34,16 +34,25 @@
 
                     <!-- Maze generation controls -->
                     <ComboBox fx:id="generationMethodComboBox" prefWidth="240"/>
+
+                    <!-- First line: rows, cols, seed -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="rowsField" promptText="rows" prefWidth="60"/>
+                        <TextField fx:id="colsField" promptText="cols" prefWidth="60"/>
+                        <TextField fx:id="seedField" promptText="seed" prefWidth="60"/>
+                    </HBox>
+
+
+                    <!-- Second line: timeStep and backgroundSelector -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="stepByStepCheckBox" text="Step-by-step" style="-fx-text-fill: white;"/>
+                        <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="140"/>
+                    </HBox>
                     <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
 
-                    <CheckBox fx:id="stepByStepCheckBox" text="Step-by-step" style="-fx-text-fill: white;"/>
-                    <TextField fx:id="rowsField" promptText="rows" prefWidth="50"/>
-                    <TextField fx:id="colsField" promptText="cols" prefWidth="50"/>
-                    <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
-                    <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="100"/>
 
-                    <!-- Background selector and editing toggles -->
                     <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="150"/>
+
                     <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
                     <ToggleButton fx:id="editEdgeButton" text="Add or Remove Edge"/>
                 </VBox>
