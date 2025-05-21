@@ -55,7 +55,7 @@
 
                         <CheckBox fx:id="stepByStepCheckBox" text="Step-by-step" style="-fx-text-fill: white;"/>
 
-                        <Button fx:id="resolutionLabyrinth" text="Solve" onAction="#onStartResolutionClick" disable="true"/>
+                        <Button fx:id="resolutionLabyrinth" text="Solve" onAction="#onStartResolutionClick" />
                     </HBox>
 
                     <!-- Row 2: Parameters input -->
@@ -63,7 +63,7 @@
                     <TextField fx:id="rowsField" promptText="rows" prefWidth="50"/>
                     <TextField fx:id="colsField" promptText="cols" prefWidth="50"/>
                     <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
-                    <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="100" disable="true"/>
+                    <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="100"/>
 
                 
                     <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
@@ -76,7 +76,7 @@
                         <Insets top="10" bottom="20" left="20" right="20"/>
                     </padding>
                     <Button fx:id="loadMaze" text="Load" onAction="#onLoadClick" />
-                    <Button fx:id="saveMaze" text="Save" onAction="#onSaveClick" disable="true" />
+                    <Button fx:id="saveMaze" text="Save" onAction="#onSaveClick" />
                 </VBox>
             </HBox>
         </bottom>
