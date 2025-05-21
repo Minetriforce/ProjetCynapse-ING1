@@ -94,15 +94,13 @@ public class MethodName {
     public enum SolveMethodName {
 
         /**
-         * A star resolution method algorithm
+         * A* resolution method algorithm
          */
         ASTAR("A*"),
-
         /**
          * Right hand resolution algorithm
          */
         RIGHTHAND("Right hand"),
-
         /**
          * Left hand resolution algorithm
          */
@@ -114,7 +112,11 @@ public class MethodName {
         /**
          * BFS resolution algorithm
          */
-        BFS("BFS");
+        BFS("BFS"),
+        /**
+         * A*2 resolution algorithm
+         */
+        ASTAR2("A*2");
 
         // name of the method
         private final String name;

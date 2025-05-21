@@ -371,7 +371,7 @@ public class FXController {
             this.timeStep = Math.max(0, this.timeStep);
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
 
-            if (this.rows <= 0 || this.cols <= 0 || this.seed <= 0) {
+            if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
                 throw new Exception("Please enter valids integers for rows,cols and seed to generate a maze!");
             }
 

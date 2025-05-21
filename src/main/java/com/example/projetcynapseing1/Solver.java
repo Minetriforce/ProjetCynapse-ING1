@@ -82,6 +82,7 @@ public class Solver {
             case LEFTHAND: return this.solveHand(m, start, end, t);
             case BFS: return this.solveBFS(m, start, end, t);
             case DFS: return this.solveDFS(m, start, end, t);
+            case ASTAR2: return this.solveAstar2(m, start, end, t);
             default: return null;
         }
     }
