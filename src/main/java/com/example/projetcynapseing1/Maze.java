@@ -210,7 +210,7 @@ public class Maze extends Graph implements Serializable {
 
         // id of vertex
         int i = 0;
-        // counter for borders
+        // counter for corners
         int c;
 
         // border
