@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
+import javafx.stage.FileChooser;
+
 import java.awt.FileDialog;
 import java.awt.Frame;
 
@@ -71,16 +74,17 @@ public class FileController {
         Maze emp = null;
         try {
             // Open a system "Open File" dialog
-            FileDialog dialog = new FileDialog((Frame) null, "Select File to Open", FileDialog.LOAD);
-            dialog.setVisible(true);
+            FileChooser dialog = new FileChooser();
+            dialog.setTitle("Select a maze");
 
-            String directory = dialog.getDirectory(); // directory of the file
-            String file = dialog.getFile(); // name of the file
-
+            File selectedFile = dialog.showOpenDialog(null);
+   
             // if selected file is not null
-            if (file != null) {
-                File selectedFile = new File(directory, file); // Create a new File Instance with it's directory and
-                                                               // name
+
+            if (selectedFile != null) {
+                // File selectedFile = new File(directory, file); // Create a new File Instance
+                // with it's directory and
+                // name
                 System.out.println("Selected file : " + selectedFile.getAbsolutePath());
 
                 /* Deserialization process */
