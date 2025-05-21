@@ -82,6 +82,7 @@ public class Solver {
             case LEFTHAND: return this.solveHand(m, start, end, t);
             case BFS: return this.solveBFS(m, start, end, t);
             case DFS: return this.solveDFS(m, start, end, t);
+            case ASTAR2: return this.solveAstar2(m, start, end, t);
             default: return null;
         }
     }
@@ -476,7 +477,113 @@ public class Solver {
      * @param t: type of printing
      * @return result
      */
-    //private int[] solveAstar2(Maze m, Vertex start, Vertex end, MethodName.Type t){}
+    private int[] solveAstar2(Maze m, Vertex start, Vertex end, MethodName.Type t){
+        // list of vertices
+        ArrayList<Vertex> vertices = m.getVertices();
+        // number of vertices
+        int n = m.getRows() * m.getColumns();
+        // index of the starting vertex
+        int si = start.getID();
+        // index of the ending vertex
+        int ei = end.getID();
+
+        // visited[i] indicates if vertex i has been visited
+        boolean[] visited = new boolean[n];
+        // antecedents[i] indicates the vertex antecedent taken to access vertex i
+        int[] antecedents = new int[n];
+        // orders[i] indicates the index of the i-th visited vertex
+        int[] orders = new int[n];
+        // result to return
+        int[] result = (t.equals(MethodName.Type.STEPPER)) ? orders : antecedents;
+        // initialisation
+        for (int i = 0; i < n; i++) {
+            visited[i] = false;
+            antecedents[i] = i;
+            orders[i] = -1;
+        }
+
+        Stack<Integer> toVisit = new Stack<>();
+
+        // initialisation
+        toVisit.add(ei);
+        int ui = ei;
+        int vi;
+        int cnt = 0;
+
+        // while there's no path leading to end
+        while (! visited[si]) {
+            // if toVisit is empty, it means that there's no path from start to end in this maze
+            if (toVisit.isEmpty()) {
+                return result;
+            }
+
+            // if there's choices of path
+            if (toVisit.size() > 1){
+                break;
+            }
+
+            // ui the index of the vertex visiting
+            ui = toVisit.pop();
+
+            // if vertex uihas not been visited
+            if (!visited[ui]) {
+                for (Vertex v : vertices.get(ui).getNeighbors()) {
+                    // vi the index of the vertex neighboring vertex ui
+                    vi = vertices.indexOf(v);
+                    // if vertex vi has not been visited
+                    if (!visited[vi]) {
+                        // change the antecedent of vi
+                        antecedents[vi] = ui;
+                        // add vi in to the vertex that we have to visit
+                        toVisit.add(vi);
+                    }
+                }
+
+                // vertex ui is now visited
+                visited[ui] = true;
+                orders[cnt] = ui;
+                cnt++;
+            }
+        }
+
+        // antecedents only shows the vertices that has been visited
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                antecedents[i] = i;
+            }
+        }
+
+        // Astar from start to the last vertex we reached
+        int[] resultAstar = solveAstar(m, start, vertices.get(ui), t);
+
+        if (t.equals(MethodName.Type.STEPPER)){
+            for (int i = 0; i < n; i++){
+                if (resultAstar[i] == -1){
+                    break;
+                }
+                orders[cnt] = resultAstar[i];
+                cnt++;
+            }
+        }
+        else {
+            vi = antecedents[ui];
+            antecedents[ui] = ui;
+            int wi = antecedents[vi];
+            while (ui != ei) {
+                antecedents[vi] = ui;
+                ui = vi;
+                vi = wi;
+                wi = antecedents[vi];
+            }
+            for (int i = 0; i < n; i++) {
+                if (antecedents[i] == i) {
+                    antecedents[i] = resultAstar[i];
+                }
+            }
+        }
+
+        return result;
+    }
     /**
      * Manhattan distance
      * @param a: First vertex
