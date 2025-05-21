@@ -557,31 +557,28 @@ public class Solver {
         int[] resultAstar = solveAstar(m, start, vertices.get(ui), t);
 
         if (t.equals(MethodName.Type.STEPPER)){
-            vi = antecedents[ui];
-            antecedents[ui] = ui;
-            int wi = antecedents[vi];
-            antecedents[vi] = ui;
-            ui = vi;
-            vi = wi;
-            while (ui != ei) {
-                wi = antecedents[vi];
-                antecedents[vi] = ui;
-                ui = vi;
-                vi = wi;
-            }
-            for (int i = 0; i < n; i++) {
-                if (antecedents[i] == i) {
-                    antecedents[i] = resultAstar[i];
-                }
-            }
-        }
-        else {
             for (int i = 0; i < n; i++){
                 if (resultAstar[i] == -1){
                     break;
                 }
                 orders[cnt] = resultAstar[i];
                 cnt++;
+            }
+        }
+        else {
+            vi = antecedents[ui];
+            antecedents[ui] = ui;
+            int wi = antecedents[vi];
+            while (ui != ei) {
+                antecedents[vi] = ui;
+                ui = vi;
+                vi = wi;
+                wi = antecedents[vi];
+            }
+            for (int i = 0; i < n; i++) {
+                if (antecedents[i] == i) {
+                    antecedents[i] = resultAstar[i];
+                }
             }
         }
 
