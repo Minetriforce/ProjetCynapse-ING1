@@ -340,7 +340,7 @@ public class FXController {
         this.rows = rows;
         this.cols = cols;
 
-        blockSize = (int) Math.max(5, 700 / this.rows);
+        blockSize = (int) Math.max(5, 800 / this.rows);
     }
 
     /**

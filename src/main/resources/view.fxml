@@ -17,14 +17,10 @@
     <BorderPane fx:id="borderpane">
 
         <center>
-            <VBox alignment="TOP_CENTER" spacing="10.0">
+            <VBox alignment="CENTER" spacing="10.0">
                 <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
-                <HBox alignment="CENTER" spacing="10">
-                    <Button fx:id="loadMaze" text="Load" onAction="#onLoadClick"/>
-                    <Button fx:id="saveMaze" text="Save" onAction="#onSaveClick"/>
-                </HBox>
                 <Canvas fx:id="mazeCanvas" width="600" height="600"/>
             </VBox>
         </center>
@@ -35,13 +31,21 @@
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
+
+                    <!-- Maze generation controls -->
                     <ComboBox fx:id="generationMethodComboBox" prefWidth="240"/>
                     <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
+
                     <CheckBox fx:id="stepByStepCheckBox" text="Step-by-step" style="-fx-text-fill: white;"/>
                     <TextField fx:id="rowsField" promptText="rows" prefWidth="50"/>
                     <TextField fx:id="colsField" promptText="cols" prefWidth="50"/>
                     <TextField fx:id="seedField" promptText="seed" prefWidth="50"/>
                     <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="100"/>
+
+                    <!-- Background selector and editing toggles -->
+                    <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="150"/>
+                    <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
+                    <ToggleButton fx:id="editEdgeButton" text="Add or Remove Edge"/>
                 </VBox>
             </StackPane>
         </left>
@@ -52,10 +56,14 @@
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
+
+                    <!-- Maze solving controls -->
                     <HBox spacing="10" alignment="CENTER">
                         <ComboBox fx:id="solutionMethodComboBox" prefWidth="200"/>
                         <Button fx:id="resolutionLabyrinth" text="Solve" onAction="#onStartResolutionClick" />
                     </HBox>
+
+                    <!-- Resolution history -->
                     <TitledPane text="Resolution History" expanded="true" prefHeight="150" prefWidth="200">
                         <content>
                             <ScrollPane fitToWidth="true" fitToHeight="true" prefHeight="150" prefWidth="200">
@@ -65,20 +73,19 @@
                             </ScrollPane>
                         </content>
                     </TitledPane>
+
+                    <!-- Load and Save buttons -->
+                    <HBox alignment="CENTER" spacing="10">
+                        <padding>
+                            <Insets top="10" right="0" bottom="0" left="0"/>
+                        </padding>
+                        <Button fx:id="loadMaze" text="Load" onAction="#onLoadClick"/>
+                        <Button fx:id="saveMaze" text="Save" onAction="#onSaveClick"/>
+                    </HBox>
                 </VBox>
             </StackPane>
         </right>
 
-        <bottom>
-            <HBox alignment="CENTER" spacing="20">
-                <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
-                </padding>
-                <ComboBox fx:id="backgroundSelector" onAction="#onBackgroundSelectionChanged" prefWidth="150"/>
-                <ToggleButton fx:id="changeStartEndButton" text="Change Start/End"/>
-                <ToggleButton fx:id="editEdgeButton" text="Add or Remove Edge"/>
-            </HBox>
-        </bottom>
 
     </BorderPane>
 </StackPane>
