@@ -13,7 +13,7 @@ La résolution de labyrinthe n’est accessible qu’une fois qu’un labyrinthe
 Utilisez le bouton **Change Start/End** pour modifier les positions du point de départ et d’arrivée. Cliquez d’abord sur la case de départ puis sur celle d’arrivée. Utilisez **Add or Remove Edge** pour ajouter ou supprimer des murs en cliquant sur deux cases adjacentes.
 
 ## Gestion des fichiers
-Le bouton **Load** permet de charger un labyrinthe sauvegardé sous forme de fichier “.ser”. On pourra alors éditer et résoudre ce labyrinthe. On a aussi la possibilité de sauvegarder le labyrinthe courant dans un fichier avec le bouton **Save**.
+Le bouton **Load** permet de charger un labyrinthe sauvegardé sous forme de fichier **.ser**. On pourra alors éditer et résoudre ce labyrinthe. On a aussi la possibilité de sauvegarder le labyrinthe courant dans un fichier avec le bouton **Save**.
 
 ## Personnalisation visuelle
 Le sélecteur **background** propose des images prédéfinies ou la possibilité de choisir une image personnalisée depuis les fichiers de l'ordinateur. Les erreurs si on rencontre une exception lors de la saisie d’un champ sont signalées par des pop-ups.
