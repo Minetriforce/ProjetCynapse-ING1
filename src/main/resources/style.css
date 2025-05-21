@@ -1,0 +1,122 @@
+/* Canvas border and shadow */
+#mazeCanvas {
+    -fx-effect: dropshadow(gaussian, #222, 10, 0.2, 2, 2);
+    -fx-background-color: #fff;
+    -fx-border-color: #444;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+}
+
+/* Buttons style - modern, flat, no shadow */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);
+    -fx-text-fill: #fff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+    -fx-border-radius: 8;
+    -fx-border-width: 1.5;
+    -fx-font-size: 15px;
+    -fx-effect: none;
+    -fx-letter-spacing: 0.5px;
+}
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #6ee2f5, #5a7cff);
+    -fx-text-fill: #232526;
+}
+.button:pressed {
+    -fx-background-color: #4e54c8;
+    -fx-text-fill: #fff;
+    -fx-border-color: #232526;
+}
+
+/* ToggleButton style */
+.toggle-button {
+    -fx-background-color: #232526;
+    -fx-text-fill: #fff;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #8f94fb;
+    -fx-border-width: 1;
+    -fx-font-weight: bold;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #8f94fb;
+    -fx-text-fill: #232526;
+}
+
+
+
+
+/* ComboBox style - modern dropdown */
+.combo-box {
+    -fx-background-color: #f5f6fa;
+    -fx-background-radius: 6;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-border-color: #4e54c8;
+    -fx-font-size: 13px;
+    -fx-effect: dropshadow(gaussian, #232526, 2, 0.1, 0, 1);
+}
+
+.combo-box:focused {
+    -fx-border-color: #4e54c8;
+    -fx-background-color: #e8eaf6;
+}
+.combo-box .arrow-button {
+    -fx-background-color: #e8eaf6;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: #fff;
+    -fx-text-fill: #232526;
+    -fx-font-size: 13px;
+}
+.combo-box .list-cell:hover, .combo-box .list-cell:selected {
+    -fx-background-color: #e8eaf6;
+    -fx-text-fill: #4e54c8;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #fff;
+    -fx-border-color: #4e54c8;
+    -fx-border-width: 2;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+
+
+
+/* TextField style */
+.text-field {
+    -fx-border-color: #4e54c8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-font-size: 13px;
+}
+
+
+
+
+/* CheckBox style */
+.check-box {
+    -fx-font-weight: bold;
+}
+.check-box .box {
+    -fx-background-color: #fff;
+}
+.check-box:selected .box {
+    -fx-background-color: #8f94fb;
+}
+
+/* Label style (if you add some in the future) */
+.label {
+    -fx-text-fill: #fff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
