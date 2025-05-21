@@ -252,24 +252,17 @@ public class FXController {
                 return;
 
             if (isEditingStartEnd) {
-                if (selectingStart) {
-                    start = clickedVertex.getID();
-                    // System.out.println("Start vertex selected: " + start);
-                    selectingStart = false;
-                } else {
-                    end = clickedVertex.getID();
-                    // System.out.println("End vertex selected: " + end);
-                    selectingStart = true;
-                    changeStartEndButton.setSelected(false);
-                    isEditingStartEnd = false;
-                    changeStartEndButton.setText("Change Start/End");
-                    editEdgeButton.setDisable(false);
-                }
-                Set<Vertex> temp = new HashSet<Vertex>();
-                temp.add(maze.getVertexByID(this.start));
-                temp.add(maze.getVertexByID(this.end));
-                temp.add(clickedVertex);
+                start = clickedVertex.getID();
+                changeStartEndButton.setSelected(false);
+                isEditingStartEnd = false;
+                changeStartEndButton.setText("Change Start/End");
+                editEdgeButton.setDisable(false);
+
+                Set<Vertex> temp = new HashSet<>();
+                temp.add(maze.getVertexByID(start));
+                temp.add(maze.getVertexByID(end));
                 drawVertexWithWalls(temp);
+
 
             } else if (isEditingEdges) {
                 resetSolution();
