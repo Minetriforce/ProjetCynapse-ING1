@@ -17,21 +17,6 @@
 
     <!-- Main layout container -->
     <BorderPane fx:id="borderpane">
-
-        <!-- Top: Title -->
-        <!--
-        <top>
-            <VBox alignment="CENTER" spacing="10.0">
-                <padding>
-                    <Insets top="20" bottom="10" left="20" right="20"/>
-                </padding>
-                <Label fx:id="welcomeText" text="Welcome to Cynapse!"
-                       style="-fx-font-size: 30; -fx-text-fill: white;"/>
-                <Label fx:id="etapeLabel"/>
-            </VBox>
-        </top>-->
-
-        <!-- Center: Maze canvas -->
         <center>
             <VBox alignment="CENTER" spacing="10.0">
                 <Canvas fx:id="mazeCanvas" width="300" height="300"/>

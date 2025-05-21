@@ -247,7 +247,9 @@ public class FXController {
                 return;
 
             if (isEditingStartEnd) {
+                Set<Vertex> temp = new HashSet<Vertex>();
                 if (selectingStart) {
+                    temp.add(maze.getVertexByID(this.start));
                     start = clickedVertex.getID();
                     // System.out.println("Start vertex selected: " + start);
                     selectingStart = false;
@@ -260,7 +262,6 @@ public class FXController {
                     changeStartEndButton.setText("Change Start/End");
                     editEdgeButton.setDisable(false);
                 }
-                Set<Vertex> temp = new HashSet<Vertex>();
                 temp.add(maze.getVertexByID(this.start));
                 temp.add(maze.getVertexByID(this.end));
                 temp.add(clickedVertex);
