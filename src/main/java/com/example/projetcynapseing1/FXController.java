@@ -436,10 +436,20 @@ public class FXController {
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
 
             if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
-                throw new Exception("Please enter valids integers for rows,cols and seed to generate a maze!");
+                this.rows = (this.rows <= 0) ? 1 : this.rows;
+                this.cols = (this.cols <= 0) ? 1 : this.cols;
+                this.seed = (this.cols < 0) ? 0 : this.seed;
+                rowsField.setText("" + this.rows);
+                colsField.setText("" + this.cols);
+                seedField.setText("" + this.seed);
+                throw new Exception("Please enter valids integers for rows, cols and seed to generate a maze!");
             }
 
             if (this.rows > 100 || this.cols > 100) {
+                this.rows = (this.rows > 100) ? 100 : this.rows;
+                this.cols = (this.cols > 100) ? 100 : this.cols;
+                rowsField.setText("" + this.rows);
+                colsField.setText("" + this.cols);
                 throw new Exception("Maximum allowed size is 100x100 for rows and columns.");
             }
 
