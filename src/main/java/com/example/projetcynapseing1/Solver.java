@@ -545,6 +545,8 @@ public class Solver {
                 cnt++;
             }
         }
+        orders[cnt] = -1;
+        cnt--;
 
         // antecedents only shows the vertices that has been visited
         for (int i = 0; i < n; i++) {

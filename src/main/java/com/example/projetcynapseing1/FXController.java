@@ -434,10 +434,8 @@ public class FXController {
             this.seed = Integer.parseInt(seedField.getText());
             this.timeStep = Math.max(0, this.timeStep);
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
-            if (selectedGenMethod == null) {
-                throw new Exception("Please select a generation method before starting.");
-                }
-                if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
+
+            if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
                 this.rows = (this.rows <= 0) ? 1 : this.rows;
                 this.cols = (this.cols <= 0) ? 1 : this.cols;
                 this.seed = (this.cols < 0) ? 0 : this.seed;
@@ -456,7 +454,9 @@ public class FXController {
             }
 
 
-
+            if (selectedGenMethod == null) {
+                throw new Exception("You must select a generation method.");
+            }
 
             this.rows = (this.rows > stackPane.getHeight() / 5) ? (int) stackPane.getHeight() / 5 : this.rows;
             this.cols = (this.cols > (stackPane.getWidth() - 700) / 5) ? (int) (stackPane.getWidth() - 700) / 5
@@ -475,29 +475,33 @@ public class FXController {
      * Start the resolution of the current maze and it's animation
      */
     @FXML
-    private void onStartResolutionClick() throws Exception {
+    private void onStartResolutionClick() {
         resetSolution();
 
-        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel()
-                .getSelectedItem();
+        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
 
-        if (selectedSolveMethod == null) {
-            throw new Exception("Please select a solving method before starting.");
-        }
+        try{
+            if (maze != null && selectedSolveMethod != null) {
+                if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
+                    this.timeStep = Integer.parseInt(timeStepFieldSolution.getText());
+                } else {
+                    this.timeStep = 0;
+                }
 
-        if (maze != null && selectedSolveMethod != null) {
-            if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
-                this.timeStep = Integer.parseInt(timeStepFieldSolution.getText());
-            } else {
-                this.timeStep = 0;
+                setButtonsState(false, false, false, false, false, false);
+                this.timeStep = Math.max(0, this.timeStep);
+                new Thread(() -> solveMaze(selectedSolveMethod)).start();
             }
 
-            setButtonsState(false, false, false, false, false, false);
-            this.timeStep = Math.max(0, this.timeStep);
-            new Thread(() -> solveMaze(selectedSolveMethod)).start();
+
+            if (selectedSolveMethod == null) {
+                throw new Exception("You must select a solve method.");
+            }
+        }
+        catch (Exception e) {
+            showAlert("Error", e.getMessage());
         }
     }
-
 
     /**
      * Generate a maze according to parameters and start animation of the maze
