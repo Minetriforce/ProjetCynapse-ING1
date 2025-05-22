@@ -224,7 +224,7 @@ public class Maze extends Graph implements Serializable {
                 i = y * columns + x;
                 s += (solution[i] != i || (i == start && solution[end] != end)) ? MainCLI.GREENBACK + MainCLI.BOLD : (antecedents[i] != i || i == start) ? MainCLI.REDBACK : "";
                 s += Maze.paddingInt(i, padding);
-                s += (solution[i] != i || antecedents[i] != i) ? MainCLI.RESET : "";
+                s += (solution[i] != i || (i == start && solution[end] != end) || antecedents[i] != i) ? MainCLI.RESET : "";
 
                 // if not the last column
                 if (x < columns - 1) {
