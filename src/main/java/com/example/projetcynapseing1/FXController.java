@@ -291,7 +291,7 @@ public class FXController {
                 temp.add(maze.getVertexByID(this.start));
                 temp.add(maze.getVertexByID(this.end));
                 temp.add(clickedVertex);
-                drawVertexWithWalls(temp);
+                Platform.runLater(() -> drawVertexWithWalls(temp));
 
             } else if (isEditingEdges) {
                 resetSolution();
