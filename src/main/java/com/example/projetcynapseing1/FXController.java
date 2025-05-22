@@ -838,7 +838,7 @@ public class FXController {
      * @param solveMethodName the name of the solving method used
      */
     private void addResolutionStatsToHistory(int pathLength, int visitedCount, long timeMs, String solveMethodName) {
-        String text = String.format("%s:  Path Length: %d | Visited: %d | Time: %d ms ",
+        String text = String.format("%s: Length: %d | Visited: %d | Time: %d ms ",
                 solveMethodName, pathLength, visitedCount, timeMs);
         Label statLabel = new Label(text);
         statLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 10.5;");
