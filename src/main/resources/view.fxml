@@ -73,7 +73,7 @@
                     </HBox>
 
                     <!-- Resolution history -->
-                    <TitledPane text="Resolution History" expanded="true" prefHeight="150" prefWidth="200">
+                    <TitledPane text="Resolution History" collapsible="false" expanded="true" prefHeight="150" prefWidth="200">
                         <content>
                             <ScrollPane fitToWidth="true" fitToHeight="true" prefHeight="150" prefWidth="200">
                                 <content>
