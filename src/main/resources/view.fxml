@@ -45,8 +45,8 @@
 
                     <!-- Second line: timeStep and backgroundSelector -->
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <CheckBox fx:id="stepByStepCheckBox" text="Step-by-step" style="-fx-text-fill: white;"/>
-                        <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="140"/>
+                        <CheckBox fx:id="stepByStepCheckBoxGeneration" text="Step-by-step" />
+                        <TextField fx:id="timeStepFieldGeneration" promptText="time step (ms)" prefWidth="140"/>
                     </HBox>
                     <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
 
@@ -71,6 +71,12 @@
                         <ComboBox fx:id="solutionMethodComboBox" prefWidth="200"/>
                         <Button fx:id="resolutionLabyrinth" text="Solve" onAction="#onStartResolutionClick" />
                     </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="stepByStepCheckBoxSolution" text="Step-by-step"/>
+                        <TextField fx:id="timeStepFieldSolution" promptText="time step (ms)" prefWidth="140"/>
+                    </HBox>
+
 
                     <!-- Resolution history -->
                     <TitledPane text="Resolution Path History" collapsible="false" expanded="true" prefHeight="150" prefWidth="200">
