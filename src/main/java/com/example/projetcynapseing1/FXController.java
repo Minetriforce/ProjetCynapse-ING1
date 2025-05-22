@@ -434,8 +434,10 @@ public class FXController {
             this.seed = Integer.parseInt(seedField.getText());
             this.timeStep = Math.max(0, this.timeStep);
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
-
-            if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
+            if (selectedGenMethod == null) {
+                throw new Exception("Please select a generation method before starting.");
+                }
+                if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
                 this.rows = (this.rows <= 0) ? 1 : this.rows;
                 this.cols = (this.cols <= 0) ? 1 : this.cols;
                 this.seed = (this.cols < 0) ? 0 : this.seed;
@@ -454,9 +456,7 @@ public class FXController {
             }
 
 
-            if (selectedGenMethod == null) {
-                throw new Exception("You must select a generation method.");
-            }
+
 
             this.rows = (this.rows > stackPane.getHeight() / 5) ? (int) stackPane.getHeight() / 5 : this.rows;
             this.cols = (this.cols > (stackPane.getWidth() - 700) / 5) ? (int) (stackPane.getWidth() - 700) / 5
@@ -475,11 +475,15 @@ public class FXController {
      * Start the resolution of the current maze and it's animation
      */
     @FXML
-    private void onStartResolutionClick() {
+    private void onStartResolutionClick() throws Exception {
         resetSolution();
 
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel()
                 .getSelectedItem();
+
+        if (selectedSolveMethod == null) {
+            throw new Exception("Please select a solving method before starting.");
+        }
 
         if (maze != null && selectedSolveMethod != null) {
             if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
@@ -493,6 +497,7 @@ public class FXController {
             new Thread(() -> solveMaze(selectedSolveMethod)).start();
         }
     }
+
 
     /**
      * Generate a maze according to parameters and start animation of the maze
@@ -600,6 +605,12 @@ public class FXController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if (end == start){
+            maze.getVertexByID(start).setState(VertexState.SOLUTION);
+            visitedCount=1;
+            pathLength=1;
         }
         addResolutionStatsToHistory(pathLength, visitedCount, timeMs, solveMethodName);
         setButtonsState(true, true, true, true, true, true);
@@ -831,7 +842,7 @@ public class FXController {
                 solveMethodName, pathLength, visitedCount, timeMs);
         Label statLabel = new Label(text);
         statLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 10.5;");
-        Platform.runLater(() -> historyVBox.getChildren().add(statLabel));
+        Platform.runLater(() -> historyVBox.getChildren().add(0, statLabel));
     }
 
 }
