@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.awt.FileDialog;
-import java.awt.Frame;
+
+import javafx.stage.FileChooser;
 
 /**
  * Class used to manage Saving / loading of Mazes Files
@@ -34,22 +34,20 @@ public class FileController {
                                                                                                       // files
         }
         try {
+            FileChooser dialog = new FileChooser();
+            dialog.setInitialFileName("Save a maze");
 
-            FileDialog dialog = new FileDialog((Frame) null, "Save As Maze", FileDialog.SAVE); // open system "save as"
-                                                                                               // dialog
-            dialog.setFile("maze" + maze.hashCode()); // default file name
-            dialog.setVisible(true);
-            String directory = dialog.getDirectory();
-            String file = dialog.getFile();
+            dialog.setInitialFileName("maze" + maze.hashCode() + ".ser");
 
-            if (file != null && directory != null) {
-                String fullPath = directory + file + ".ser";
-                FileOutputStream fileOut = new FileOutputStream(fullPath);
+            File selectedFile = dialog.showSaveDialog(null);
+
+            if (selectedFile != null) {
+                FileOutputStream fileOut = new FileOutputStream(selectedFile.getAbsolutePath());
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
                 out.writeObject(maze);
                 out.close();
                 fileOut.close();
-                System.out.println("Maze saved with name : " + file + ".ser");
+                System.out.println("Maze saved with name : " + selectedFile.getName());
                 return true;
             } else {
                 System.out.println("Saving aborted");
@@ -71,16 +69,17 @@ public class FileController {
         Maze emp = null;
         try {
             // Open a system "Open File" dialog
-            FileDialog dialog = new FileDialog((Frame) null, "Select File to Open", FileDialog.LOAD);
-            dialog.setVisible(true);
+            FileChooser dialog = new FileChooser();
+            dialog.setTitle("Select a maze");
 
-            String directory = dialog.getDirectory(); // directory of the file
-            String file = dialog.getFile(); // name of the file
+            File selectedFile = dialog.showOpenDialog(null);
 
             // if selected file is not null
-            if (file != null) {
-                File selectedFile = new File(directory, file); // Create a new File Instance with it's directory and
-                                                               // name
+
+            if (selectedFile != null) {
+                // File selectedFile = new File(directory, file); // Create a new File Instance
+                // with it's directory and
+                // name
                 System.out.println("Selected file : " + selectedFile.getAbsolutePath());
 
                 /* Deserialization process */

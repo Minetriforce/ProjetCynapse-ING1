@@ -26,7 +26,7 @@
         </center>
 
         <left>
-            <StackPane>
+            <StackPane fx:id="leftPane">
                 <VBox alignment="CENTER_LEFT" spacing="10.0" prefWidth="300">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -60,7 +60,7 @@
         </left>
 
         <right>
-            <StackPane>
+            <StackPane fx:id="rightPane">
                 <VBox alignment="CENTER" spacing="10.0" prefWidth="350">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -73,7 +73,7 @@
                     </HBox>
 
                     <!-- Resolution history -->
-                    <TitledPane text="Resolution History" expanded="true" prefHeight="150" prefWidth="200">
+                    <TitledPane text="Resolution History" collapsible="false" expanded="true" prefHeight="150" prefWidth="200">
                         <content>
                             <ScrollPane fitToWidth="true" fitToHeight="true" prefHeight="150" prefWidth="200">
                                 <content>

@@ -321,11 +321,17 @@ public class Generator {
             Vertex previousVertex = visitedStack.pop();
             randomDFS(baseGraph, maze, visitedStack, previousVertex, mark, randomGen);
         } else {
-            Vertex nextVertex = availableNeighbors.get(randomGen.nextInt(availableNeighbors.size()));
-            visitedStack.push(currentVertex);
-            maze.addEdge(new Edge(maze.getVertexByID(currentVertex.getID()),
-                    maze.getVertexByID(nextVertex.getID())));
-            randomDFS(baseGraph, maze, visitedStack, nextVertex, mark, randomGen);
+            try {
+                Vertex nextVertex = availableNeighbors.get(randomGen.nextInt(availableNeighbors.size()));
+                visitedStack.push(currentVertex);
+                maze.addEdge(new Edge(maze.getVertexByID(currentVertex.getID()),
+                        maze.getVertexByID(nextVertex.getID())));
+                randomDFS(baseGraph, maze, visitedStack, nextVertex, mark, randomGen);
+            } catch (Throwable e) {
+                FXController.showAlert("ERROR IN GENERATION", e.getCause().toString());
+                maze = null;
+                visitedStack = null;
+            }
         }
     }
 
@@ -341,9 +347,11 @@ public class Generator {
      * @param maze      output maze
      */
     private void imperfect(Maze baseGraph, Maze maze) {
-        // get minimum 1/4 of the edge of grid graph and maximum all the edges
+        // get minimum 3/8 of the edge of grid graph and maximum all the edges
         Random rng = new Random(this.seed);
-        Integer numberEdges = rng.nextInt((int) baseGraph.getEdges().size() / 2) + baseGraph.getEdges().size() / 4;
+        System.out.println("AAAAAAA" + baseGraph.getEdges().size() * (3.0 / 8.0));
+        Integer numberEdges = rng.nextInt((int) (baseGraph.getEdges().size() * (3.0 / 8.0)))
+                + (int) (baseGraph.getEdges().size() * (3.0 / 8.0));
         ArrayList<Edge> edgesGridMaze = baseGraph.getEdges();
 
         for (int m = 0; m < numberEdges; m++) {
@@ -380,16 +388,12 @@ public class Generator {
             case KRUSKAL:
                 this.addRandomWeight(base);
                 kruskal(base, maze);
-                base = null;
-                System.gc();
                 System.out.println("End of Kruskal Generation");
                 break;
 
             case PRIM:
                 this.addRandomWeight(base);
                 prim(base, maze, base.getVertices().getFirst());
-                base = null;
-                System.gc();
                 System.out.println("End of PRIM generation");
                 break;
 
@@ -404,8 +408,6 @@ public class Generator {
 
             case IMPERFECT:
                 imperfect(base, maze);
-                base = null;
-                System.gc();
                 System.out.println("End of Imperfect generation.");
                 break;
             default:
