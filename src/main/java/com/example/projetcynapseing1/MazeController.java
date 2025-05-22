@@ -76,8 +76,8 @@ public class MazeController {
                 throw new Exception("No maze has been created/instantiated! Aborting resolution.");
             }
             mazeSolver = new Solver(solveMethod);
-            visited = mazeSolver.solve(maze, start, end, MethodName.Type.COMPLETE);
-            solution = mazeSolver.solve(maze, start, end, MethodName.Type.STEPPER);
+            visited = mazeSolver.solve(maze, start, end, MethodName.Type.STEPPER);
+            solution = mazeSolver.solve(maze, start, end, MethodName.Type.COMPLETE);
         } catch (Exception e) {
             System.err.println("Error in findSolution: " + e.getMessage());
         }

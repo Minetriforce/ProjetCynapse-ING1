@@ -473,7 +473,7 @@ public class FXController {
 
             long timeMs = endTime - startTime;
 
-            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited(), timeMs, solveMethod.name());
+            markVisitedAndSolutionPath(mazeController.getVisited(), mazeController.getSolution(), timeMs, solveMethod.name());
 
         } catch (Exception e) {
             showAlert("Error solving maze", e.getMessage());
