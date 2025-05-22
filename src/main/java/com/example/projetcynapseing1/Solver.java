@@ -82,7 +82,7 @@ public class Solver {
             case LEFTHAND: return this.solveHand(m, start, end, t);
             case BFS: return this.solveBFS(m, start, end, t);
             case DFS: return this.solveDFS(m, start, end, t);
-            case ASTAR2: return this.solveAstar2(m, start, end, t);
+            case ASTARII: return this.solveAstarII(m, start, end, t);
             default: return null;
         }
     }
@@ -128,7 +128,7 @@ public class Solver {
         // priority queue for the next vertex to visit, it compares the length of the
         // path to vertex i and also it Manhattan distance to end
         PriorityQueue<Integer> toVisit = new PriorityQueue<Integer>(
-                Comparator.comparingInt(i -> distances[i] + 2 * distance(vertices.get(i), end)));
+                Comparator.comparingInt(i -> distances[i] + distance(vertices.get(i), end)));
 
         // initialisation
         distances[si] = 0;
@@ -148,7 +148,7 @@ public class Solver {
             // ui the index of the vertex visiting
             ui = toVisit.poll();
 
-            // if vertex uihas not been visited
+            // if vertex ui hasn't been visited
             if (!visited[ui]) {
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
                     // vi the index of the vertex neighboring vertex ui
@@ -351,7 +351,7 @@ public class Solver {
             // ui the index of the vertex visiting
             ui = toVisit.pop();
 
-            // if vertex uihas not been visited
+            // if vertex ui hasn't been visited
             if (!visited[ui]) {
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
                     // vi the index of the vertex neighboring vertex ui
@@ -436,7 +436,7 @@ public class Solver {
             // ui the index of the vertex visiting
             ui = toVisit.poll();
 
-            // if vertex uihas not been visited
+            // if vertex ui hasn't been visited
             if (!visited[ui]) {
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
                     // vi the index of the vertex neighboring vertex ui
@@ -477,7 +477,7 @@ public class Solver {
      * @param t: type of printing
      * @return result
      */
-    private int[] solveAstar2(Maze m, Vertex start, Vertex end, MethodName.Type t){
+    private int[] solveAstarII(Maze m, Vertex start, Vertex end, MethodName.Type t){
         // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
@@ -525,7 +525,7 @@ public class Solver {
             // ui the index of the vertex visiting
             ui = toVisit.pop();
 
-            // if vertex uihas not been visited
+            // if vertex ui hasn't been visited
             if (!visited[ui]) {
                 for (Vertex v : vertices.get(ui).getNeighbors()) {
                     // vi the index of the vertex neighboring vertex ui
@@ -584,6 +584,7 @@ public class Solver {
 
         return result;
     }
+
     /**
      * Manhattan distance
      * @param a: First vertex
@@ -592,7 +593,7 @@ public class Solver {
      */
     public static int distance(Vertex a, Vertex b) {
         // |a.x - b.x| + |a.y - b.y|
-        return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
+        return 2 * (Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY()));
         // Euclidean distance
         // return Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()));
     }

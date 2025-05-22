@@ -198,9 +198,17 @@
     -fx-background-radius : 2.0em;
 }
 
+.scroll-bar:horizontal .thumb:hover,
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color :linear-gradient(to bottom, #5a7cff, #6ee2f5); /*scroll bar color when hover*/
+    -fx-background-insets : 2.0, 0.0, 0.0;
+    -fx-background-radius : 2.0em;
+}
+
+
 .scroll-bar:horizontal .thumb:pressed,
 .scroll-bar:vertical .thumb:pressed {
-    -fx-background-color :linear-gradient(to bottom, #5a7cff, #6ee2f5); /*scroll bar color when hover*/
+    -fx-background-color :linear-gradient(to bottom, #5a7cff, #6ee2f5); /*scroll bar color when scroll*/
     -fx-background-insets : 2.0, 0.0, 0.0;
     -fx-background-radius : 2.0em;
 }

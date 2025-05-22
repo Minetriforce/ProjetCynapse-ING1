@@ -2,6 +2,7 @@ package com.example.projetcynapseing1;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
@@ -294,38 +295,39 @@ public class Generator {
     /**
      * Use the randomized DFS method to create a graph, it's a recursive function
      *
-     * @param baseGraph     grid graph explored
-     * @param maze          maze result
-     * @param visitedStack  stack of vertex already visited, in case the algorithm
-     *                      have to go back
-     * @param currentVertex vertex used in this iteration
-     * @param mark          mark list of all vertices in maze
-     * @param randomGen     random number generator, it ensures us to keep the same
-     *                      maze if we send the same seed
+     * @param baseGraph grid graph explored
+     * @param maze      maze result
      */
-    private void randomDFS(Maze baseGraph, Maze maze, Stack<Vertex> visitedStack, Vertex currentVertex,
-            ArrayList<Boolean> mark, Random randomGen) {
-        mark.set(currentVertex.getID(), true);
-        ArrayList<Vertex> availableNeighbors = new ArrayList<Vertex>();
+    private void randomDFS(Maze baseGraph, Maze maze) {
+        Random rng = new Random(this.seed);
+        Vertex currentVertex = baseGraph.getVertices().getFirst();
+        ArrayList<Vertex> visitedStack = new ArrayList<>();
+        ArrayList<Boolean> mark = new ArrayList<Boolean>();
 
-        for (Vertex v : currentVertex.getNeighbors()) {
-            if (mark.get(v.getID()) == false) {
-                availableNeighbors.add(v);
-            }
+        for (int i = 0; i < maze.getVertices().size(); i++) {
+            mark.add(false);
         }
 
-        if ((maze.getEdges().size() == (maze.getVertices().size() - 1))
-                || (availableNeighbors.size() == 0 && visitedStack.size() == 0)) {
-            System.out.println("End of RandomDFS generation");
-        } else if (availableNeighbors.size() == 0) {
-            Vertex previousVertex = visitedStack.pop();
-            randomDFS(baseGraph, maze, visitedStack, previousVertex, mark, randomGen);
-        } else {
-            Vertex nextVertex = availableNeighbors.get(randomGen.nextInt(availableNeighbors.size()));
-            visitedStack.push(currentVertex);
-            maze.addEdge(new Edge(maze.getVertexByID(currentVertex.getID()),
-                    maze.getVertexByID(nextVertex.getID())));
-            randomDFS(baseGraph, maze, visitedStack, nextVertex, mark, randomGen);
+        while (maze.getEdges().size() < (maze.getVertices().size() - 1)) {
+            ArrayList<Vertex> availableNeighbors = new ArrayList<Vertex>();
+            mark.set(currentVertex.getID(), true);
+
+            for (Vertex v : currentVertex.getNeighbors()) {
+                if (!mark.get(v.getID())) {
+                    availableNeighbors.add(v);
+                }
+            }
+
+            if (availableNeighbors.size() == 0) {
+                currentVertex = visitedStack.removeLast();
+            } else {
+                visitedStack.addLast(currentVertex);
+                Vertex nextVertex = availableNeighbors.get(rng.nextInt(availableNeighbors.size()));
+                maze.addEdge(
+                        new Edge(maze.getVertexByID(currentVertex.getID()), maze.getVertexByID(nextVertex.getID())));
+                currentVertex = nextVertex;
+                availableNeighbors = null;
+            }
         }
     }
 
@@ -341,9 +343,10 @@ public class Generator {
      * @param maze      output maze
      */
     private void imperfect(Maze baseGraph, Maze maze) {
-        // get minimum 1/4 of the edge of grid graph and maximum all the edges
+        // get minimum 3/8 of the edge of grid graph and maximum all the edges
         Random rng = new Random(this.seed);
-        Integer numberEdges = rng.nextInt((int) baseGraph.getEdges().size() / 2) + baseGraph.getEdges().size() / 4;
+        Integer numberEdges = rng.nextInt((int) (baseGraph.getEdges().size() * (3.0 / 8.0)))
+                + (int) (baseGraph.getEdges().size() * (3.0 / 8.0));
         ArrayList<Edge> edgesGridMaze = baseGraph.getEdges();
 
         for (int m = 0; m < numberEdges; m++) {
@@ -380,32 +383,22 @@ public class Generator {
             case KRUSKAL:
                 this.addRandomWeight(base);
                 kruskal(base, maze);
-                base = null;
-                System.gc();
                 System.out.println("End of Kruskal Generation");
                 break;
 
             case PRIM:
                 this.addRandomWeight(base);
                 prim(base, maze, base.getVertices().getFirst());
-                base = null;
-                System.gc();
                 System.out.println("End of PRIM generation");
                 break;
 
             case DFS:
-                Random rng = new Random(this.seed);
-                ArrayList<Boolean> mark = new ArrayList<Boolean>();
-                for (int i = 0; i < maze.getVertices().size(); i++) {
-                    mark.add(false);
-                }
-                randomDFS(base, maze, new Stack<Vertex>(), base.getVertices().getFirst(), mark, rng);
+                randomDFS(base, maze);
+                System.out.println("End of Random DFS generation.");
                 break;
 
             case IMPERFECT:
                 imperfect(base, maze);
-                base = null;
-                System.gc();
                 System.out.println("End of Imperfect generation.");
                 break;
             default:

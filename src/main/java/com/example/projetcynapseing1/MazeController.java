@@ -30,7 +30,7 @@ public class MazeController {
     private int[] solution;
 
     /**
-     * 
+     *
      */
     private int[] visited;
 
@@ -44,7 +44,7 @@ public class MazeController {
     /**
      * Method to generate maze : it creates a specific generator, saves it and use
      * it to generate a maze
-     * 
+     *
      * @param genMethod algorithm used to generate the maze
      * @param x         strictly positive integer : number of columns
      * @param y         striclty positive integer : number of rows
@@ -64,20 +64,20 @@ public class MazeController {
     /**
      * Can be used only if a maze was generated.
      * make the solution of the maze by finding it's
-     * 
+     *
      * @param solveMethod method used to solve the maze
      * @param start       a starting vertex
      * @param end         an ending vertex
      * @throws Exception if no maze has been instantiated
      */
-    public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end){
+    public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end) {
         try {
             if (maze == null) {
                 throw new Exception("No maze has been created/instantiated! Aborting resolution.");
             }
             mazeSolver = new Solver(solveMethod);
-            visited = mazeSolver.solve(maze, start, end, MethodName.Type.COMPLETE);
-            solution = mazeSolver.solve(maze, start, end, MethodName.Type.STEPPER);
+            visited = mazeSolver.solve(maze, start, end, MethodName.Type.STEPPER);
+            solution = mazeSolver.solve(maze, start, end, MethodName.Type.COMPLETE);
         } catch (Exception e) {
             System.err.println("Error in findSolution: " + e.getMessage());
         }
@@ -85,7 +85,7 @@ public class MazeController {
 
     /**
      * return the current maze or null
-     * 
+     *
      * @return maze
      */
     public Maze getCurrentMaze() {
@@ -99,7 +99,7 @@ public class MazeController {
      * return solution of the current maze
      * WARNING : this solution can be the solution of a previous generated maze, try
      * running findSolution before calling this function
-     * 
+     *
      * @return ArrayList of vertices, path found or null
      */
     public ArrayList<Vertex> getSolutionasVertexList() {
@@ -123,7 +123,7 @@ public class MazeController {
 
     /**
      * get the list of IDs of vertices in solution
-     * 
+     *
      * @return int[] of vertices ID maze
      */
     public int[] getSolution() {
@@ -132,7 +132,7 @@ public class MazeController {
 
     /**
      * get the list of visited vertices IDs while finding solution
-     * 
+     *
      * @return int[] of vertices ID in maze
      */
     public int[] getVisited() {
@@ -141,7 +141,7 @@ public class MazeController {
 
     /**
      * return the last generator used
-     * 
+     *
      * @return Generator Instance
      */
     public Generator getGenerator() {
@@ -154,7 +154,7 @@ public class MazeController {
 
     /**
      * return the last solver used
-     * 
+     *
      * @return Solver Instance
      */
     public Solver getSolver() {
@@ -167,7 +167,7 @@ public class MazeController {
 
     /**
      * Save current maze with the FileController class
-     * 
+     *
      * @return confirmation if maze was succesfully saved
      */
     public Boolean saveMaze() {
@@ -192,5 +192,15 @@ public class MazeController {
             return false;
         }
         return true;
+    }
+
+    public int getLengthList(int[] list) {
+        int count = 0;
+        for (int id : list) {
+            if (id == -1)
+                break;
+            count++;
+        }
+        return count;
     }
 }

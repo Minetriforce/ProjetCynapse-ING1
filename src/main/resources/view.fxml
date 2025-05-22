@@ -26,7 +26,7 @@
         </center>
 
         <left>
-            <StackPane>
+            <StackPane fx:id="leftPane">
                 <VBox alignment="CENTER_LEFT" spacing="10.0" prefWidth="300">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -45,8 +45,8 @@
 
                     <!-- Second line: timeStep and backgroundSelector -->
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <CheckBox fx:id="stepByStepCheckBox" text="Step-by-step" style="-fx-text-fill: white;"/>
-                        <TextField fx:id="timeStepField" promptText="time step (ms)" prefWidth="140"/>
+                        <CheckBox fx:id="stepByStepCheckBoxGeneration" text="Step-by-step" />
+                        <TextField fx:id="timeStepFieldGeneration" promptText="time step (ms)" prefWidth="140"/>
                     </HBox>
                     <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
 
@@ -60,7 +60,7 @@
         </left>
 
         <right>
-            <StackPane>
+            <StackPane fx:id="rightPane">
                 <VBox alignment="CENTER" spacing="10.0" prefWidth="350">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -71,6 +71,12 @@
                         <ComboBox fx:id="solutionMethodComboBox" prefWidth="200"/>
                         <Button fx:id="resolutionLabyrinth" text="Solve" onAction="#onStartResolutionClick" />
                     </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <CheckBox fx:id="stepByStepCheckBoxSolution" text="Step-by-step"/>
+                        <TextField fx:id="timeStepFieldSolution" promptText="time step (ms)" prefWidth="140"/>
+                    </HBox>
+
 
                     <!-- Resolution history -->
                     <TitledPane fx:id="resolutionHistory" text="Resolution History" collapsible="false" expanded="true" prefHeight="150" prefWidth="200">
