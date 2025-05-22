@@ -21,6 +21,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 
 import java.io.File;
+import java.nio.BufferOverflowException;
+
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 
@@ -32,6 +34,19 @@ import javafx.stage.FileChooser;
  * @author Florianne, Lorelle
  */
 public class FXController {
+
+    @FXML
+    private StackPane rightPane;
+
+    @FXML
+    private StackPane leftPane;
+
+    private Color[][] colors = {
+            { Color.rgb(173, 216, 230), Color.rgb(0, 0, 0), Color.rgb(169, 169, 169) },
+            { Color.rgb(255, 185, 211), Color.rgb(200, 113, 151), Color.rgb(169, 169, 169) },
+            { Color.rgb(94, 151, 202), Color.rgb(132, 152, 169), Color.rgb(187, 228, 241) },
+            { Color.rgb(249, 213, 182), Color.rgb(25, 114, 210), Color.rgb(163, 173, 204) } };
+    private int theme = 0;
 
     @FXML
     private ImageView backgroundImage;
@@ -76,7 +91,6 @@ public class FXController {
     private ToggleButton editEdgeButton;
     @FXML
     private VBox historyVBox;
-
 
     private boolean isEditingEdges = false;
 
@@ -130,21 +144,28 @@ public class FXController {
         switch (selectedName) {
             case "labyrinth":
                 fileName = "images/logo.png";
+                theme = 0;
                 break;
             case "sakura":
                 fileName = "images/sakura.jpg";
+                theme = 1;
                 break;
             case "beach":
                 fileName = "images/beach.jpg";
+                theme = 2;
                 break;
             case "shootingstar":
                 fileName = "images/shootingstar.jpg";
+                theme = 3;
                 break;
             default:
                 fileName = "images/logo.png";
+                theme = 0;
         }
         Image image = new Image(getClass().getResourceAsStream("/" + fileName));
         backgroundImage.setImage(image);
+        this.timeStep = 0;
+        displayMaze(maze);
     }
 
     /**
@@ -348,7 +369,11 @@ public class FXController {
         this.rows = rows;
         this.cols = cols;
 
-        blockSize = (int) Math.max(5, 800 / this.rows);
+        blockSize = (int) Math.min(stackPane.getHeight() / this.rows, (stackPane.getWidth() - 700) / this.cols);
+        blockSize = Math.max(5, blockSize);
+
+        mazeCanvas.setWidth(cols * blockSize);
+        mazeCanvas.setHeight(rows * blockSize);
     }
 
     /**
@@ -384,6 +409,10 @@ public class FXController {
             if (selectedGenMethod == null) {
                 throw new Exception("You must select a generation method.");
             }
+
+            this.rows = (this.rows > stackPane.getHeight() / 5) ? (int) stackPane.getHeight() / 5 : this.rows;
+            this.cols = (this.cols > (stackPane.getWidth() - 700) / 5) ? (int) (stackPane.getWidth() - 700) / 5
+                    : this.cols;
 
             // System.out.println("timeStep = " + this.timeStep);
             // System.out.println("Selected generation method: " + selectedGenMethod);
@@ -441,13 +470,22 @@ public class FXController {
                 temp.add(e.getVertexA());
                 temp.add(e.getVertexB());
                 Platform.runLater(() -> drawVertexWithWalls(temp));
-                Thread.sleep(timeStep);
+                try {
+                    Thread.sleep(timeStep);
+                } catch (InterruptedException ignored) {
+                }
             }
 
             labyrinthIsGenerated = true;
             setButtonsState(true, true, true, true, true, true);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (BufferOverflowException ex) {
+            ex.printStackTrace();
+            showAlert("ERROR DISPLAYING", ex.getMessage());
+            this.maze = null;
+            this.rows = 0;
+            this.cols = 0;
+            setButtonsState(true, false, false, false, false, true);
+
         }
     }
 
@@ -473,7 +511,8 @@ public class FXController {
 
             long timeMs = endTime - startTime;
 
-            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited(), timeMs, solveMethod.name());
+            markVisitedAndSolutionPath(mazeController.getSolution(), mazeController.getVisited(), timeMs,
+                    solveMethod.name());
 
         } catch (Exception e) {
             showAlert("Error solving maze", e.getMessage());
@@ -518,9 +557,10 @@ public class FXController {
                 Platform.runLater(() -> drawVertexWithWalls(temp));
                 Thread.sleep(timeStep);
             }
-        } catch (InterruptedException ignored) {
+        } catch (Exception e) {
         }
-        // put the time of resolution, length of the path and visited cases for the solution
+        // put the time of resolution, length of the path and visited cases for the
+        // solution
         addResolutionStatsToHistory(pathLength, visitedCount, timeMs, solveMethodName);
         setButtonsState(true, true, true, true, true, true);
     }
@@ -542,8 +582,6 @@ public class FXController {
 
         GraphicsContext g = mazeCanvas.getGraphicsContext2D();
         g.clearRect(0, 0, mazeCanvas.getWidth(), mazeCanvas.getHeight());
-        mazeCanvas.setWidth(cols * blockSize);
-        mazeCanvas.setHeight(rows * blockSize);
 
         this.start = 0;
         this.end = maze.getVertices().getLast().getID();
@@ -570,6 +608,7 @@ public class FXController {
 
             g.setFill(getColorForVertex(v));
             g.fillRect(x, y, blockSize, blockSize);
+            g.setStroke(colors[theme][1]); // Set the color of the line
 
             if (v.getY() != 0) {
                 if (!visibleEdges.contains(new Edge(v, maze.getVertexByID(v.getID() - this.cols), true))) { // top
@@ -609,8 +648,8 @@ public class FXController {
      */
     private Color getColorForVertex(Vertex v) {
         return switch (v.getState()) {
-            case VISITED -> Color.rgb(169, 169, 169);
-            case SOLUTION -> Color.rgb(173, 216, 230);
+            case VISITED -> colors[theme][2];
+            case SOLUTION -> colors[theme][0];
             case SELECTEDADD -> Color.rgb(100, 255, 0);
             case SELECTEDDEL -> Color.rgb(255, 0, 0);
             case FIRSTSELECTED -> Color.rgb(200, 255, 200);
@@ -732,7 +771,7 @@ public class FXController {
      * @param load       load maze button
      */
     private void setButtonsState(Boolean generation, Boolean solve, Boolean startEnd, Boolean modify, Boolean save,
-                                 Boolean load) {
+            Boolean load) {
         generationLabyrinth.setDisable(!generation);
         resolutionLabyrinth.setDisable(!solve);
         changeStartEndButton.setDisable(!startEnd);
@@ -743,7 +782,8 @@ public class FXController {
 
     /**
      * Adds a summary of the maze resolution statistics to the history panel.
-     * Displays the solving method name, path length, number of visited vertices, and time taken for the solution.
+     * Displays the solving method name, path length, number of visited vertices,
+     * and time taken for the solution.
      *
      * @param pathLength      the length of the found path from start to end
      * @param visitedCount    the total number of vertices visited during solving

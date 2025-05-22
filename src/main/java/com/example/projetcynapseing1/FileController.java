@@ -10,9 +10,6 @@ import java.io.Serializable;
 
 import javafx.stage.FileChooser;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
-
 /**
  * Class used to manage Saving / loading of Mazes Files
  * It should be acceseed in a static way
@@ -37,22 +34,20 @@ public class FileController {
                                                                                                       // files
         }
         try {
+            FileChooser dialog = new FileChooser();
+            dialog.setInitialFileName("Save a maze");
 
-            FileDialog dialog = new FileDialog((Frame) null, "Save As Maze", FileDialog.SAVE); // open system "save as"
-                                                                                               // dialog
-            dialog.setFile("maze" + maze.hashCode()); // default file name
-            dialog.setVisible(true);
-            String directory = dialog.getDirectory();
-            String file = dialog.getFile();
+            dialog.setInitialFileName("maze" + maze.hashCode() + ".ser");
 
-            if (file != null && directory != null) {
-                String fullPath = directory + file + ".ser";
-                FileOutputStream fileOut = new FileOutputStream(fullPath);
+            File selectedFile = dialog.showSaveDialog(null);
+
+            if (selectedFile != null) {
+                FileOutputStream fileOut = new FileOutputStream(selectedFile.getAbsolutePath());
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
                 out.writeObject(maze);
                 out.close();
                 fileOut.close();
-                System.out.println("Maze saved with name : " + file + ".ser");
+                System.out.println("Maze saved with name : " + selectedFile.getName());
                 return true;
             } else {
                 System.out.println("Saving aborted");
@@ -78,7 +73,7 @@ public class FileController {
             dialog.setTitle("Select a maze");
 
             File selectedFile = dialog.showOpenDialog(null);
-   
+
             // if selected file is not null
 
             if (selectedFile != null) {
