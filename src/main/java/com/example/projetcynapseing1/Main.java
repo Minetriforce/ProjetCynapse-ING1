@@ -42,7 +42,7 @@ public class Main extends Application {
 
         // Set up the scene with the loaded layout
         Scene scene = new Scene(fxmlLoader.load(), 1920, 1080);
-        stage.setMinWidth(1400);
+        stage.setMinWidth(1600);
         stage.setMinHeight(800);
         stage.setMaximized(true);
         stage.setTitle("Cynapse");
