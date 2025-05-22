@@ -478,19 +478,28 @@ public class FXController {
     private void onStartResolutionClick() {
         resetSolution();
 
-        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel()
-                .getSelectedItem();
+        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
 
-        if (maze != null && selectedSolveMethod != null) {
-            if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
-                this.timeStep = Integer.parseInt(timeStepFieldSolution.getText());
-            } else {
-                this.timeStep = 0;
+        try{
+            if (maze != null && selectedSolveMethod != null) {
+                if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
+                    this.timeStep = Integer.parseInt(timeStepFieldSolution.getText());
+                } else {
+                    this.timeStep = 0;
+                }
+
+                setButtonsState(false, false, false, false, false, false);
+                this.timeStep = Math.max(0, this.timeStep);
+                new Thread(() -> solveMaze(selectedSolveMethod)).start();
             }
 
-            setButtonsState(false, false, false, false, false, false);
-            this.timeStep = Math.max(0, this.timeStep);
-            new Thread(() -> solveMaze(selectedSolveMethod)).start();
+            
+            if (selectedSolveMethod == null) {
+                throw new Exception("You must select a solve method.");
+            }
+        }
+        catch (Exception e) {
+            showAlert("Error", e.getMessage());
         }
     }
 
