@@ -72,7 +72,7 @@
                         <Button fx:id="resolutionLabyrinth" text="Solve" onAction="#onStartResolutionClick" />
                     </HBox>
 
-                    <HBox spacing="10" alignment="CENTER_LEFT">
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
                         <CheckBox fx:id="stepByStepCheckBoxSolution" text="Step-by-step"/>
                         <TextField fx:id="timeStepFieldSolution" promptText="time step (ms)" prefWidth="140"/>
                     </HBox>

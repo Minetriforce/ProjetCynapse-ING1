@@ -439,6 +439,11 @@ public class FXController {
                 throw new Exception("Please enter valids integers for rows,cols and seed to generate a maze!");
             }
 
+            if (this.rows > 100 || this.cols > 100) {
+                throw new Exception("Maximum allowed size is 100x100 for rows and columns.");
+            }
+
+
             if (selectedGenMethod == null) {
                 throw new Exception("You must select a generation method.");
             }
