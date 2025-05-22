@@ -114,9 +114,9 @@ public class MethodName {
          */
         BFS("BFS"),
         /**
-         * A*2 resolution algorithm
+         * A* II resolution algorithm
          */
-        ASTAR2("A*2");
+        ASTARII("A* II");
 
         // name of the method
         private final String name;

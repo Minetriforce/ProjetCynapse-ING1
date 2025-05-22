@@ -82,7 +82,7 @@ public class Solver {
             case LEFTHAND: return this.solveHand(m, start, end, t);
             case BFS: return this.solveBFS(m, start, end, t);
             case DFS: return this.solveDFS(m, start, end, t);
-            case ASTAR2: return this.solveAstar2(m, start, end, t);
+            case ASTARII: return this.solveAstarII(m, start, end, t);
             default: return null;
         }
     }
@@ -477,7 +477,7 @@ public class Solver {
      * @param t: type of printing
      * @return result
      */
-    private int[] solveAstar2(Maze m, Vertex start, Vertex end, MethodName.Type t){
+    private int[] solveAstarII(Maze m, Vertex start, Vertex end, MethodName.Type t){
         // list of vertices
         ArrayList<Vertex> vertices = m.getVertices();
         // number of vertices
