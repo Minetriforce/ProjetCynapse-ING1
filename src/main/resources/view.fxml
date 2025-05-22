@@ -73,9 +73,9 @@
                     </HBox>
 
                     <!-- Resolution history -->
-                    <TitledPane text="Resolution History" collapsible="false" expanded="true" prefHeight="150" prefWidth="200">
+                    <TitledPane fx:id="resolutionHistory" text="Resolution History" collapsible="false" expanded="true" prefHeight="150" prefWidth="200">
                         <content>
-                            <ScrollPane fitToWidth="true" fitToHeight="true" prefHeight="150" prefWidth="200">
+                            <ScrollPane fx:id ="scrollpane" fitToWidth="true" fitToHeight="true" prefHeight="150" prefWidth="200">
                                 <content>
                                     <VBox fx:id="historyVBox" spacing="5" style="-fx-padding: 10;"/>
                                 </content>

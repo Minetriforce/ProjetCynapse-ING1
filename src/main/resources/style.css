@@ -115,22 +115,92 @@
 
 
 /* TitledPane style */
-.titled-pane {
+#resolutionHistory {
     -fx-background-color: transparent;
     -fx-border-color: #4e54c8;
     -fx-border-width: 2;
-    -fx-border-radius: 10;
     -fx-background-radius: 10;
+    -fx-border-radius: 10;
     -fx-text-fill: #eaebfd;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
 
-/* TitledPane title bar */
+
+
+#historyVBox{
+    -fx-background-color: white;
+    -fx-border-width: 1;
+}
+
+#scrollpane{
+    -fx-border-width: 1;
+}
+
+
+
 .titled-pane > .title {
     -fx-background-color: linear-gradient(to bottom, #4e54c8, #6e72f5);
     -fx-text-fill: white;
     -fx-padding: 8 12 8 12;
-    -fx-background-radius: 10 10 0 0;
 }
 
+.titled-pane .content{
+    -fx-background-color: white;
+    -fx-border-radius: 0 0 10 10;
+    -fx-background-radius : 0 0 10 10;
+    -fx-padding:5;
+
+}
+
+
+/*Scroll bar style*/
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+    -fx-background-color: white; /* scroll bar zone color color */
+    /*-fx-border-color: rgb(255, 0, 0);*/ /* scroll bar zone border color */
+    -fx-background-radius: 10em; /* coins bien arrondis */
+    -fx-border-radius: 10em;
+}
+
+
+.scroll-bar:horizontal .increment-button ,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color :white;
+    -fx-background-radius : 0;
+    -fx-border-radius: 0;
+}
+
+.scroll-bar:vertical .increment-button ,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color :white;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 7.0 0.0 0.0;
+
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow{
+    -fx-shape : " ";    
+    -fx-padding :0em 0.0;
+}
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow{
+    -fx-shape : " ";    
+    -fx-padding :0.0 0.15em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color : linear-gradient(to bottom, #4e54c8, #6e72f5); /*Scrollbar unselected*/
+    -fx-background-insets : 2.0, 0.0, 0.0;
+    -fx-background-radius : 2.0em;
+}
+
+.scroll-bar:horizontal .thumb:pressed,
+.scroll-bar:vertical .thumb:pressed {
+    -fx-background-color :linear-gradient(to bottom, #5a7cff, #6ee2f5); /*scroll bar color when hover*/
+    -fx-background-insets : 2.0, 0.0, 0.0;
+    -fx-background-radius : 2.0em;
+}

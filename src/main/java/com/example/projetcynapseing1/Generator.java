@@ -358,7 +358,7 @@ public class Generator {
             maze.addEdge(
                     new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID())));
 
-            System.out.println(e);
+            //System.out.println(e);
         }
     }
 
