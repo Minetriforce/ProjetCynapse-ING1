@@ -1,5 +1,6 @@
 package com.example.projetcynapseing1;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -210,6 +211,15 @@ public class MainCLI {
         int startId = 0; // Top-left corner
         int endId = (rows * columns) - 1; // Bottom-right corner
 
+        // Variables to store the time to solve the maze
+        long startTime = 0;
+        long endTime = 0;
+        long timeMs = 0;
+
+        // Variables to store the number of cell of the solution path and the number of all the visited cells
+        int pathLength = 0;
+        int visitedCount = 0;
+
         // Check if command-line arguments are provided
         if (args.length > 0) {
         String command = args[0];
@@ -358,7 +368,7 @@ public class MainCLI {
 
                     
                     
-                    if(solveChoice.equals("y")){
+                    if(solveChoice.equals("y")) {
                         // Ask the user to select a solving method
                         System.out.println(ITALIC + "How would you like to solve it?" + RESET);
                         System.out.println(BOLD + " 1 " + RESET + "- " + MethodName.SolveMethodName.ASTAR + RESET);
@@ -367,66 +377,87 @@ public class MainCLI {
                         System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.SolveMethodName.RIGHTHAND + RESET);
                         System.out.println(BOLD + " 5 " + RESET + "- " + MethodName.SolveMethodName.LEFTHAND + RESET);
 
-                        while(true){
+                        while (true) {
                             solvingChoice = sc.nextLine().toLowerCase().trim();
-                            if(solvingChoice.equals("1") || solvingChoice.equals("astar")
-                            || solvingChoice.equals("2") || solvingChoice.equals("bfs")
-                            || solvingChoice.equals("3") || solvingChoice.equals("dfs")
-                            || solvingChoice.equals("4") || solvingChoice.equals("righthand")
-                            || solvingChoice.equals("5") || solvingChoice.equals("lefthand")){
+                            if (solvingChoice.equals("1") || solvingChoice.equals("astar")
+                                    || solvingChoice.equals("2") || solvingChoice.equals("bfs")
+                                    || solvingChoice.equals("3") || solvingChoice.equals("dfs")
+                                    || solvingChoice.equals("4") || solvingChoice.equals("righthand")
+                                    || solvingChoice.equals("5") || solvingChoice.equals("lefthand")) {
                                 break;
-                            }
-                            else{
+                            } else {
                                 System.out.println(RED + "Invalid choice. Please enter the name or the corresponding number" + RESET);
                             }
                         }
 
+
+                        // Based on the user's choice, create the maze
                         // Based on the user's choice, create the maze
                         switch (solvingChoice) {
                             case "1":
                             case "astar":
                                 // Solve the maze using Astar's algorithm
+                                startTime = System.currentTimeMillis();
                                 mazeController.findSolution(MethodName.SolveMethodName.ASTAR, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                                endTime = System.currentTimeMillis();
                                 break;
-    
+
                             case "2":
                             case "bfs":
                                 // Solve the maze using BFS algorithm
+                                startTime = System.currentTimeMillis();
                                 mazeController.findSolution(MethodName.SolveMethodName.BFS, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                                endTime = System.currentTimeMillis();
                                 break;
-    
+
                             case "3":
                             case "dfs":
                                 // Create the maze using DFS algorithm
+                                startTime = System.currentTimeMillis();
                                 mazeController.findSolution(MethodName.SolveMethodName.DFS, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                                endTime = System.currentTimeMillis();
                                 break;
                             case "4":
                             case "righthand":
                                 // Create the maze using Righthand algorithm
+                                startTime = System.currentTimeMillis();
                                 mazeController.findSolution(MethodName.SolveMethodName.RIGHTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                                endTime = System.currentTimeMillis();
                                 break;
                             case "5":
                             case "lefthand":
                                 // Create the maze using Righthand algorithm
+                                startTime = System.currentTimeMillis();
                                 mazeController.findSolution(MethodName.SolveMethodName.LEFTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                                endTime = System.currentTimeMillis();
                                 break;
                         }
+
 
                         // Solve the maze
                         Solver solver = mazeController.getSolver();
                         System.out.println(solver);
-    
-                        int[] antecedents = solver.solve(maze,
-                                maze.getVertexByID(startId),
-                                maze.getVertexByID(endId),
-                                MethodName.Type.COMPLETE);
+
+                        int[] antecedents = mazeController.getSolution();
                         int[] solution = Solver.pathIndex(maze,
                                 maze.getVertexByID(endId),
                                 antecedents);
-    
+                        int[] orders = mazeController.getVisited();
+
+                        visitedCount=mazeController.getLengthList(orders);
+
                         System.out.println(UNDERLINE + BOLD + "\nSolution found:" + RESET);
-                        System.out.println(maze.solutionToString(antecedents,solution, startId, endId));
-                    }
+                        System.out.println(maze.solutionToString(antecedents, solution, startId, endId));
+
+
+                        ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(endId), antecedents);
+                        pathLength=solutionVertices.size();
+                        timeMs = endTime - startTime;
+
+                        System.out.println(mazeController.getSolver() + ":  Path Length: " + pathLength + " | " + "Visited: "+  visitedCount + "| Time: " + timeMs + " ms");
+
+
+                   }
 
                     System.out.println(ITALIC + "Save the maze? " + RESET + BOLD + "[" + GREEN + BOLD + "Y" + RESET +"/"+ RED + BOLD +"N" + RESET + "]" + RESET);
 
