@@ -78,15 +78,24 @@ public class FXController {
     @FXML
     private TextField seedField;
     @FXML
-    private TextField timeStepField;
+    private CheckBox stepByStepCheckBoxGeneration;
+
+    @FXML
+    private TextField timeStepFieldGeneration;
+
+    @FXML
+    private CheckBox stepByStepCheckBoxSolution;
+
+    @FXML
+    private TextField timeStepFieldSolution;
+
 
     @FXML
     private ToggleButton changeStartEndButton;
     private boolean selectingStart = true;
     private boolean isEditingStartEnd = false;
 
-    @FXML
-    private CheckBox stepByStepCheckBox;
+
     @FXML
     private ToggleButton editEdgeButton;
     @FXML
@@ -114,6 +123,10 @@ public class FXController {
     private Image startIcon;
     private Image endIcon;
 
+    /**
+     * Called when the background selection changes. Loads either a predefined
+     * background or opens file chooser for a custom image.
+     */
     @FXML
     private void onBackgroundSelectionChanged() {
         String selectedImage = backgroundSelector.getValue();
@@ -124,6 +137,9 @@ public class FXController {
         }
     }
 
+    /**
+     * Opens a file chooser dialog to select a custom background image and sets it.
+     */
     private void onCustomBackgroundSelected() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select your own background image");
@@ -134,11 +150,16 @@ public class FXController {
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
             Image image = new Image(selectedFile.toURI().toString());
-            backgroundImage.setImage(image);
+            Platform.runLater(() -> backgroundImage.setImage(image));
         }
 
     }
 
+    /**
+     * Sets the background image according to the selected name.
+     *
+     * @param selectedName name of the background theme
+     */
     private void setBackgroundImage(String selectedName) {
         String fileName;
         switch (selectedName) {
@@ -163,9 +184,11 @@ public class FXController {
                 theme = 0;
         }
         Image image = new Image(getClass().getResourceAsStream("/" + fileName));
-        backgroundImage.setImage(image);
-        this.timeStep = 0;
-        displayMaze(maze);
+        Platform.runLater(() -> {
+            backgroundImage.setImage(image);
+            this.timeStep = 0;
+            displayMaze(maze);
+        });
     }
 
     /**
@@ -213,22 +236,33 @@ public class FXController {
             }
         });
 
-        // Checkbox to enable/disable timestep input
-        stepByStepCheckBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
-            timeStepField.setDisable(!isNowSelected);
-            if (!isNowSelected) {
-                timeStepField.setText("");
+        // Step by step for generation
+        stepByStepCheckBoxGeneration.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            timeStepFieldGeneration.setDisable(!newVal);
+            if (!newVal) {
+                timeStepFieldGeneration.setText("");
                 timeStep = 0;
             }
         });
-        timeStepField.setDisable(true);
+        timeStepFieldGeneration.setDisable(true);
+
+      // Step by step for solution
+        stepByStepCheckBoxSolution.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            timeStepFieldSolution.setDisable(!newVal);
+            if (!newVal) {
+                timeStepFieldSolution.setText("");
+                timeStep = 0;
+            }
+        });
+        timeStepFieldSolution.setDisable(true);
+
 
         // Redraw maze when toggle button selection changes
         changeStartEndButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
             if (maze != null) {
                 Set<Vertex> temp = new HashSet<Vertex>();
                 temp.addAll(maze.getVertices());
-                drawVertexWithWalls(temp);
+                Platform.runLater(() -> drawVertexWithWalls(temp));
             }
         });
 
@@ -277,11 +311,9 @@ public class FXController {
                 if (selectingStart) {
                     temp.add(maze.getVertexByID(this.start));
                     start = clickedVertex.getID();
-                    // System.out.println("Start vertex selected: " + start);
                     selectingStart = false;
                 } else {
                     end = clickedVertex.getID();
-                    // System.out.println("End vertex selected: " + end);
                     selectingStart = true;
                     changeStartEndButton.setSelected(false);
                     isEditingStartEnd = false;
@@ -298,7 +330,6 @@ public class FXController {
                 if (firstSelectedVertex == null) {
                     firstSelectedVertex = clickedVertex;
                     markSelectedVertices(firstSelectedVertex, false);
-                    // System.out.println("First cell selected: " + firstSelectedVertex.getID());
                 } else {
                     markSelectedVertices(firstSelectedVertex, true);
                     toggleWallBetween(firstSelectedVertex, clickedVertex);
@@ -312,7 +343,7 @@ public class FXController {
      * When a Vertex is clicked for a modification, this function mark this vertex
      * and the orthers valid vertices around in red if it means to delete a wall,
      * and green to add one
-     * 
+     *
      * @param v     first selected vertex
      * @param clear clear the colors
      */
@@ -346,13 +377,13 @@ public class FXController {
             }
         }
         temp.add(v);
-        drawVertexWithWalls(temp);
+        Platform.runLater(() -> drawVertexWithWalls(temp));
     }
 
     /**
      * Setter for the maze controller Instance, used to generate, solve, load and
      * save a maze
-     * 
+     *
      * @param mazeController Instance of mazeController
      */
     public void setMazeController(MazeController mazeController) {
@@ -361,7 +392,7 @@ public class FXController {
 
     /**
      * Resize maze canvas according to number of rows and columns
-     * 
+     *
      * @param rows integer of rows of maze
      * @param cols integer of columns of maze
      */
@@ -383,8 +414,10 @@ public class FXController {
     @FXML
     private void onStartGenerationClick() {
         try {
-            if (stepByStepCheckBox.isSelected() && !timeStepField.getText().isEmpty()) {
-                this.timeStep = Integer.parseInt(timeStepField.getText());
+            if (stepByStepCheckBoxGeneration.isSelected() && !timeStepFieldGeneration.getText().isEmpty()) {
+                this.timeStep = Integer.parseInt(timeStepFieldGeneration.getText());
+            } else {
+                this.timeStep = 0;
             }
 
             labyrinthIsGenerated = false;
@@ -414,13 +447,10 @@ public class FXController {
             this.cols = (this.cols > (stackPane.getWidth() - 700) / 5) ? (int) (stackPane.getWidth() - 700) / 5
                     : this.cols;
 
-            // System.out.println("timeStep = " + this.timeStep);
-            // System.out.println("Selected generation method: " + selectedGenMethod);
             setButtonsState(false, false, false, false, false, false);
             new Thread(() -> generateMaze(selectedGenMethod, seed, rows, cols)).start();
 
         } catch (Exception e) {
-            // System.out.println("Please enter valid integers for all input fields.");
             showAlert("Error", e.getMessage());
         }
     }
@@ -435,12 +465,14 @@ public class FXController {
 
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel()
                 .getSelectedItem();
-        // System.out.println("Selected solving method: " + selectedSolveMethod);
 
         if (maze != null && selectedSolveMethod != null) {
-            if (stepByStepCheckBox.isSelected() && !timeStepField.getText().isEmpty()) {
-                this.timeStep = Integer.parseInt(timeStepField.getText());
+            if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
+                this.timeStep = Integer.parseInt(timeStepFieldSolution.getText());
+            } else {
+                this.timeStep = 0;
             }
+
             setButtonsState(false, false, false, false, false, false);
             this.timeStep = Math.max(0, this.timeStep);
             new Thread(() -> solveMaze(selectedSolveMethod)).start();
@@ -449,7 +481,7 @@ public class FXController {
 
     /**
      * Generate a maze according to parameters and start animation of the maze
-     * 
+     *
      * @param generationMethod method used to generate maze
      * @param seed             used in the random number generator
      * @param rows             number of rows
@@ -460,7 +492,6 @@ public class FXController {
             mazeController.createMaze(generationMethod, rows, cols, seed);
             Maze generatedMaze = mazeController.getCurrentMaze();
             visibleEdges.clear();
-            // displayMaze(generatedMaze);
 
             displayMaze(generatedMaze);
 
@@ -491,11 +522,6 @@ public class FXController {
 
     /**
      * Solve maze according to given method (only if a maze is instantiated)
-     * 
-     * @param solveMethod method to solve maze
-     */
-    /**
-     * Solve maze according to given method (only if a maze is instantiated)
      *
      * @param solveMethod method to solve maze
      */
@@ -511,7 +537,8 @@ public class FXController {
 
             long timeMs = endTime - startTime;
 
-            markVisitedAndSolutionPath(mazeController.getVisited(), mazeController.getSolution(), timeMs, solveMethod.name());
+            markVisitedAndSolutionPath(mazeController.getVisited(), mazeController.getSolution(), timeMs,
+                    solveMethod.name());
 
         } catch (Exception e) {
             showAlert("Error solving maze", e.getMessage());
@@ -519,12 +546,12 @@ public class FXController {
     }
 
     /**
-     * add color to vertices visitied during resolving maze
+     * Add color to vertices visited during maze solving animation.
      *
-     * @param orders          color in blue the path between start and end
-     * @param antecedents     color in grey all the other vertices visited
-     * @param timeMs          time taken to solve
-     * @param solveMethodName name of the solving method
+     * @param orders          array of visited vertex IDs in visitation order
+     * @param antecedents     array encoding the solution path
+     * @param timeMs          time taken to solve in milliseconds
+     * @param solveMethodName name of the solving method used
      */
     private void markVisitedAndSolutionPath(int[] orders, int[] antecedents, long timeMs, String solveMethodName) {
         int pathLength = 0;
@@ -557,18 +584,16 @@ public class FXController {
                 Thread.sleep(timeStep);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
-        // put the time of resolution, length of the path and visited cases for the
-        // solution
         addResolutionStatsToHistory(pathLength, visitedCount, timeMs, solveMethodName);
         setButtonsState(true, true, true, true, true, true);
     }
 
     /**
      * Function to display an entire maze.
-     * 
-     * 
-     * @param maze a maze
+     *
+     * @param maze the maze to display
      */
     private void displayMaze(Maze maze) {
         this.maze = maze;
@@ -579,19 +604,21 @@ public class FXController {
         this.cols = maze.getColumns();
         setMazeSize(this.rows, this.cols);
 
-        GraphicsContext g = mazeCanvas.getGraphicsContext2D();
-        g.clearRect(0, 0, mazeCanvas.getWidth(), mazeCanvas.getHeight());
+        Platform.runLater(() -> {
+            GraphicsContext g = mazeCanvas.getGraphicsContext2D();
+            g.clearRect(0, 0, mazeCanvas.getWidth(), mazeCanvas.getHeight());
 
-        this.start = 0;
-        this.end = maze.getVertices().getLast().getID();
+            this.start = 0;
+            this.end = maze.getVertices().getLast().getID();
 
-        drawVertexWithWalls(temp);
+            drawVertexWithWalls(temp);
+        });
     }
 
     /**
-     * draw / update a specific list of vertices on maze Canvas.
-     * 
-     * @param vList set of uniques vertices in maze
+     * Draw or update a specific set of vertices on the maze Canvas.
+     *
+     * @param vList set of unique vertices to draw
      */
     private void drawVertexWithWalls(Set<Vertex> vList) {
         if (mazeCanvas == null) {
@@ -640,8 +667,8 @@ public class FXController {
     }
 
     /**
-     * Return the color of the box according to vertex state
-     * 
+     * Returns the color of the box according to vertex state.
+     *
      * @param v a vertex in the maze
      * @return a color for the box
      */
@@ -657,28 +684,23 @@ public class FXController {
     }
 
     /**
-     * add or remove a wall between two adjacent vertices
-     * 
+     * Add or remove a wall between two adjacent vertices.
+     *
      * @param v1 First vertex
      * @param v2 Second vertex
      */
     private void toggleWallBetween(Vertex v1, Vertex v2) {
         if (Math.abs(v1.getY() - v2.getY()) + Math.abs(v1.getX() - v2.getX()) != 1) {
-            // System.out.println("Vertices are not adjacent. Can't toggle wall.");
             return;
         }
 
         if (maze.getEdgeByVertices(v1, v2) != null) {
             visibleEdges.remove(maze.getEdgeByVertices(v1, v2));
             maze.removeEdge(maze.getEdgeByVertices(v1, v2));
-            // System.out.println("Wall added between " + v1.getID() + " and " +
-            // v2.getID());
         } else {
             Edge edge = new Edge(v1, v2);
             visibleEdges.add(edge);
             maze.addEdge(edge);
-            // System.out.println("Wall removed between " + v1.getID() + " and " +
-            // v2.getID());
         }
 
         Set<Vertex> temp = new HashSet<Vertex>();
@@ -689,13 +711,12 @@ public class FXController {
     }
 
     /**
-     * Clean the maze of displayed solution
+     * Clean the maze of displayed solution.
      */
     private void resetSolution() {
         Set<Vertex> temp = new HashSet<Vertex>();
 
         if (maze == null) {
-            // System.out.println("maze is null");
             return;
         }
         for (Vertex v : maze.getVertices()) {
@@ -708,8 +729,8 @@ public class FXController {
     }
 
     /**
-     * Open an alert pop-up
-     * 
+     * Open an alert pop-up.
+     *
      * @param title   title of the pop-up
      * @param content content of the pop-up
      */
@@ -725,21 +746,22 @@ public class FXController {
 
     /**
      * Function to handle click on load button.
-     * This function also bypass all the requirements to draw directly a maze
-     * without doing an animation
+     * This function bypasses all generation requirements and draws directly a maze
+     * without animation.
      */
     @FXML
     private void onLoadClick() {
-        if (mazeController.loadMaze() == true) {
-            /* Bypass all generation requirements and changing */
+        if (mazeController.loadMaze()) {
             this.maze = mazeController.getCurrentMaze();
             this.visibleEdges.clear();
             this.visibleEdges.addAll(this.maze.getEdges());
             labyrinthIsGenerated = true;
 
-            this.resetSolution();
-            displayMaze(this.maze);
-            setButtonsState(true, true, true, true, true, true);
+            Platform.runLater(() -> {
+                this.resetSolution();
+                displayMaze(this.maze);
+                setButtonsState(true, true, true, true, true, true);
+            });
 
         } else {
             showAlert("LOADING MAZE FAIL", "Loaded maze seems to be empty / corrupted, try to load another file.");
@@ -748,7 +770,7 @@ public class FXController {
 
     /**
      * Function to handle click on save Button.
-     * this function opens an environement saving pop up.
+     * This function opens an environment saving pop up.
      */
     @FXML
     private void onSaveClick() {
@@ -758,10 +780,10 @@ public class FXController {
     }
 
     /**
-     * enable or disable all users button, according to parameters.
+     * Enable or disable all user buttons, according to parameters.
      * False : button disabled
      * True : button enabled
-     * 
+     *
      * @param generation generation button
      * @param solve      solving button
      * @param startEnd   change start-end toggle button
@@ -770,7 +792,7 @@ public class FXController {
      * @param load       load maze button
      */
     private void setButtonsState(Boolean generation, Boolean solve, Boolean startEnd, Boolean modify, Boolean save,
-            Boolean load) {
+                                 Boolean load) {
         generationLabyrinth.setDisable(!generation);
         resolutionLabyrinth.setDisable(!solve);
         changeStartEndButton.setDisable(!startEnd);
