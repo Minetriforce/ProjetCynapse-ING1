@@ -240,6 +240,8 @@ public class FXController {
 
             if (isEditingEdges) {
                 editEdgeButton.setText("Confirm Changes");
+                setButtonsState(false, false, false, true, false, false);
+
                 firstSelectedVertex = null;
 
                 // disable start/end editing to avoid conflicts
@@ -256,6 +258,7 @@ public class FXController {
             } else {
                 editEdgeButton.setText("Add or Remove Edge");
                 firstSelectedVertex = null;
+                setButtonsState(true, true, true, true, true, true);
 
                 changeStartEndButton.setDisable(false); // re-enable other button
             }
