@@ -219,7 +219,6 @@ public class FXController {
 
             if (isEditingEdges) {
                 editEdgeButton.setText("Confirm Changes");
-                resolutionLabyrinth.setDisable(true);
                 firstSelectedVertex = null;
 
                 // disable start/end editing to avoid conflicts
@@ -236,7 +235,6 @@ public class FXController {
             } else {
                 editEdgeButton.setText("Add or Remove Edge");
                 firstSelectedVertex = null;
-                resolutionLabyrinth.setDisable(false);
 
                 changeStartEndButton.setDisable(false); // re-enable other button
             }
