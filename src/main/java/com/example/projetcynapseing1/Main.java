@@ -42,11 +42,12 @@ public class Main extends Application {
 
         // Set up the scene with the loaded layout
         Scene scene = new Scene(fxmlLoader.load(), 1920, 1080);
+        stage.setMinWidth(1400);
+        stage.setMinHeight(800);
         stage.setMaximized(true);
         stage.setTitle("Cynapse");
         stage.setScene(scene);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/smiley.png")));
-        stage.setResizable(false);
         stage.show();
 
     }
