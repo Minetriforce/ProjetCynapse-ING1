@@ -187,6 +187,15 @@ public class FXController {
                 stackPane.lookupAll("TitledPane").forEach(node -> {
                     node.setStyle("-fx-border-color: #4e54c8;");
                 });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #4e54c8, #6e72f5;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:hover").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                });
                 break;
             case "sakura":
                 fileName = "images/sakura.jpg";
@@ -199,6 +208,15 @@ public class FXController {
                 });
                 stackPane.lookupAll("TitledPane").forEach(node -> {
                     node.setStyle("-fx-border-color: #FF69B4;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:hover").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #00FF77);");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #0752FF);");
                 });
                 break;
             case "beach":
