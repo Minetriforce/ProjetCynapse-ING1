@@ -13,8 +13,7 @@ import javafx.scene.control.Label;
  * dimensions,
  * and solve the maze using the A* algorithm or other solving strategies.
  * <p>
- * The CLI supports generating a maze with various algorithms, loading a maze
- * from a file,
+ * The CLI supports loading a maze from a file,
  * editing walls manually, selecting start and end points, solving the maze,
  * and saving the maze.
  * </p>
@@ -458,7 +457,7 @@ public class MainCLI {
                     break;
                 case "6":
                 case "astarii":
-                    // Create the maze using Lefthand algorithm
+                    // Create the maze using AstarII algorithm
                     startTime = System.currentTimeMillis();
                     mazeController.findSolution(MethodName.SolveMethodName.ASTARII, maze.getVertexByID(startId), maze.getVertexByID(endId));
                     endTime = System.currentTimeMillis();
