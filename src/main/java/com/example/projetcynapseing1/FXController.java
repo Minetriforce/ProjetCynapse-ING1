@@ -811,7 +811,7 @@ public class FXController {
      */
     @FXML
     private void onLoadClick() {
-        if (mazeController.loadMaze()) {
+        if (mazeController.loadMazeCLI()) {
             this.maze = mazeController.getCurrentMaze();
             this.visibleEdges.clear();
             this.visibleEdges.addAll(this.maze.getEdges());
@@ -835,7 +835,7 @@ public class FXController {
     @FXML
     private void onSaveClick() {
         if (maze != null) {
-            mazeController.saveMaze();
+            mazeController.saveMazeFX();
         }
     }
 
