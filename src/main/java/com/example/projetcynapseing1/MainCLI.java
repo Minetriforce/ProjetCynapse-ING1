@@ -337,19 +337,18 @@ public class MainCLI {
                 case "kruskal":
                     // Create the maze using Kruskal's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.KRUSKAL, rows, columns, seed);
-    
                     break;
     
                 case "3":
                 case "rng_dfs":
                     // Create the maze using RNG_DFS's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.DFS, rows, columns, seed);
-
                     break;
                 case "4":
                 case "imperfect":
                     // Create the maze using Imperfect's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.IMPERFECT, rows, columns, seed);
+                    break;
 
             }
         }
@@ -401,6 +400,7 @@ public class MainCLI {
             System.out.println(BOLD + " 3 " + RESET + "- " + MethodName.SolveMethodName.DFS + RESET);
             System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.SolveMethodName.RIGHTHAND + RESET);
             System.out.println(BOLD + " 5 " + RESET + "- " + MethodName.SolveMethodName.LEFTHAND + RESET);
+            System.out.println(BOLD + " 6 " + RESET + "- " + MethodName.SolveMethodName.ASTARII + RESET);
 
             while(true){
                 solvingChoice = sc.nextLine().toLowerCase().trim();
@@ -408,7 +408,8 @@ public class MainCLI {
                 || solvingChoice.equals("2") || solvingChoice.equals("bfs")
                 || solvingChoice.equals("3") || solvingChoice.equals("dfs")
                 || solvingChoice.equals("4") || solvingChoice.equals("righthand")
-                || solvingChoice.equals("5") || solvingChoice.equals("lefthand")){
+                || solvingChoice.equals("5") || solvingChoice.equals("lefthand")
+                || solvingChoice.equals("6") || solvingChoice.equals("astarii")){
                     break;
                 }
                 else{
@@ -453,6 +454,13 @@ public class MainCLI {
                     // Create the maze using Lefthand algorithm
                     startTime = System.currentTimeMillis();
                     mazeController.findSolution(MethodName.SolveMethodName.LEFTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                    endTime = System.currentTimeMillis();
+                    break;
+                case "6":
+                case "astarii":
+                    // Create the maze using Lefthand algorithm
+                    startTime = System.currentTimeMillis();
+                    mazeController.findSolution(MethodName.SolveMethodName.ASTARII, maze.getVertexByID(startId), maze.getVertexByID(endId));
                     endTime = System.currentTimeMillis();
                     break;
             }

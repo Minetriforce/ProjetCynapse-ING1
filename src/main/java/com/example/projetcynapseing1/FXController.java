@@ -421,7 +421,8 @@ public class FXController {
         try {
             if (stepByStepCheckBoxGeneration.isSelected() && !timeStepFieldGeneration.getText().isEmpty()) {
                 this.timeStep = Integer.parseInt(timeStepFieldGeneration.getText());
-            } else {
+            }
+            else {
                 this.timeStep = 0;
             }
 
@@ -443,7 +444,7 @@ public class FXController {
             if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
                 this.rows = (this.rows <= 0) ? 1 : this.rows;
                 this.cols = (this.cols <= 0) ? 1 : this.cols;
-                this.seed = (this.cols < 0) ? 0 : this.seed;
+                this.seed = (this.seed < 0) ? 0 : this.seed;
                 rowsField.setText("" + this.rows);
                 colsField.setText("" + this.cols);
                 seedField.setText("" + this.seed);
@@ -809,7 +810,7 @@ public class FXController {
      */
     @FXML
     private void onSaveClick() {
-        if (labyrinthIsGenerated) {
+        if (maze != null) {
             mazeController.saveMaze();
         }
     }

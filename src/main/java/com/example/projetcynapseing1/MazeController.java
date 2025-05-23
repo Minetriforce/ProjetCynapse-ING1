@@ -184,12 +184,13 @@ public class MazeController {
      *  @return true if successful, false otherwise
      */
     public Boolean loadMaze() {
-        this.maze = FileController.loadMaze();
-        if (maze == null) {
+        Maze m = FileController.loadMaze();
+        if (m == null) {
             System.out.println("--- Maze Controller ---");
             System.out.println("WARNING : loaded maze seems to be null, try to load it again or change file");
             return false;
         }
+        this.maze = m;
         return true;
     }
 }
