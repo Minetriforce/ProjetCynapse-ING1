@@ -209,40 +209,40 @@ public class FXController {
                 stackPane.lookupAll("TitledPane").forEach(node -> {
                     node.setStyle("-fx-border-color: #FF69B4;");
                 });
-                stackPane.lookupAll(".scroll-bar:vertical .thumb").forEach(node -> {
-                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0;");
-                });
-                stackPane.lookupAll(".scroll-bar:vertical .thumb:hover").forEach(node -> {
-                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #00FF77);");
-                });
                 stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
-                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #0752FF);");
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0);");
                 });
                 break;
             case "beach":
                 fileName = "images/beach.jpg";
                 theme = 2;
                 stackPane.lookupAll(".button").forEach(node -> {
-                    node.setStyle("-fx-background-color: #00BFFF; -fx-text-fill: white;");
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #00BFFF, #6CDAFF);");
                 });
                 stackPane.lookupAll(".titled-pane > .title").forEach(node -> {
-                    node.setStyle("-fx-background-color: #00BFFF;");
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #00BFFF, #6CDAFF);");
                 });
                 stackPane.lookupAll("TitledPane").forEach(node -> {
                     node.setStyle("-fx-border-color: #00BFFF;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #00BFFF, #6CDAFF);");
                 });
                 break;
             case "shootingstar":
                 fileName = "images/shootingstar.jpg";
                 theme = 3;
                 stackPane.lookupAll(".button").forEach(node -> {
-                    node.setStyle("-fx-background-color: #483D8B; -fx-text-fill: white;");
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #483D8B, #685BC3);");
                 });
                 stackPane.lookupAll(".titled-pane > .title").forEach(node -> {
-                    node.setStyle("-fx-background-color: #483D8B;");
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #483D8B, #685BC3);");
                 });
                 stackPane.lookupAll("TitledPane").forEach(node -> {
                     node.setStyle("-fx-border-color: #483D8B;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #483D8B, #685BC3);");
                 });
                 break;
             default:
@@ -257,7 +257,9 @@ public class FXController {
                 stackPane.lookupAll("TitledPane").forEach(node -> {
                     node.setStyle("-fx-border-color: #4e54c8;");
                 });
-
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                });
         }
         Image image = new Image(getClass().getResourceAsStream("/" + fileName));
         Platform.runLater(() -> {
