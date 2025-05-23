@@ -315,9 +315,15 @@ public class MainCLI {
         }
 
         else if(menuChoice.equals("2") || menuChoice.equals("load")){
-            mazeController.loadMazeCLI();
-            rows = mazeController.getCurrentMaze().getRows();
-            columns = mazeController.getCurrentMaze().getColumns();
+            try{
+                mazeController.loadMazeCLI();
+                rows = mazeController.getCurrentMaze().getRows();
+                columns = mazeController.getCurrentMaze().getColumns();
+            }
+            catch(NullPointerException e){
+                System.out.println("Wrong format");
+                System.exit(2);
+            }
         }
 
         if(generationChoice!=null){
@@ -325,7 +331,7 @@ public class MainCLI {
             switch (generationChoice) {
                 case "1":
                 case "prim":
-                    // Create the maze using Prim's algorithm
+                    // Create the maze using Prim's algorithmload
                     mazeController.createMaze(MethodName.GenMethodName.PRIM, rows, columns, seed);
 
                 
