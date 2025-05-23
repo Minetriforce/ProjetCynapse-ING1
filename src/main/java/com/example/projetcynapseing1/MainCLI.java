@@ -315,9 +315,15 @@ public class MainCLI {
         }
 
         else if(menuChoice.equals("2") || menuChoice.equals("load")){
-            mazeController.loadMazeCLI();
-            rows = mazeController.getCurrentMaze().getRows();
-            columns = mazeController.getCurrentMaze().getColumns();
+            try{
+                mazeController.loadMazeCLI();
+                rows = mazeController.getCurrentMaze().getRows();
+                columns = mazeController.getCurrentMaze().getColumns();
+            }
+            catch(NullPointerException e){
+                System.out.println("Wrong format");
+                System.exit(2);
+            }
         }
 
         if(generationChoice!=null){
