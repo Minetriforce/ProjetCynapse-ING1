@@ -2,7 +2,7 @@
 Cette application JavaFX permet de générer, modifier, charger, sauvegarder et résoudre des labyrinthes via une interface graphique interactive. Elle propose plusieurs méthodes de génération et de résolution ainsi que la possibilité d’éditer les points de départ et d’arrivée et de modifier manuellement les murs. 
 
 # Pré-requis
-installer maven avec "sudo apt install mvn"
+Installer maven avec "sudo apt install mvn"
 
 # Fabriqué avec
 - Java - langage de programmation (back-end)
@@ -10,10 +10,9 @@ installer maven avec "sudo apt install mvn"
 - VSCode et IntellJ - éditeur de code
 
 # Versions
-Version de Java: 21.0.3 et version JavaFX : 21.0
+Version de Java: 21.0.3 et version de JavaFX : 21.0
 
 # Fonctionnalités principales
-
 Pour lancer l'interface graphique JavaFX, il faut écrire **mvn clean javafx:run** dans le terminal.
 
 ## Génération de labyrinthe
