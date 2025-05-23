@@ -61,7 +61,7 @@ public class MainCLI {
      * @param prompt  The prompt message to display to the user.
      * @return A positive integer input by the user.
      */
-    private static int verifPositiveInteger(Scanner scanner, String prompt) {
+    public static int verifPositiveInteger(Scanner scanner, String prompt) {
         int value;
         while (true) {
             System.out.println(ITALIC + prompt + RESET);
@@ -89,7 +89,7 @@ public class MainCLI {
      * @param prompt  The message displayed to prompt the user.
      * @return A valid integer input that is zero or positive.
      */
-    private static int verifPositiveOrZeroInteger(Scanner scanner, String prompt) {
+    public static int verifPositiveOrZeroInteger(Scanner scanner, String prompt) {
         int value;
         while (true) {
             System.out.println(ITALIC + prompt + RESET);
@@ -117,7 +117,7 @@ public class MainCLI {
      * @param columns The number of columns in the maze (used to determine the upper bound).
      * @return A valid integer input within the range [0, rows * columns - 1].
      */
-    private static int verifCorrectInterval(Scanner sc, int rows, int columns){
+    public static int verifCorrectInterval(Scanner sc, int rows, int columns){
         int value;
         while (true) {
             if (sc.hasNextInt()) {
@@ -144,7 +144,7 @@ public class MainCLI {
      * @param sc The Scanner object to read input from
      * @return The validated user input as a lowercase string, either "y" or "n"
      */
-    private static String verifYesNo(Scanner sc){
+    public static String verifYesNo(Scanner sc){
         String YesNoChoice;
         while (true) {
             YesNoChoice = sc.nextLine().toLowerCase().trim();
@@ -163,7 +163,7 @@ public class MainCLI {
      * @param sc      Scanner for reading user input
      * @param maze    The current Maze object
      */
-    private static void toggleWall(Scanner sc, Maze maze) {
+    public static void toggleWall(Scanner sc, Maze maze) {
         int rows = maze.getRows();
         int columns = maze.getColumns();
         System.out.println(ITALIC + "Enter two adjacent cell IDs to add/remove a wall between them." + RESET);
@@ -217,11 +217,10 @@ public class MainCLI {
      * 
      * <p>
      * Supported generation methods: Prim, Kruskal, RNG_DFS, Imperfect.<br>
-     * Supported solving methods: A*, BFS, DFS, RightHand, LeftHand.
+     * Supported solving methods: A*, BFS, DFS, RightHand, LeftHand, A*II .
      * </p>
      * 
-     * @param args Command line arguments. If "cli" is passed, the menu is
-     *             displayed.
+     * @param args Command line arguments. 
      */
     public static void main(String args[]) {
 
