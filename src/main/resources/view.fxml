@@ -26,7 +26,7 @@
         </center>
 
         <left>
-            <StackPane fx:id="leftPane">
+            <StackPane>
                 <VBox alignment="CENTER_LEFT" spacing="10.0" prefWidth="300">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -60,7 +60,7 @@
         </left>
 
         <right>
-            <StackPane fx:id="rightPane">
+            <StackPane>
                 <VBox alignment="CENTER" spacing="10.0" prefWidth="350">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>

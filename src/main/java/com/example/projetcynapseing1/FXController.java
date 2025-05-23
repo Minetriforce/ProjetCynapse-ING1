@@ -34,13 +34,6 @@ import javafx.stage.FileChooser;
  * @author Florianne, Lorelle
  */
 public class FXController {
-
-    @FXML
-    private StackPane rightPane;
-
-    @FXML
-    private StackPane leftPane;
-
     private Color[][] colors = {
             { Color.rgb(173, 216, 230), Color.rgb(0, 0, 0), Color.rgb(169, 169, 169) },
             { Color.rgb(255, 185, 211), Color.rgb(200, 113, 151), Color.rgb(169, 169, 169) },
@@ -89,12 +82,10 @@ public class FXController {
     @FXML
     private TextField timeStepFieldSolution;
 
-
     @FXML
     private ToggleButton changeStartEndButton;
     private boolean selectingStart = true;
     private boolean isEditingStartEnd = false;
-
 
     @FXML
     private ToggleButton editEdgeButton;
@@ -174,6 +165,8 @@ public class FXController {
             case "beach":
                 fileName = "images/beach.jpg";
                 theme = 2;
+                generationLabyrinth.setStyle(
+                        "-fx-background-color: linear-gradient(to bottom,rgb(255, 90, 90),rgb(245, 171, 110))");
                 break;
             case "shootingstar":
                 fileName = "images/shootingstar.jpg";
@@ -246,7 +239,7 @@ public class FXController {
         });
         timeStepFieldGeneration.setDisable(true);
 
-      // Step by step for solution
+        // Step by step for solution
         stepByStepCheckBoxSolution.selectedProperty().addListener((obs, oldVal, newVal) -> {
             timeStepFieldSolution.setDisable(!newVal);
             if (!newVal) {
@@ -255,7 +248,6 @@ public class FXController {
             }
         });
         timeStepFieldSolution.setDisable(true);
-
 
         // Redraw maze when toggle button selection changes
         changeStartEndButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
@@ -453,7 +445,6 @@ public class FXController {
                 throw new Exception("Maximum allowed size is 100x100 for rows and columns.");
             }
 
-
             if (selectedGenMethod == null) {
                 throw new Exception("You must select a generation method.");
             }
@@ -480,7 +471,7 @@ public class FXController {
 
         MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
 
-        try{
+        try {
             if (maze != null && selectedSolveMethod != null) {
                 if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
                     this.timeStep = Integer.parseInt(timeStepFieldSolution.getText());
@@ -493,12 +484,10 @@ public class FXController {
                 new Thread(() -> solveMaze(selectedSolveMethod)).start();
             }
 
-            
             if (selectedSolveMethod == null) {
                 throw new Exception("You must select a solve method.");
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             showAlert("Error", e.getMessage());
         }
     }
@@ -816,7 +805,7 @@ public class FXController {
      * @param load       load maze button
      */
     private void setButtonsState(Boolean generation, Boolean solve, Boolean startEnd, Boolean modify, Boolean save,
-                                 Boolean load) {
+            Boolean load) {
         generationLabyrinth.setDisable(!generation);
         resolutionLabyrinth.setDisable(!solve);
         changeStartEndButton.setDisable(!startEnd);

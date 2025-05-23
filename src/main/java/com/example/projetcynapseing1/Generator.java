@@ -2,9 +2,7 @@ package com.example.projetcynapseing1;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
-import java.util.Stack;
 
 /**
  * Generator class is used to generate a maze according to differents
@@ -361,7 +359,7 @@ public class Generator {
             maze.addEdge(
                     new Edge(maze.getVertexByID(e.getVertexA().getID()), maze.getVertexByID(e.getVertexB().getID())));
 
-            //System.out.println(e);
+            // System.out.println(e);
         }
     }
 
