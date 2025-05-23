@@ -223,7 +223,7 @@ public class MainCLI {
         int visitedCount = 0;
 
         // Print the program title
-        System.out.println(ColorText.BLUE + ColorText.BOLD +
+        System.out.println("" + ColorText.BLUE + ColorText.BOLD +
                 "  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n" + 
                 " |  _ \\  |  _ \\   / _ \\      | | | ____| |_   _|    / ___| \\ \\ / / | \\ | |    / \\    |  _ \\  / ___|  | ____|\n" + 
                 " | |_) | | |_) | | | | |  _  | | |  _|     | |     | |      \\ V /  |  \\| |   / _ \\   | |_) | \\___ \\  |  _|  \n" +
@@ -234,7 +234,7 @@ public class MainCLI {
         Scanner sc = new Scanner(System.in);
 
         // Display the menu
-        System.out.println(ColorText.BOLD + ColorText.UNDERLINE + "MENU" + ColorText.RESET);
+        System.out.println("" + ColorText.BOLD + ColorText.UNDERLINE + "MENU" + ColorText.RESET);
         System.out.println(ColorText.BOLD + " 1 " + ColorText.RESET + "- " + ColorText.BOLD + "Generate " + ColorText.RESET + "a maze");
         System.out.println(ColorText.BOLD + " 2 " + ColorText.RESET + "- " + ColorText.BOLD + "Load " + ColorText.RESET + "a maze from a file" + ColorText.RESET);
 
@@ -332,7 +332,7 @@ public class MainCLI {
 
         // Retrieve the generated maze
         Maze maze = mazeController.getCurrentMaze();
-        System.out.println(ColorText.UNDERLINE + ColorText.BOLD + "\nGenerated Maze:" + ColorText.RESET);
+        System.out.println("" + ColorText.UNDERLINE + ColorText.BOLD + "\nGenerated Maze:" + ColorText.RESET);
         System.out.println(maze);
 
         System.out.println(ColorText.ITALIC + "Do you want to edit walls in the maze? " + ColorText.RESET + ColorText.BOLD + "[" + ColorText.GREEN + "Y" + ColorText.RESET + "/" + ColorText.RED + "N" + ColorText.RESET + "]");
@@ -454,7 +454,7 @@ public class MainCLI {
                     maze.getVertexByID(endId),
                     antecedents);
     
-            System.out.println(ColorText.UNDERLINE + ColorText.BOLD + "\nSolution found:" + ColorText.RESET);
+            System.out.println("" + ColorText.UNDERLINE + ColorText.BOLD + "\nSolution found:" + ColorText.RESET);
             System.out.println(maze.solutionToString(antecedents,solution, startId, endId));
 
             for (int i = 0; i < antecedents.length; i++){

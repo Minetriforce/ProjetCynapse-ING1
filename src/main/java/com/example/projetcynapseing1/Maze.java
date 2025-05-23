@@ -222,7 +222,7 @@ public class Maze extends Graph implements Serializable {
 
             for (int x = 0; x < columns; x++) {
                 i = y * columns + x;
-                s += (solution[i] != i || (i == start && solution[end] != end)) ? ColorText.GREENBACK + ColorText.BOLD : (antecedents[i] != i || i == start) ? ColorText.REDBACK : "";
+                s += (solution[i] != i || (i == start && solution[end] != end)) ? "" + ColorText.GREENBACK + ColorText.BOLD : (antecedents[i] != i || i == start) ? ColorText.REDBACK : "";
                 s += Maze.paddingInt(i, padding);
                 s += (solution[i] != i || (i == start && solution[end] != end) || antecedents[i] != i) ? ColorText.RESET : "";
 
