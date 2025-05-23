@@ -312,8 +312,7 @@ public class FXController {
                 }
                 changeStartEndButton.setDisable(true); // disable other mode button
 
-                showAlert("Edit Mode Enabled",
-                        "Select two cells such that an edge appears or disappears between them.");
+
             } else {
                 editEdgeButton.setText("Add or Remove Edge");
                 firstSelectedVertex = null;
