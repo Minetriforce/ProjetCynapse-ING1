@@ -26,33 +26,6 @@ public class MainCLI {
     /** Controller for managing maze operations such as creation, loading, solving, and saving */
     private static final MazeController mazeController = new MazeController();
 
-    /** ANSI escape code to reset terminal color */
-    public static final String RESET = "\u001B[0m";
-    /** ANSI escape code for red text */
-    public static final String RED = "\u001B[31m";
-    /** ANSI escape code for red background */
-    public static final String REDBACK = "\u001B[48;5;196m";
-    /** ANSI escape code for green text */
-    public static final String GREEN = "\u001b[38;5;46m";
-    /** ANSI escape code for green background */
-    public static final String GREENBACK = "\u001b[48;5;46m";
-    /** ANSI escape code for yellow text */
-    public static final String YELLOW = "\u001B[33m";
-    /** ANSI escape code for blue text */
-    public static final String BLUE = "\u001B[34m";
-    /** ANSI escape code for cyan text */
-    public static final String CYAN = "\u001B[36m";
-    /** ANSI escape code for magenta text */
-    public static final String MAGENTA = "\u001B[35m";
-    /** ANSI escape code for bold text */
-    public static final String BOLD = "\u001B[1m";
-    /** ANSI escape code for italic text */
-    public static final String ITALIC = "\u001B[3m";
-    /** ANSI escape code for underline text */
-    public static final String UNDERLINE = "\u001B[4m";
-    /** ANSI escape code for gray text */
-    public static final String GRAY = "\u001b[38;5;244m";
-
     /**
      * Utility method to get a valid positive integer input from the user.
      * Keeps prompting until the user enters an integer greater than zero.
@@ -64,17 +37,17 @@ public class MainCLI {
     public static int verifPositiveInteger(Scanner scanner, String prompt) {
         int value;
         while (true) {
-            System.out.println(ITALIC + prompt + RESET);
+            System.out.println(ColorText.ITALIC + prompt + ColorText.RESET);
             if (scanner.hasNextInt()) {
                 value = scanner.nextInt();
                 scanner.nextLine();
                 if (value > 0) {
                     return value;  // valid input, return the value
                 } else {
-                    System.out.println(RED + "Please enter a positive integer." + RESET);
+                    System.out.println(ColorText.RED + "Please enter a positive integer." + ColorText.RESET);
                 }
             } else {
-                System.out.println(RED + "Invalid input. Please enter a positive integer." + RESET);
+                System.out.println(ColorText.RED + "Invalid input. Please enter a positive integer." + ColorText.RESET);
                 scanner.nextLine(); // consume the invalid input
             }
         }
@@ -92,16 +65,16 @@ public class MainCLI {
     public static int verifPositiveOrZeroInteger(Scanner scanner, String prompt) {
         int value;
         while (true) {
-            System.out.println(ITALIC + prompt + RESET);
+            System.out.println(ColorText.ITALIC + prompt + ColorText.RESET);
             if (scanner.hasNextInt()) {
                 value = scanner.nextInt();
                 if (value >= 0) {
                     return value;  // valid input, return the value
                 } else {
-                    System.out.println(RED + "Please enter a positive integer." + RESET);
+                    System.out.println(ColorText.RED + "Please enter a positive integer." + ColorText.RESET);
                 }
             } else {
-                System.out.println(RED + "Invalid input. Please enter a positive integer." + RESET);
+                System.out.println(ColorText.RED + "Invalid input. Please enter a positive integer." + ColorText.RESET);
                 scanner.nextLine(); // consume the invalid input
             }
         }
@@ -127,10 +100,10 @@ public class MainCLI {
                 if (value >= 0 && value < rows * columns) {
                     return value;
                 } else {
-                    System.out.println(RED + "Please enter an integer between 0 and " + ((rows * columns) - 1) + ": " + RESET);
+                    System.out.println(ColorText.RED + "Please enter an integer between 0 and " + ((rows * columns) - 1) + ": " + ColorText.RESET);
                 }
             } else {
-                System.out.println(RED + "Invalid input. Please enter a integer: " + RESET);
+                System.out.println(ColorText.RED + "Invalid input. Please enter a integer: " + ColorText.RESET);
                 sc.nextLine(); // consume the invalid input
             }
         }
@@ -151,7 +124,7 @@ public class MainCLI {
             if (YesNoChoice.equals("y") || YesNoChoice.equals("n")) {
                 return YesNoChoice;  // valid input, exit loop
             } else {
-                System.out.println(RED + "Invalid choice. Please enter 'Y' or 'N'." + RESET);
+                System.out.println(ColorText.RED + "Invalid choice. Please enter 'Y' or 'N'." + ColorText.RESET);
             }
         }
     }
@@ -166,7 +139,7 @@ public class MainCLI {
     public static void toggleWall(Scanner sc, Maze maze) {
         int rows = maze.getRows();
         int columns = maze.getColumns();
-        System.out.println(ITALIC + "Enter two adjacent cell IDs to add/remove a wall between them." + RESET);
+        System.out.println(ColorText.ITALIC + "Enter two adjacent cell IDs to add/remove a wall between them." + ColorText.RESET);
         int first = -1;
         int second = -1;
     
@@ -186,7 +159,7 @@ public class MainCLI {
         
             // Check if the two cells are adjacent
             if (Math.abs(r1 - r2) + Math.abs(c1 - c2) != 1) {
-                System.out.println(RED + "Cells are not adjacent! Please try again." + RESET);
+                System.out.println(ColorText.RED + "Cells are not adjacent! Please try again." + ColorText.RESET);
                 continue;
             }
             break;
@@ -250,20 +223,20 @@ public class MainCLI {
         int visitedCount = 0;
 
         // Print the program title
-        System.out.println(BLUE + BOLD +
+        System.out.println(ColorText.BLUE + ColorText.BOLD +
                 "  ____    ____     ___        _   _____   _____      ____  __   __  _   _      _      ____    ____    _____ \n" + 
                 " |  _ \\  |  _ \\   / _ \\      | | | ____| |_   _|    / ___| \\ \\ / / | \\ | |    / \\    |  _ \\  / ___|  | ____|\n" + 
                 " | |_) | | |_) | | | | |  _  | | |  _|     | |     | |      \\ V /  |  \\| |   / _ \\   | |_) | \\___ \\  |  _|  \n" +
                 " |  __/  |  _ <  | |_| | | |_| | | |___    | |     | |___    | |   | |\\  |  / ___ \\  |  __/   ___) | | |___ \n" +
                 " |_|     |_| \\_\\  \\___/   \\___/  |_____|   |_|      \\____|   |_|   |_| \\_| /_/   \\_\\ |_|     |____/  |_____|\n"
-                + RESET);
+                + ColorText.RESET);
 
         Scanner sc = new Scanner(System.in);
 
         // Display the menu
-        System.out.println(BOLD + UNDERLINE + "MENU" + RESET);
-        System.out.println(BOLD + " 1 " + RESET + "- " + BOLD + "Generate " + RESET + "a maze");
-        System.out.println(BOLD + " 2 " + RESET + "- " + BOLD + "Load " + RESET + "a maze from a file" + RESET);
+        System.out.println(ColorText.BOLD + ColorText.UNDERLINE + "MENU" + ColorText.RESET);
+        System.out.println(ColorText.BOLD + " 1 " + ColorText.RESET + "- " + ColorText.BOLD + "Generate " + ColorText.RESET + "a maze");
+        System.out.println(ColorText.BOLD + " 2 " + ColorText.RESET + "- " + ColorText.BOLD + "Load " + ColorText.RESET + "a maze from a file" + ColorText.RESET);
 
         
         // Read the user's choice for the menu
@@ -275,17 +248,17 @@ public class MainCLI {
                 break; // valid input
             } 
             else {
-                System.out.println(RED + "Invalid choice. Please enter the first word or the corresponding number" + RESET);
+                System.out.println(ColorText.RED + "Invalid choice. Please enter the first word or the corresponding number" + ColorText.RESET);
             }
         }
 
         // If the user chooses to generate a maze
         if (menuChoice.equals("1") || menuChoice.equals("generate")) {
             // Get number of rows
-            rows = verifPositiveInteger(sc, ITALIC + "Enter the number of rows:" + RESET);
+            rows = verifPositiveInteger(sc, ColorText.ITALIC + "Enter the number of rows:" + ColorText.RESET);
             
             // Get number of columns
-            columns = verifPositiveInteger(sc, ITALIC + "Enter the number of columns:" + RESET);
+            columns = verifPositiveInteger(sc, ColorText.ITALIC + "Enter the number of columns:" + ColorText.RESET);
 
             // Get the seed
             seed = verifPositiveOrZeroInteger(sc, "Enter a seed (or 0 for random):");
@@ -293,11 +266,11 @@ public class MainCLI {
             sc.nextLine(); // Consume the newline after nextInt()
             
             // Ask the user to select a generation method
-            System.out.println(ITALIC + "How would you like to generate it?" + RESET);
-            System.out.println(BOLD + " 1 " + RESET + "- Prim");
-            System.out.println(BOLD + " 2 " + RESET + "- Kruskal" + RESET);
-            System.out.println(BOLD + " 3 " + RESET + "- RNG_DFS" + RESET);
-            System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.GenMethodName.IMPERFECT + RESET);
+            System.out.println(ColorText.ITALIC + "How would you like to generate it?" + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 1 " + ColorText.RESET + "- Prim");
+            System.out.println(ColorText.BOLD + " 2 " + ColorText.RESET + "- Kruskal" + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 3 " + ColorText.RESET + "- RNG_DFS" + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 4 " + ColorText.RESET + "- " + MethodName.GenMethodName.IMPERFECT + ColorText.RESET);
 
 
             while(true){
@@ -309,7 +282,7 @@ public class MainCLI {
                     break;
                 }
                 else{
-                    System.out.println(RED + "Invalid choice. Please enter the name or the corresponding number" + RESET);
+                    System.out.println(ColorText.RED + "Invalid choice. Please enter the name or the corresponding number" + ColorText.RESET);
                 }
             }
         }
@@ -359,10 +332,10 @@ public class MainCLI {
 
         // Retrieve the generated maze
         Maze maze = mazeController.getCurrentMaze();
-        System.out.println(UNDERLINE + BOLD + "\nGenerated Maze:" + RESET);
+        System.out.println(ColorText.UNDERLINE + ColorText.BOLD + "\nGenerated Maze:" + ColorText.RESET);
         System.out.println(maze);
 
-        System.out.println(ITALIC + "Do you want to edit walls in the maze? " + RESET + BOLD + "[" + GREEN + "Y" + RESET + "/" + RED + "N" + RESET + "]");
+        System.out.println(ColorText.ITALIC + "Do you want to edit walls in the maze? " + ColorText.RESET + ColorText.BOLD + "[" + ColorText.GREEN + "Y" + ColorText.RESET + "/" + ColorText.RED + "N" + ColorText.RESET + "]");
 
         String editWallsChoice = verifYesNo(sc);
 
@@ -370,26 +343,26 @@ public class MainCLI {
             while (true) {
                 toggleWall(sc, mazeController.getCurrentMaze());
                 System.out.println(mazeController.getCurrentMaze());
-                System.out.println(ITALIC + "Edit another wall? " + RESET + BOLD + "[" + GREEN + "Y" + RESET + "/" + RED + "N" + RESET + "]");
+                System.out.println(ColorText.ITALIC + "Edit another wall? " + ColorText.RESET + ColorText.BOLD + "[" + ColorText.GREEN + "Y" + ColorText.RESET + "/" + ColorText.RED + "N" + ColorText.RESET + "]");
                 String choice = verifYesNo(sc);
                 if (choice.equals("n")) break;
             }
         
-            System.out.println("\n" + UNDERLINE + BOLD + "Maze after editing walls:" + RESET);
+            System.out.println("\n" + ColorText.UNDERLINE + ColorText.BOLD + "Maze after editing walls:" + ColorText.RESET);
             System.out.println(maze);
         }
 
 
 
 
-        System.out.println(ITALIC + "Starting point : " + RESET);
+        System.out.println(ColorText.ITALIC + "Starting point : " + ColorText.RESET);
         startId = verifCorrectInterval(sc, rows, columns);
         
-        System.out.println(ITALIC + "Ending point : " + RESET);
+        System.out.println(ColorText.ITALIC + "Ending point : " + ColorText.RESET);
         endId = verifCorrectInterval(sc, rows, columns);
 
 
-        System.out.println(ITALIC + "Solve the maze? " + RESET + BOLD + "[" + GREEN + BOLD + "Y" + RESET +"/"+ RED + BOLD +"N" + RESET + "]" + RESET);
+        System.out.println(ColorText.ITALIC + "Solve the maze? " + ColorText.RESET + ColorText.BOLD + "[" + ColorText.GREEN + ColorText.BOLD + "Y" + ColorText.RESET +"/"+ ColorText.RED + ColorText.BOLD +"N" + ColorText.RESET + "]" + ColorText.RESET);
 
 
         solveChoice = verifYesNo(sc);
@@ -398,13 +371,13 @@ public class MainCLI {
         
         if(solveChoice.equals("y")){
             // Ask the user to select a solving method
-            System.out.println(ITALIC + "How would you like to solve it?" + RESET);
-            System.out.println(BOLD + " 1 " + RESET + "- " + MethodName.SolveMethodName.ASTAR + RESET);
-            System.out.println(BOLD + " 2 " + RESET + "- " + MethodName.SolveMethodName.BFS + RESET);
-            System.out.println(BOLD + " 3 " + RESET + "- " + MethodName.SolveMethodName.DFS + RESET);
-            System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.SolveMethodName.RIGHTHAND + RESET);
-            System.out.println(BOLD + " 5 " + RESET + "- " + MethodName.SolveMethodName.LEFTHAND + RESET);
-            System.out.println(BOLD + " 6 " + RESET + "- " + MethodName.SolveMethodName.ASTARII + RESET);
+            System.out.println(ColorText.ITALIC + "How would you like to solve it?" + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 1 " + ColorText.RESET + "- " + MethodName.SolveMethodName.ASTAR + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 2 " + ColorText.RESET + "- " + MethodName.SolveMethodName.BFS + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 3 " + ColorText.RESET + "- " + MethodName.SolveMethodName.DFS + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 4 " + ColorText.RESET + "- " + MethodName.SolveMethodName.RIGHTHAND + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 5 " + ColorText.RESET + "- " + MethodName.SolveMethodName.LEFTHAND + ColorText.RESET);
+            System.out.println(ColorText.BOLD + " 6 " + ColorText.RESET + "- " + MethodName.SolveMethodName.ASTARII + ColorText.RESET);
 
             while(true){
                 solvingChoice = sc.nextLine().toLowerCase().trim();
@@ -417,7 +390,7 @@ public class MainCLI {
                     break;
                 }
                 else{
-                    System.out.println(RED + "Invalid choice. Please enter the name or the corresponding number" + RESET);
+                    System.out.println(ColorText.RED + "Invalid choice. Please enter the name or the corresponding number" + ColorText.RESET);
                 }
             }
 
@@ -481,7 +454,7 @@ public class MainCLI {
                     maze.getVertexByID(endId),
                     antecedents);
     
-            System.out.println(UNDERLINE + BOLD + "\nSolution found:" + RESET);
+            System.out.println(ColorText.UNDERLINE + ColorText.BOLD + "\nSolution found:" + ColorText.RESET);
             System.out.println(maze.solutionToString(antecedents,solution, startId, endId));
 
             for (int i = 0; i < antecedents.length; i++){
@@ -509,7 +482,7 @@ public class MainCLI {
 
         }
 
-        System.out.println(ITALIC + "Save the maze? " + RESET + BOLD + "[" + GREEN + BOLD + "Y" + RESET +"/"+ RED + BOLD +"N" + RESET + "]" + RESET);
+        System.out.println(ColorText.ITALIC + "Save the maze? " + ColorText.RESET + ColorText.BOLD + "[" + ColorText.GREEN + ColorText.BOLD + "Y" + ColorText.RESET +"/"+ ColorText.RED + ColorText.BOLD +"N" + ColorText.RESET + "]" + ColorText.RESET);
 
         saveChoice = verifYesNo(sc);
 
