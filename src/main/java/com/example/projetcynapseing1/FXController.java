@@ -45,7 +45,7 @@ public class FXController {
 
     private Color[][] colors = {
             { Color.rgb(173, 216, 230), Color.rgb(0, 0, 0), Color.rgb(169, 169, 169) },
-            { Color.rgb(255, 185, 211), Color.rgb(200, 113, 151), Color.rgb(169, 169, 169) },
+            { Color.rgb(251, 141, 181), Color.rgb(200, 113, 151), Color.rgb(235, 211, 216) },
             { Color.rgb(94, 151, 202), Color.rgb(132, 152, 169), Color.rgb(187, 228, 241) },
             { Color.rgb(249, 213, 182), Color.rgb(25, 114, 210), Color.rgb(163, 173, 204) } };
     private int theme = 0;
