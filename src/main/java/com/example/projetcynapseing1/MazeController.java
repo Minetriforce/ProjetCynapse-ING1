@@ -168,9 +168,23 @@ public class MazeController {
      *
      * @return confirmation if maze was succesfully saved
      */
-    public Boolean saveMaze() {
+    public Boolean saveMazeFX() {
         try {
-            FileController.SaveData(maze);
+            FileController.SaveDataFX(maze);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    /**
+     * Save current maze with the FileController class
+     *
+     * @return confirmation if maze was succesfully saved
+     */
+    public Boolean saveMazeCLI() {
+        try {
+            FileController.SaveDataCLI(maze);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -183,8 +197,25 @@ public class MazeController {
      * to current maze variable
      *  @return true if successful, false otherwise
      */
-    public Boolean loadMaze() {
-        Maze m = FileController.loadMaze();
+    public Boolean loadMazeFX() {
+        Maze m = FileController.loadMazeFX();
+        if (m == null) {
+            System.out.println("--- Maze Controller ---");
+            System.out.println("WARNING : loaded maze seems to be null, try to load it again or change file");
+            return false;
+        }
+        this.maze = m;
+        return true;
+    }
+
+    /**
+     * load maze function
+     * Lauch the load Maze function from the filController and asign the loaded maze
+     * to current maze variable
+     *  @return true if successful, false otherwise
+     */
+    public Boolean loadMazeCLI() {
+        Maze m = FileController.loadMazeCLI();
         if (m == null) {
             System.out.println("--- Maze Controller ---");
             System.out.println("WARNING : loaded maze seems to be null, try to load it again or change file");

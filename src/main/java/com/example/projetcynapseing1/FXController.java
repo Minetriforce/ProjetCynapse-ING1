@@ -155,6 +155,16 @@ public class FXController {
             Platform.runLater(() -> backgroundImage.setImage(image));
         }
 
+        stackPane.lookupAll(".button").forEach(node -> {
+            node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+        });
+        stackPane.lookupAll(".titled-pane > .title").forEach(node -> {
+                node.setStyle("-fx-background-color: linear-gradient(to bottom, #4e54c8, #6e72f5);");
+        });
+        stackPane.lookupAll("TitledPane").forEach(node -> {
+            node.setStyle("-fx-border-color: #4e54c8;");
+        });
+
     }
 
     /**
@@ -169,45 +179,86 @@ public class FXController {
                 fileName = "images/logo.png";
                 theme = 0;
                 stackPane.lookupAll(".button").forEach(node -> {
-                    if (node instanceof Button) {
-                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
-                    }
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                });
+                stackPane.lookupAll(".titled-pane > .title").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #4e54c8, #6e72f5);");
+                });
+                stackPane.lookupAll("TitledPane").forEach(node -> {
+                    node.setStyle("-fx-border-color: #4e54c8;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #4e54c8, #6e72f5);");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:hover").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
                 });
                 break;
             case "sakura":
                 fileName = "images/sakura.jpg";
                 theme = 1;
                 stackPane.lookupAll(".button").forEach(node -> {
-                    if (node instanceof Button) {
-                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0);");
-                    }
+                        node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0);");
+                });
+                stackPane.lookupAll(".titled-pane > .title").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0);");
+                });
+                stackPane.lookupAll("TitledPane").forEach(node -> {
+                    node.setStyle("-fx-border-color: #FF69B4;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0);");
                 });
                 break;
             case "beach":
                 fileName = "images/beach.jpg";
                 theme = 2;
                 stackPane.lookupAll(".button").forEach(node -> {
-                    if (node instanceof Button) {
-                        ((Button) node).setStyle("-fx-background-color: #00BFFF; -fx-text-fill: white;");
-                    }
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #00BFFF, #6CDAFF);");
+                });
+                stackPane.lookupAll(".titled-pane > .title").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #00BFFF, #6CDAFF);");
+                });
+                stackPane.lookupAll("TitledPane").forEach(node -> {
+                    node.setStyle("-fx-border-color: #00BFFF;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #00BFFF, #6CDAFF);");
                 });
                 break;
             case "shootingstar":
                 fileName = "images/shootingstar.jpg";
                 theme = 3;
                 stackPane.lookupAll(".button").forEach(node -> {
-                    if (node instanceof Button) {
-                        ((Button) node).setStyle("-fx-background-color: #483D8B; -fx-text-fill: white;");
-                    }
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #483D8B, #685BC3);");
+                });
+                stackPane.lookupAll(".titled-pane > .title").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #483D8B, #685BC3);");
+                });
+                stackPane.lookupAll("TitledPane").forEach(node -> {
+                    node.setStyle("-fx-border-color: #483D8B;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #483D8B, #685BC3);");
                 });
                 break;
             default:
                 fileName = "images/logo.png";
                 theme = 0;
                 stackPane.lookupAll(".button").forEach(node -> {
-                    if (node instanceof Button) {
-                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
-                    }
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                });
+                stackPane.lookupAll(".titled-pane > .title").forEach(node -> {
+                        node.setStyle("-fx-background-color: linear-gradient(to bottom, #4e54c8, #6e72f5);");
+                });
+                stackPane.lookupAll("TitledPane").forEach(node -> {
+                    node.setStyle("-fx-border-color: #4e54c8;");
+                });
+                stackPane.lookupAll(".scroll-bar:vertical .thumb:pressed").forEach(node -> {
+                    node.setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
                 });
         }
         Image image = new Image(getClass().getResourceAsStream("/" + fileName));
@@ -312,7 +363,8 @@ public class FXController {
                 }
                 changeStartEndButton.setDisable(true); // disable other mode button
 
-
+                showAlert("Edit Mode Enabled",
+                        "Select two cells such that an edge appears or disappears between them.");
             } else {
                 editEdgeButton.setText("Add or Remove Edge");
                 firstSelectedVertex = null;
@@ -811,7 +863,7 @@ public class FXController {
      */
     @FXML
     private void onLoadClick() {
-        if (mazeController.loadMaze()) {
+        if (mazeController.loadMazeCLI()) {
             this.maze = mazeController.getCurrentMaze();
             this.visibleEdges.clear();
             this.visibleEdges.addAll(this.maze.getEdges());
@@ -835,7 +887,7 @@ public class FXController {
     @FXML
     private void onSaveClick() {
         if (maze != null) {
-            mazeController.saveMaze();
+            mazeController.saveMazeFX();
         }
     }
 

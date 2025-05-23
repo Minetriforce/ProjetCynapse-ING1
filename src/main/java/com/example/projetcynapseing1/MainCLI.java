@@ -315,7 +315,7 @@ public class MainCLI {
         }
 
         else if(menuChoice.equals("2") || menuChoice.equals("load")){
-            mazeController.loadMaze();
+            mazeController.loadMazeCLI();
             rows = mazeController.getCurrentMaze().getRows();
             columns = mazeController.getCurrentMaze().getColumns();
         }
@@ -508,7 +508,7 @@ public class MainCLI {
         saveChoice = verifYesNo(sc);
 
         if(saveChoice.equals("y")){
-            mazeController.saveMaze();
+            mazeController.saveMazeCLI();
         }
         sc.close();
         System.exit(0);
