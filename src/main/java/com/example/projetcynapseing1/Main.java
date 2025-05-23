@@ -47,7 +47,7 @@ public class Main extends Application {
         stage.setMaximized(true);
         stage.setTitle("Cynapse");
         stage.setScene(scene);
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/smiley.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/maze.png")));
         stage.show();
 
     }
