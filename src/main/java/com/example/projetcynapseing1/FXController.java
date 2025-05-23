@@ -413,9 +413,6 @@ public class FXController {
                 }
             }
         });
-
-
-
     }
 
     /**
