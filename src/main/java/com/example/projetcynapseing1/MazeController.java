@@ -68,7 +68,6 @@ public class MazeController {
      * @param solveMethod method used to solve the maze
      * @param start       a starting vertex
      * @param end         an ending vertex
-     * @throws Exception if no maze has been instantiated
      */
     public void findSolution(MethodName.SolveMethodName solveMethod, Vertex start, Vertex end) {
         try {
@@ -85,7 +84,6 @@ public class MazeController {
 
     /**
      * return the current maze or null
-     *
      * @return maze
      */
     public Maze getCurrentMaze() {
@@ -183,24 +181,16 @@ public class MazeController {
      * load maze function
      * Lauch the load Maze function from the filController and asign the loaded maze
      * to current maze variable
+     *  @return true if successful, false otherwise
      */
     public Boolean loadMaze() {
-        this.maze = FileController.loadMaze();
-        if (maze == null) {
+        Maze m = FileController.loadMaze();
+        if (m == null) {
             System.out.println("--- Maze Controller ---");
             System.out.println("WARNING : loaded maze seems to be null, try to load it again or change file");
             return false;
         }
+        this.maze = m;
         return true;
-    }
-
-    public int getLengthList(int[] list) {
-        int count = 0;
-        for (int id : list) {
-            if (id == -1)
-                break;
-            count++;
-        }
-        return count;
     }
 }

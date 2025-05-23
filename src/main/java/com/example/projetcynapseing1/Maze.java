@@ -318,6 +318,8 @@ public class Maze extends Graph implements Serializable {
      * convert a solution to a string
      * 
      * @param solution: parent of each vertex in the solution path
+     * @param start: index of the starting vertex
+     * @param end: index of the ending vertex
      * @return the maze with the solution in a string format
      */
     public String solutionToString(int[] solution, int start, int end) {

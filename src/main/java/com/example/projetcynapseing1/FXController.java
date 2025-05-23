@@ -157,24 +157,49 @@ public class FXController {
             case "labyrinth":
                 fileName = "images/logo.png";
                 theme = 0;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                    }
+                });
                 break;
             case "sakura":
                 fileName = "images/sakura.jpg";
                 theme = 1;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0);");
+                    }
+                });
                 break;
             case "beach":
                 fileName = "images/beach.jpg";
                 theme = 2;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: #00BFFF; -fx-text-fill: white;");
+                    }
+                });
                 generationLabyrinth.setStyle(
                         "-fx-background-color: linear-gradient(to bottom,rgb(255, 90, 90),rgb(245, 171, 110))");
                 break;
             case "shootingstar":
                 fileName = "images/shootingstar.jpg";
                 theme = 3;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: #483D8B; -fx-text-fill: white;");
+                    }
+                });
                 break;
             default:
                 fileName = "images/logo.png";
                 theme = 0;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                    }
+                });
         }
         Image image = new Image(getClass().getResourceAsStream("/" + fileName));
         Platform.runLater(() -> {
@@ -408,7 +433,8 @@ public class FXController {
         try {
             if (stepByStepCheckBoxGeneration.isSelected() && !timeStepFieldGeneration.getText().isEmpty()) {
                 this.timeStep = Integer.parseInt(timeStepFieldGeneration.getText());
-            } else {
+            }
+            else {
                 this.timeStep = 0;
             }
 
@@ -430,7 +456,7 @@ public class FXController {
             if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
                 this.rows = (this.rows <= 0) ? 1 : this.rows;
                 this.cols = (this.cols <= 0) ? 1 : this.cols;
-                this.seed = (this.cols < 0) ? 0 : this.seed;
+                this.seed = (this.seed < 0) ? 0 : this.seed;
                 rowsField.setText("" + this.rows);
                 colsField.setText("" + this.cols);
                 seedField.setText("" + this.seed);
@@ -793,7 +819,7 @@ public class FXController {
      */
     @FXML
     private void onSaveClick() {
-        if (labyrinthIsGenerated) {
+        if (maze != null) {
             mazeController.saveMaze();
         }
     }

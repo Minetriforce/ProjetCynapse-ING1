@@ -10,8 +10,7 @@ import java.util.Scanner;
  * dimensions,
  * and solve the maze using the A* algorithm or other solving strategies.
  * <p>
- * The CLI supports generating a maze with various algorithms, loading a maze
- * from a file,
+ * The CLI supports loading a maze from a file,
  * editing walls manually, selecting start and end points, solving the maze,
  * and saving the maze.
  * </p>
@@ -64,7 +63,7 @@ public class MainCLI {
      * @param prompt  The prompt message to display to the user.
      * @return A positive integer input by the user.
      */
-    private static int verifPositiveInteger(Scanner scanner, String prompt) {
+    public static int verifPositiveInteger(Scanner scanner, String prompt) {
         int value;
         while (true) {
             System.out.println(ITALIC + prompt + RESET);
@@ -95,7 +94,7 @@ public class MainCLI {
      * @param prompt  The message displayed to prompt the user.
      * @return A valid integer input that is zero or positive.
      */
-    private static int verifPositiveOrZeroInteger(Scanner scanner, String prompt) {
+    public static int verifPositiveOrZeroInteger(Scanner scanner, String prompt) {
         int value;
         while (true) {
             System.out.println(ITALIC + prompt + RESET);
@@ -127,7 +126,7 @@ public class MainCLI {
      *                bound).
      * @return A valid integer input within the range [0, rows * columns - 1].
      */
-    private static int verifCorrectInterval(Scanner sc, int rows, int columns) {
+    public static int verifCorrectInterval(Scanner sc, int rows, int columns){
         int value;
         while (true) {
             if (sc.hasNextInt()) {
@@ -155,7 +154,7 @@ public class MainCLI {
      * @param sc The Scanner object to read input from
      * @return The validated user input as a lowercase string, either "y" or "n"
      */
-    private static String verifYesNo(Scanner sc) {
+    public static String verifYesNo(Scanner sc){
         String YesNoChoice;
         while (true) {
             YesNoChoice = sc.nextLine().toLowerCase().trim();
@@ -175,7 +174,7 @@ public class MainCLI {
      * @param sc   Scanner for reading user input
      * @param maze The current Maze object
      */
-    private static void toggleWall(Scanner sc, Maze maze) {
+    public static void toggleWall(Scanner sc, Maze maze) {
         int rows = maze.getRows();
         int columns = maze.getColumns();
         System.out.println(ITALIC + "Enter two adjacent cell IDs to add/remove a wall between them." + RESET);
@@ -229,11 +228,10 @@ public class MainCLI {
      * 
      * <p>
      * Supported generation methods: Prim, Kruskal, RNG_DFS, Imperfect.<br>
-     * Supported solving methods: A*, BFS, DFS, RightHand, LeftHand.
+     * Supported solving methods: A*, BFS, DFS, RightHand, LeftHand, A*II .
      * </p>
      * 
-     * @param args Command line arguments. If "cli" is passed, the menu is
-     *             displayed.
+     * @param args Command line arguments. 
      */
     public static void main(String args[]) {
 
@@ -350,19 +348,18 @@ public class MainCLI {
                 case "kruskal":
                     // Create the maze using Kruskal's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.KRUSKAL, rows, columns, seed);
-
                     break;
 
                 case "3":
                 case "rng_dfs":
                     // Create the maze using RNG_DFS's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.DFS, rows, columns, seed);
-
                     break;
                 case "4":
                 case "imperfect":
                     // Create the maze using Imperfect's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.IMPERFECT, rows, columns, seed);
+                    break;
 
             }
         }
@@ -411,14 +408,16 @@ public class MainCLI {
             System.out.println(BOLD + " 3 " + RESET + "- " + MethodName.SolveMethodName.DFS + RESET);
             System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.SolveMethodName.RIGHTHAND + RESET);
             System.out.println(BOLD + " 5 " + RESET + "- " + MethodName.SolveMethodName.LEFTHAND + RESET);
+            System.out.println(BOLD + " 6 " + RESET + "- " + MethodName.SolveMethodName.ASTARII + RESET);
 
             while (true) {
                 solvingChoice = sc.nextLine().toLowerCase().trim();
-                if (solvingChoice.equals("1") || solvingChoice.equals("astar")
-                        || solvingChoice.equals("2") || solvingChoice.equals("bfs")
-                        || solvingChoice.equals("3") || solvingChoice.equals("dfs")
-                        || solvingChoice.equals("4") || solvingChoice.equals("righthand")
-                        || solvingChoice.equals("5") || solvingChoice.equals("lefthand")) {
+                if(solvingChoice.equals("1") || solvingChoice.equals("astar")
+                || solvingChoice.equals("2") || solvingChoice.equals("bfs")
+                || solvingChoice.equals("3") || solvingChoice.equals("dfs")
+                || solvingChoice.equals("4") || solvingChoice.equals("righthand")
+                || solvingChoice.equals("5") || solvingChoice.equals("lefthand")
+                || solvingChoice.equals("6") || solvingChoice.equals("astarii")){
                     break;
                 } else {
                     System.out
@@ -466,8 +465,14 @@ public class MainCLI {
                 case "lefthand":
                     // Create the maze using Lefthand algorithm
                     startTime = System.currentTimeMillis();
-                    mazeController.findSolution(MethodName.SolveMethodName.LEFTHAND, maze.getVertexByID(startId),
-                            maze.getVertexByID(endId));
+                    mazeController.findSolution(MethodName.SolveMethodName.LEFTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                    endTime = System.currentTimeMillis();
+                    break;
+                case "6":
+                case "astarii":
+                    // Create the maze using AstarII algorithm
+                    startTime = System.currentTimeMillis();
+                    mazeController.findSolution(MethodName.SolveMethodName.ASTARII, maze.getVertexByID(startId), maze.getVertexByID(endId));
                     endTime = System.currentTimeMillis();
                     break;
             }
