@@ -329,9 +329,6 @@ public class FXController {
                 }
             }
         });
-
-
-
     }
 
     /**
@@ -573,41 +570,41 @@ public class FXController {
         int pathLength = 0;
         int visitedCount = 0;
 
-        try {
-            for (int id : orders) {
-                if (id == -1)
-                    break;
-                Vertex v = maze.getVertexByID(id);
-                v.setState(VertexState.VISITED);
-                visitedCount++;
-
-                Set<Vertex> temp = new HashSet<>();
-                temp.add(v);
-
-                Platform.runLater(() -> drawVertexWithWalls(temp));
-                Thread.sleep(timeStep);
-            }
-
-            ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(end), antecedents);
-            for (Vertex v : solutionVertices) {
-                v.setState(VertexState.SOLUTION);
-                pathLength++;
-
-                Set<Vertex> temp = new HashSet<>();
-                temp.add(v);
-
-                Platform.runLater(() -> drawVertexWithWalls(temp));
-                Thread.sleep(timeStep);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (end == start){
+        if (end == start) {
             maze.getVertexByID(start).setState(VertexState.SOLUTION);
-            visitedCount=1;
-            pathLength=1;
+            visitedCount = 1;
+            pathLength = 1;
+        } else {
+            try {
+                for (int id : orders) {
+                    if (id == -1)
+                        break;
+                    Vertex v = maze.getVertexByID(id);
+                    v.setState(VertexState.VISITED);
+                    visitedCount++;
+
+                    Set<Vertex> temp = new HashSet<>();
+                    temp.add(v);
+
+                    Platform.runLater(() -> drawVertexWithWalls(temp));
+                    Thread.sleep(timeStep);
+                }
+
+                ArrayList<Vertex> solutionVertices = Solver.pathVertex(maze, maze.getVertexByID(end), antecedents);
+                for (Vertex v : solutionVertices) {
+                    v.setState(VertexState.SOLUTION);
+
+                    Set<Vertex> temp = new HashSet<>();
+                    temp.add(v);
+
+                    Platform.runLater(() -> drawVertexWithWalls(temp));
+                    Thread.sleep(timeStep);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
         addResolutionStatsToHistory(pathLength, visitedCount, timeMs, solveMethodName);
         setButtonsState(true, true, true, true, true, true);
     }
@@ -840,5 +837,4 @@ public class FXController {
         statLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 10.5;");
         Platform.runLater(() -> historyVBox.getChildren().add(0, statLabel));
     }
-
 }

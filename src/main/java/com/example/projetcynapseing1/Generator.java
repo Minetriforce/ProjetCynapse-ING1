@@ -49,7 +49,7 @@ public class Generator {
      */
     public Generator(Integer rows, Integer colums, MethodName.GenMethodName genMethod, Integer seed) throws Exception {
         if (rows < 1 || colums < 1 || rows == null || colums == null) {
-            throw new IllegalArgumentException("rows or column can't be negative/null");
+            throw new IllegalArgumentException("rows or column can't be negative, null or equal to one");
         } else if (seed < 0) {
             throw new IllegalArgumentException("seed can't be negative");
         }
@@ -214,16 +214,15 @@ public class Generator {
         Collections.sort(baseGraph.getEdges());
 
         for (Edge edge : baseGraph.getEdges()) { // look at each edges in ascending order
-            if (unionFind(edge.getVertexA(), edge.getVertexB(), parents) == false) { // add edge to maze only if it does
+            if (maze.getEdges().size() == maze.getVertices().size() - 1) { 
+                break;
+            }
+            if (!unionFind(edge.getVertexA(), edge.getVertexB(), parents)) { // add edge to maze only if it does
                 // not create a cycle
                 maze.addEdge(new Edge(maze.getVertexByID(edge.getVertexA().getID()),
                         maze.getVertexByID(edge.getVertexB().getID()))); // Add adge to maze
                 union(edge.getVertexA().getID(), edge.getVertexB().getID(), parents); // merge trees in the list of
                 // trees (parents)
-
-                if (maze.getEdges().size() == maze.getVertices().size() - 1) {
-                    break;
-                }
             }
         }
     }
