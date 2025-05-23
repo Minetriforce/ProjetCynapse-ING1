@@ -863,7 +863,7 @@ public class FXController {
      */
     @FXML
     private void onLoadClick() {
-        if (mazeController.loadMazeCLI()) {
+        if (mazeController.loadMazeFX()) {
             this.maze = mazeController.getCurrentMaze();
             this.visibleEdges.clear();
             this.visibleEdges.addAll(this.maze.getEdges());
