@@ -11,34 +11,56 @@ import javafx.scene.control.Label;
  * solving mazes.
  * It allows the user to choose a maze generation method, set the maze
  * dimensions,
- * and solve the maze using the A* algorithm.
+ * and solve the maze using the A* algorithm or other solving strategies.
+ * <p>
+ * The CLI supports generating a maze with various algorithms, loading a maze
+ * from a file,
+ * editing walls manually, selecting start and end points, solving the maze,
+ * and saving the maze.
+ * </p>
+ * 
+ * <p>Color codes are used for improved CLI visual output.</p>
  * 
  * @author Jonathan
  */
 public class MainCLI {
-    // mazeController / FXController Instantiated
+    /** Controller for managing maze operations such as creation, loading, solving, and saving */
     private static final MazeController mazeController = new MazeController();
 
-    // ANSI escape codes for colors
+    /** ANSI escape code to reset terminal color */
     public static final String RESET = "\u001B[0m";
+    /** ANSI escape code for red text */
     public static final String RED = "\u001B[31m";
+    /** ANSI escape code for red background */
     public static final String REDBACK = "\u001B[48;5;196m";
+    /** ANSI escape code for green text */
     public static final String GREEN = "\u001b[38;5;46m";
+    /** ANSI escape code for green background */
     public static final String GREENBACK = "\u001b[48;5;46m";
+    /** ANSI escape code for yellow text */
     public static final String YELLOW = "\u001B[33m";
+    /** ANSI escape code for blue text */
     public static final String BLUE = "\u001B[34m";
+    /** ANSI escape code for cyan text */
     public static final String CYAN = "\u001B[36m";
+    /** ANSI escape code for magenta text */
     public static final String MAGENTA = "\u001B[35m";
+    /** ANSI escape code for bold text */
     public static final String BOLD = "\u001B[1m";
+    /** ANSI escape code for italic text */
     public static final String ITALIC = "\u001B[3m";
+    /** ANSI escape code for underline text */
     public static final String UNDERLINE = "\u001B[4m";
+    /** ANSI escape code for gray text */
     public static final String GRAY = "\u001b[38;5;244m";
 
     /**
-     * Utility method to get a valid positive integer input from the user
-     * @param scanner The Scanner object to read input
-     * @param prompt The prompt message to display to the user
-     * @return A valid positive integer entered by the user
+     * Utility method to get a valid positive integer input from the user.
+     * Keeps prompting until the user enters an integer greater than zero.
+     *
+     * @param scanner The Scanner object to read input from.
+     * @param prompt  The prompt message to display to the user.
+     * @return A positive integer input by the user.
      */
     private static int verifPositiveInteger(Scanner scanner, String prompt) {
         int value;
@@ -59,15 +81,15 @@ public class MainCLI {
         }
     }
 
-/**
- * Prompts the user with the given message to enter an integer that is zero or positive.
- * Continuously reads input from the provided Scanner until a valid integer >= 0 is entered.
- * If the input is invalid or negative, an error message is displayed and the user is prompted again.
- *
- * @param scanner The Scanner object used to read user input.
- * @param prompt  The message displayed to prompt the user.
- * @return A valid integer input that is zero or positive.
- */
+    /**
+     * Prompts the user with the given message to enter an integer that is zero or positive.
+     * Continuously reads input from the provided Scanner until a valid integer >= 0 is entered.
+     * If the input is invalid or negative, an error message is displayed and the user is prompted again.
+     *
+     * @param scanner The Scanner object used to read user input.
+     * @param prompt  The message displayed to prompt the user.
+     * @return A valid integer input that is zero or positive.
+     */
     private static int verifPositiveOrZeroInteger(Scanner scanner, String prompt) {
         int value;
         while (true) {
@@ -86,16 +108,16 @@ public class MainCLI {
         }
     }
 
-/**
- * Continuously prompts the user to input an integer within the valid range [0, rows * columns - 1].
- * Reads from the provided Scanner until a valid integer is entered.
- * If the input is not an integer or out of the valid range, displays an error message and prompts again.
- *
- * @param sc      The Scanner object used to read user input.
- * @param rows    The number of rows in the maze (used to determine the upper bound).
- * @param columns The number of columns in the maze (used to determine the upper bound).
- * @return A valid integer input within the range [0, rows * columns - 1].
- */
+    /**
+     * Continuously prompts the user to input an integer within the valid range [0, rows * columns - 1].
+     * Reads from the provided Scanner until a valid integer is entered.
+     * If the input is not an integer or out of the valid range, displays an error message and prompts again.
+     *
+     * @param sc      The Scanner object used to read user input.
+     * @param rows    The number of rows in the maze (used to determine the upper bound).
+     * @param columns The number of columns in the maze (used to determine the upper bound).
+     * @return A valid integer input within the range [0, rows * columns - 1].
+     */
     private static int verifCorrectInterval(Scanner sc, int rows, int columns){
         int value;
         while (true) {
@@ -115,14 +137,14 @@ public class MainCLI {
         }
     }
 
-/**
- * Reads user input from the given Scanner and validates that it is either
- * "y" or "n" (case-insensitive). The method repeatedly prompts until a valid
- * response is entered.
- *
- * @param sc The Scanner object to read input from
- * @return The validated user input as a lowercase string, either "y" or "n"
- */
+    /**
+     * Reads user input from the given Scanner and validates that it is either
+     * "y" or "n" (case-insensitive). The method repeatedly prompts until a valid
+     * response is entered.
+     *
+     * @param sc The Scanner object to read input from
+     * @return The validated user input as a lowercase string, either "y" or "n"
+     */
     private static String verifYesNo(Scanner sc){
         String YesNoChoice;
         while (true) {
@@ -135,14 +157,13 @@ public class MainCLI {
         }
     }
         
-
-/**
- * Allows the user to add or remove a wall between two adjacent cells in the maze.
- * Prompts for two cell IDs, checks adjacency, and toggles the wall accordingly.
- *
- * @param sc      Scanner for reading user input
- * @param maze    The current Maze object
- */
+    /**
+     * Allows the user to add or remove a wall between two adjacent cells in the maze.
+     * Prompts for two cell IDs, checks adjacency, and toggles the wall accordingly.
+     *
+     * @param sc      Scanner for reading user input
+     * @param maze    The current Maze object
+     */
     private static void toggleWall(Scanner sc, Maze maze) {
         int rows = maze.getRows();
         int columns = maze.getColumns();
@@ -186,13 +207,20 @@ public class MainCLI {
             System.out.println("Wall removed between " + first + " and " + second);
         }
     }
-            
 
     /**
      * Main entry point of the application.
-     * It prompts the user to choose options from a menu, define maze dimensions,
-     * select a generation method, and solve the maze using the A* algorithm.
-     *
+     * <p>
+     * Provides an interactive CLI menu for generating or loading a maze,
+     * editing walls, setting start/end points, solving the maze with different
+     * algorithms, and saving the maze.
+     * </p>
+     * 
+     * <p>
+     * Supported generation methods: Prim, Kruskal, RNG_DFS, Imperfect.<br>
+     * Supported solving methods: A*, BFS, DFS, RightHand, LeftHand.
+     * </p>
+     * 
      * @param args Command line arguments. If "cli" is passed, the menu is
      *             displayed.
      */
@@ -309,19 +337,18 @@ public class MainCLI {
                 case "kruskal":
                     // Create the maze using Kruskal's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.KRUSKAL, rows, columns, seed);
-    
                     break;
     
                 case "3":
                 case "rng_dfs":
                     // Create the maze using RNG_DFS's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.DFS, rows, columns, seed);
-
                     break;
                 case "4":
                 case "imperfect":
                     // Create the maze using Imperfect's algorithm
                     mazeController.createMaze(MethodName.GenMethodName.IMPERFECT, rows, columns, seed);
+                    break;
 
             }
         }
@@ -373,6 +400,7 @@ public class MainCLI {
             System.out.println(BOLD + " 3 " + RESET + "- " + MethodName.SolveMethodName.DFS + RESET);
             System.out.println(BOLD + " 4 " + RESET + "- " + MethodName.SolveMethodName.RIGHTHAND + RESET);
             System.out.println(BOLD + " 5 " + RESET + "- " + MethodName.SolveMethodName.LEFTHAND + RESET);
+            System.out.println(BOLD + " 6 " + RESET + "- " + MethodName.SolveMethodName.ASTARII + RESET);
 
             while(true){
                 solvingChoice = sc.nextLine().toLowerCase().trim();
@@ -380,7 +408,8 @@ public class MainCLI {
                 || solvingChoice.equals("2") || solvingChoice.equals("bfs")
                 || solvingChoice.equals("3") || solvingChoice.equals("dfs")
                 || solvingChoice.equals("4") || solvingChoice.equals("righthand")
-                || solvingChoice.equals("5") || solvingChoice.equals("lefthand")){
+                || solvingChoice.equals("5") || solvingChoice.equals("lefthand")
+                || solvingChoice.equals("6") || solvingChoice.equals("astarii")){
                     break;
                 }
                 else{
@@ -422,14 +451,21 @@ public class MainCLI {
                     break;
                 case "5":
                 case "lefthand":
-                    // Create the maze using Righthand algorithm
+                    // Create the maze using Lefthand algorithm
                     startTime = System.currentTimeMillis();
                     mazeController.findSolution(MethodName.SolveMethodName.LEFTHAND, maze.getVertexByID(startId), maze.getVertexByID(endId));
                     endTime = System.currentTimeMillis();
                     break;
+                case "6":
+                case "astarii":
+                    // Create the maze using Lefthand algorithm
+                    startTime = System.currentTimeMillis();
+                    mazeController.findSolution(MethodName.SolveMethodName.ASTARII, maze.getVertexByID(startId), maze.getVertexByID(endId));
+                    endTime = System.currentTimeMillis();
+                    break;
             }
 
-            // Solve the maze
+            // Display solver details
             Solver solver = mazeController.getSolver();
             System.out.println(solver);
     
@@ -479,7 +515,5 @@ public class MainCLI {
         sc.close();
         System.exit(0);
         
-            }
-        }
-    
-
+    }
+}

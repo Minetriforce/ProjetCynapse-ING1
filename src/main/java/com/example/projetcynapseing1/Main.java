@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 /**
  * Main class of the application responsible for launching the JavaFX
  * application.
- * 
+ *
  * @author Bari-Joris, Lorelle, Florianne, Jonathan, Junjie
  */
 public class Main extends Application {
@@ -41,9 +41,9 @@ public class Main extends Application {
         fxmlLoader.setController(fxController);
 
         // Set up the scene with the loaded layout
-        Scene scene = new Scene(fxmlLoader.load(), 1920, 1080);
-        stage.setMinWidth(1400);
-        stage.setMinHeight(800);
+        Scene scene = new Scene(fxmlLoader.load(), 1800, 900);
+        stage.setMinWidth(1800);
+        stage.setMinHeight(900);
         stage.setMaximized(true);
         stage.setTitle("Cynapse");
         stage.setScene(scene);

@@ -45,7 +45,7 @@
 
                     <!-- Second line: timeStep and backgroundSelector -->
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <CheckBox fx:id="stepByStepCheckBoxGeneration" text="Step-by-step" />
+                        <CheckBox fx:id="stepByStepCheckBoxGeneration" text="Step-by-step" style="-fx-text-fill: white;" />
                         <TextField fx:id="timeStepFieldGeneration" promptText="time step (ms)" prefWidth="140"/>
                     </HBox>
                     <Button fx:id="generationLabyrinth" text="Generate" onAction="#onStartGenerationClick"/>
@@ -73,15 +73,16 @@
                     </HBox>
 
                     <HBox spacing="10" alignment="CENTER_RIGHT">
-                        <CheckBox fx:id="stepByStepCheckBoxSolution" text="Step-by-step"/>
+                        <CheckBox fx:id="stepByStepCheckBoxSolution" text="Step-by-step" style="-fx-text-fill: white;" />
+
                         <TextField fx:id="timeStepFieldSolution" promptText="time step (ms)" prefWidth="140"/>
                     </HBox>
 
 
                     <!-- Resolution history -->
-                    <TitledPane text="Resolution History" expanded="true" prefHeight="150" prefWidth="200">
+                    <TitledPane fx:id="resolutionHistory" text="Resolution History" collapsible="false" expanded="true" prefHeight="150" prefWidth="200">
                         <content>
-                            <ScrollPane fitToWidth="true" fitToHeight="true" prefHeight="150" prefWidth="200">
+                            <ScrollPane fx:id ="scrollpane" fitToWidth="true" fitToHeight="true" prefHeight="150" prefWidth="200">
                                 <content>
                                     <VBox fx:id="historyVBox" spacing="5" style="-fx-padding: 10;"/>
                                 </content>

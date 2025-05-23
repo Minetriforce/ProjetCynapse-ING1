@@ -337,6 +337,9 @@ public class FXController {
                 }
             }
         });
+
+
+
     }
 
     /**
@@ -436,10 +439,20 @@ public class FXController {
             MethodName.GenMethodName selectedGenMethod = generationMethodComboBox.getSelectionModel().getSelectedItem();
 
             if (this.rows <= 0 || this.cols <= 0 || this.seed < 0) {
-                throw new Exception("Please enter valids integers for rows,cols and seed to generate a maze!");
+                this.rows = (this.rows <= 0) ? 1 : this.rows;
+                this.cols = (this.cols <= 0) ? 1 : this.cols;
+                this.seed = (this.cols < 0) ? 0 : this.seed;
+                rowsField.setText("" + this.rows);
+                colsField.setText("" + this.cols);
+                seedField.setText("" + this.seed);
+                throw new Exception("Please enter valids integers for rows, cols and seed to generate a maze!");
             }
 
             if (this.rows > 100 || this.cols > 100) {
+                this.rows = (this.rows > 100) ? 100 : this.rows;
+                this.cols = (this.cols > 100) ? 100 : this.cols;
+                rowsField.setText("" + this.rows);
+                colsField.setText("" + this.cols);
                 throw new Exception("Maximum allowed size is 100x100 for rows and columns.");
             }
 
@@ -468,19 +481,28 @@ public class FXController {
     private void onStartResolutionClick() {
         resetSolution();
 
-        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel()
-                .getSelectedItem();
+        MethodName.SolveMethodName selectedSolveMethod = solutionMethodComboBox.getSelectionModel().getSelectedItem();
 
-        if (maze != null && selectedSolveMethod != null) {
-            if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
-                this.timeStep = Integer.parseInt(timeStepFieldSolution.getText());
-            } else {
-                this.timeStep = 0;
+        try{
+            if (maze != null && selectedSolveMethod != null) {
+                if (stepByStepCheckBoxSolution.isSelected() && !timeStepFieldSolution.getText().isEmpty()) {
+                    this.timeStep = Integer.parseInt(timeStepFieldSolution.getText());
+                } else {
+                    this.timeStep = 0;
+                }
+
+                setButtonsState(false, false, false, false, false, false);
+                this.timeStep = Math.max(0, this.timeStep);
+                new Thread(() -> solveMaze(selectedSolveMethod)).start();
             }
 
-            setButtonsState(false, false, false, false, false, false);
-            this.timeStep = Math.max(0, this.timeStep);
-            new Thread(() -> solveMaze(selectedSolveMethod)).start();
+
+            if (selectedSolveMethod == null) {
+                throw new Exception("You must select a solve method.");
+            }
+        }
+        catch (Exception e) {
+            showAlert("Error", e.getMessage());
         }
     }
 
@@ -590,6 +612,12 @@ public class FXController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if (end == start){
+            maze.getVertexByID(start).setState(VertexState.SOLUTION);
+            visitedCount=1;
+            pathLength=1;
         }
         addResolutionStatsToHistory(pathLength, visitedCount, timeMs, solveMethodName);
         setButtonsState(true, true, true, true, true, true);
@@ -817,11 +845,11 @@ public class FXController {
      * @param solveMethodName the name of the solving method used
      */
     private void addResolutionStatsToHistory(int pathLength, int visitedCount, long timeMs, String solveMethodName) {
-        String text = String.format("%s:  Path Length: %d | Visited: %d | Time: %d ms ",
+        String text = String.format("%s: Length: %d | Visited: %d | Time: %d ms ",
                 solveMethodName, pathLength, visitedCount, timeMs);
         Label statLabel = new Label(text);
         statLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 10.5;");
-        Platform.runLater(() -> historyVBox.getChildren().add(statLabel));
+        Platform.runLater(() -> historyVBox.getChildren().add(0, statLabel));
     }
 
 }
