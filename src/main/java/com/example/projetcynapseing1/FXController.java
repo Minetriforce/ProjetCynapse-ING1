@@ -415,9 +415,6 @@ public class FXController {
                 }
             }
         });
-
-
-
     }
 
     /**
