@@ -329,6 +329,9 @@ public class FXController {
                 }
             }
         });
+
+
+
     }
 
     /**
@@ -599,6 +602,12 @@ public class FXController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (end == start){
+            maze.getVertexByID(start).setState(VertexState.SOLUTION);
+            visitedCount=1;
+            pathLength=1;
+        }
         addResolutionStatsToHistory(pathLength, visitedCount, timeMs, solveMethodName);
         setButtonsState(true, true, true, true, true, true);
     }
@@ -825,11 +834,11 @@ public class FXController {
      * @param solveMethodName the name of the solving method used
      */
     private void addResolutionStatsToHistory(int pathLength, int visitedCount, long timeMs, String solveMethodName) {
-        String text = String.format("%s:  Path Length: %d | Visited: %d | Time: %d ms ",
+        String text = String.format("%s: Length: %d | Visited: %d | Time: %d ms ",
                 solveMethodName, pathLength, visitedCount, timeMs);
         Label statLabel = new Label(text);
         statLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 10.5;");
-        Platform.runLater(() -> historyVBox.getChildren().add(statLabel));
+        Platform.runLater(() -> historyVBox.getChildren().add(0, statLabel));
     }
 
 }
