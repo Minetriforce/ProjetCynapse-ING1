@@ -325,7 +325,7 @@ public class MainCLI {
             switch (generationChoice) {
                 case "1":
                 case "prim":
-                    // Create the maze using Prim's algorithm
+                    // Create the maze using Prim's algorithmload
                     mazeController.createMaze(MethodName.GenMethodName.PRIM, rows, columns, seed);
 
                 
