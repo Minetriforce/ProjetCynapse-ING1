@@ -74,7 +74,7 @@ public class Graph implements Serializable {
     /**
      * Return a Vertex Object according to it's ID
      * 
-     * @param ID integer between 0 and n to identify vertex in graph
+     * @param id integer between 0 and n to identify vertex in graph
      * @return Vertex or null if it does not exists
      */
     public Vertex getVertexByID(Integer id) {

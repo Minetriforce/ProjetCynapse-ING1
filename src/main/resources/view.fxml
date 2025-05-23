@@ -17,16 +17,16 @@
     <BorderPane fx:id="borderpane">
 
         <center>
-            <VBox alignment="CENTER" spacing="10.0">
+            <StackPane>
                 <padding>
                     <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
                 <Canvas fx:id="mazeCanvas" width="600" height="600"/>
-            </VBox>
+            </StackPane>
         </center>
 
         <left>
-            <StackPane fx:id="leftPane">
+            <StackPane>
                 <VBox alignment="CENTER_LEFT" spacing="10.0" prefWidth="300">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -60,7 +60,7 @@
         </left>
 
         <right>
-            <StackPane fx:id="rightPane">
+            <StackPane>
                 <VBox alignment="CENTER" spacing="10.0" prefWidth="350">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>

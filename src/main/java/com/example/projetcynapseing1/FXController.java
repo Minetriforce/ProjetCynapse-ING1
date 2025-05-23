@@ -33,6 +33,8 @@ import javafx.stage.FileChooser;
  *
  * @author Florianne, Lorelle
  */
+
+
 public class FXController {
 
     @FXML
@@ -43,7 +45,7 @@ public class FXController {
 
     private Color[][] colors = {
             { Color.rgb(173, 216, 230), Color.rgb(0, 0, 0), Color.rgb(169, 169, 169) },
-            { Color.rgb(255, 185, 211), Color.rgb(200, 113, 151), Color.rgb(169, 169, 169) },
+            { Color.rgb(251, 141, 181), Color.rgb(200, 113, 151), Color.rgb(235, 211, 216) },
             { Color.rgb(94, 151, 202), Color.rgb(132, 152, 169), Color.rgb(187, 228, 241) },
             { Color.rgb(249, 213, 182), Color.rgb(25, 114, 210), Color.rgb(163, 173, 204) } };
     private int theme = 0;
@@ -166,22 +168,47 @@ public class FXController {
             case "labyrinth":
                 fileName = "images/logo.png";
                 theme = 0;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                    }
+                });
                 break;
             case "sakura":
                 fileName = "images/sakura.jpg";
                 theme = 1;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #FF69B4, #F4ABD0);");
+                    }
+                });
                 break;
             case "beach":
                 fileName = "images/beach.jpg";
                 theme = 2;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: #00BFFF; -fx-text-fill: white;");
+                    }
+                });
                 break;
             case "shootingstar":
                 fileName = "images/shootingstar.jpg";
                 theme = 3;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: #483D8B; -fx-text-fill: white;");
+                    }
+                });
                 break;
             default:
                 fileName = "images/logo.png";
                 theme = 0;
+                stackPane.lookupAll(".button").forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setStyle("-fx-background-color: linear-gradient(to bottom, #5a7cff, #6ee2f5);");
+                    }
+                });
         }
         Image image = new Image(getClass().getResourceAsStream("/" + fileName));
         Platform.runLater(() -> {
@@ -285,8 +312,7 @@ public class FXController {
                 }
                 changeStartEndButton.setDisable(true); // disable other mode button
 
-                showAlert("Edit Mode Enabled",
-                        "Select two cells such that an edge appears or disappears between them.");
+
             } else {
                 editEdgeButton.setText("Add or Remove Edge");
                 firstSelectedVertex = null;
